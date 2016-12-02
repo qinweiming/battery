@@ -1,0 +1,674 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "NovaData销售线索推荐服务API",
+        "description": "销售线索推荐服务",
+        "version": "1.0.0"
+    },
+    "host": "api.novadata.io",
+    "schemes": [
+        "https"
+    ],
+    "basePath": "/v1",
+    "produces": [
+        "application/json"
+    ],
+    "paths": {
+        "/auth/{clientId}": {
+            "get": {
+                "summary": "获取用户的所有密钥对。",
+                "parameters": [
+                    {
+                        "name": "clientId",
+                        "in": "path",
+                        "description": "客户端编号",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "授权"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "服务器正常返回",
+                        "schema": {
+                            "type": "array",
+                            "description": "不包含secretKey",
+                            "items": {
+                                "$ref": "#/definitions/KeyPairsResponse"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "summary": "生成密钥对",
+                "parameters": [
+                    {
+                        "name": "clientId",
+                        "in": "path",
+                        "description": "客户端编号",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "expireDate",
+                        "in": "query",
+                        "description": "密钥过期日期,默认为1年后",
+                        "required": false,
+                        "type": "string",
+                        "format": "yyMM"
+                    }
+                ],
+                "tags": [
+                    "授权"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "服务器正常返回",
+                        "schema": {
+                            "$ref": "#/definitions/KeyPairResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/{clientId}/{accessKey}": {
+            "delete": {
+                "summary": "删除用户的密钥对。",
+                "parameters": [
+                    {
+                        "name": "clientId",
+                        "in": "path",
+                        "description": "客户端编号",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "accessKey",
+                        "in": "path",
+                        "description": "客户端accessKey",
+                        "required": true,
+                        "type": "string"
+                    }
+                ],
+                "tags": [
+                    "授权"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "服务器正常返回",
+                        "schema": {
+                            "$ref": "#/definitions/Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/customers": {
+            "post": {
+                "summary": "上传新增的客户数据",
+                "description": "",
+                "consumes": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "customers",
+                        "in": "body",
+                        "description": "客户信息.",
+                        "required": true,
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/Customer"
+                            }
+                        }
+                    },
+                    {
+                        "$ref": "#/parameters/accessKeyIdParam"
+                    },
+                    {
+                        "$ref": "#/parameters/signatureVersionParam"
+                    },
+                    {
+                        "$ref": "#/parameters/signatureParam"
+                    }
+                ],
+                "tags": [
+                    "客户"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "服务器正常返回",
+                        "schema": {
+                            "$ref": "#/definitions/Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/customers/{customerId}": {
+            "put": {
+                "summary": "更新已有的客户数据",
+                "description": "更新已有客户数据.\n",
+                "parameters": [
+                    {
+                        "name": "customerId",
+                        "in": "path",
+                        "description": "客户id.",
+                        "required": true,
+                        "type": "number",
+                        "format": "int32"
+                    },
+                    {
+                        "name": "customer",
+                        "in": "body",
+                        "description": "新的客户信息",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/Customer"
+                        }
+                    },
+                    {
+                        "$ref": "#/parameters/accessKeyIdParam"
+                    },
+                    {
+                        "$ref": "#/parameters/signatureVersionParam"
+                    },
+                    {
+                        "$ref": "#/parameters/signatureParam"
+                    }
+                ],
+                "tags": [
+                    "客户"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "成功",
+                        "schema": {
+                            "$ref": "#/definitions/Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/leads/{leadId}": {
+            "get": {
+                "summary": "获取销售线索的详情",
+                "description": "获取销售线索详情.",
+                "parameters": [
+                    {
+                        "name": "leadId",
+                        "in": "path",
+                        "description": "线索Id.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "$ref": "#/parameters/accessKeyIdParam"
+                    },
+                    {
+                        "$ref": "#/parameters/signatureVersionParam"
+                    },
+                    {
+                        "$ref": "#/parameters/signatureParam"
+                    }
+                ],
+                "tags": [
+                    "销售线索"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "销售线索详情",
+                        "schema": {
+                            "$ref": "#/definitions/LeadResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/leads/recommends": {
+            "get": {
+                "summary": "获取推荐的销售线索列表",
+                "description": ".",
+                "parameters": [
+                    {
+                        "name": "category",
+                        "in": "query",
+                        "description": "行业",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "province",
+                        "in": "query",
+                        "description": "省份",
+                        "required": false,
+                        "type": "string"
+                    },
+                    {
+                        "name": "sort",
+                        "in": "query",
+                        "description": "排序表达式, 默认：`智能排序:desc`",
+                        "required": false,
+                        "default": "智能排序:desc",
+                        "enum": [
+                            "智能排序:desc",
+                            "智能排序:asc",
+                            "距离排序:desc",
+                            "距离排序:asc"
+                        ],
+                        "type": "string"
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "起始位置, 默认:`0`",
+                        "required": false,
+                        "type": "number",
+                        "format": "integer",
+                        "default": 0,
+                        "minimum": 0
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "数据条数, 默认:`20`",
+                        "required": false,
+                        "type": "number",
+                        "format": "integer",
+                        "default": 20,
+                        "maximum": 50
+                    },
+                    {
+                        "name": "debug",
+                        "in": "query",
+                        "description": "是否启用调试模式, 默认:`false`",
+                        "required": false,
+                        "type": "boolean",
+                        "default": false
+                    },
+                    {
+                        "$ref": "#/parameters/accessKeyIdParam"
+                    },
+                    {
+                        "$ref": "#/parameters/signatureVersionParam"
+                    },
+                    {
+                        "$ref": "#/parameters/signatureParam"
+                    }
+                ],
+                "tags": [
+                    "销售线索"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "销售线索的列表数据",
+                        "schema": {
+                            "$ref": "#/definitions/LeadsResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/leads/{leadId}/tags": {
+            "post": {
+                "summary": "标记线索是否有用",
+                "description": "标记线索是否有用等.",
+                "parameters": [
+                    {
+                        "name": "leadId",
+                        "in": "path",
+                        "description": "线索Id.",
+                        "required": true,
+                        "type": "string"
+                    },
+                    {
+                        "name": "tag",
+                        "in": "query",
+                        "description": "标签.",
+                        "required": true,
+                        "enum": [
+                            "useful",
+                            "useless"
+                        ],
+                        "type": "string",
+                        "default": "useless"
+                    },
+                    {
+                        "$ref": "#/parameters/accessKeyIdParam"
+                    },
+                    {
+                        "$ref": "#/parameters/signatureVersionParam"
+                    },
+                    {
+                        "$ref": "#/parameters/signatureParam"
+                    }
+                ],
+                "tags": [
+                    "销售线索"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "操作成功",
+                        "schema": {
+                            "$ref": "#/definitions/Response"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Customer": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "对象id"
+                },
+                "clientId": {
+                    "type": "string",
+                    "description": "client/用户 id"
+                },
+                "customerId": {
+                    "type": "string",
+                    "description": "客户 id."
+                },
+                "name": {
+                    "type": "string",
+                    "description": "客户名称."
+                },
+                "phone": {
+                    "type": "string",
+                    "description": "联系电话."
+                },
+                "type": {
+                    "type": "string",
+                    "description": "客户类型."
+                },
+                "opscope": {
+                    "type": "string",
+                    "description": "经营范围."
+                },
+                "rating": {
+                    "type": "number",
+                    "format": "double",
+                    "description": "客户价值.",
+                    "minimum": 1,
+                    "maximum": 5
+                },
+                "address": {
+                    "type": "string",
+                    "description": "客户地址."
+                },
+                "province": {
+                    "type": "string",
+                    "description": "省份."
+                },
+                "city": {
+                    "type": "string",
+                    "description": "城市."
+                },
+                "category": {
+                    "type": "string",
+                    "description": "行业."
+                },
+                "registerDate": {
+                    "type": "string",
+                    "description": "工商注册日期"
+                },
+                "longitude": {
+                    "type": "number",
+                    "format": "double",
+                    "description": "经度."
+                },
+                "latitude": {
+                    "type": "number",
+                    "format": "double",
+                    "description": "纬度."
+                },
+                "extend": {
+                    "type": "string",
+                    "description": "其他信息, json格式"
+                }
+            },
+            "required": [
+                "customerId",
+                "name",
+                "rating"
+            ]
+        },
+        "Lead": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "对象id"
+                },
+                "companyName": {
+                    "type": "string",
+                    "description": "线索企业名称"
+                },
+                "regNo": {
+                    "type": "string",
+                    "description": "线索企业工商注册号."
+                },
+                "contact": {
+                    "type": "string",
+                    "description": "联系人姓名."
+                },
+                "title": {
+                    "type": "string",
+                    "description": "联系人职位"
+                },
+                "phone": {
+                    "type": "string",
+                    "description": "联系人电话."
+                },
+                "legalPerson": {
+                    "type": "string",
+                    "description": "企业法人"
+                },
+                "entTel": {
+                    "type": "string",
+                    "description": "企业电话."
+                },
+                "opscope": {
+                    "type": "string",
+                    "description": "经营范围."
+                },
+                "dom": {
+                    "type": "string",
+                    "description": "地址."
+                },
+                "province": {
+                    "type": "string",
+                    "description": "省份."
+                },
+                "city": {
+                    "type": "string",
+                    "description": "城市."
+                },
+                "category": {
+                    "type": "string",
+                    "description": "行业."
+                },
+                "registerDate": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "工商注册日期"
+                },
+                "opbegin": {
+                    "type": "string",
+                    "format": "date",
+                    "description": "企业运营开始日期"
+                },
+                "website": {
+                    "type": "string",
+                    "description": "企业网站."
+                },
+                "regStatus": {
+                    "type": "string",
+                    "description": "工商登记状态."
+                },
+                "longitude": {
+                    "type": "number",
+                    "format": "double",
+                    "description": "经度."
+                },
+                "latitude": {
+                    "type": "number",
+                    "format": "double",
+                    "description": "纬度."
+                }
+            },
+            "required": [
+                "companyName"
+            ]
+        },
+        "KeyPair": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string",
+                    "description": "对象id"
+                },
+                "clientId": {
+                    "type": "string",
+                    "description": "用户id"
+                },
+                "clientName": {
+                    "type": "string",
+                    "description": "用户名"
+                },
+                "secretKey": {
+                    "type": "string"
+                },
+                "accessKey": {
+                    "type": "string"
+                },
+                "enabled": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "createDate": {
+                    "type": "string",
+                    "format": "date"
+                },
+                "expireDate": {
+                    "type": "string",
+                    "format": "date"
+                }
+            }
+        },
+        "Response": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "参见 `ResponseCode` 中的定义"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "detail": {
+                    "type": "string",
+                    "default": ""
+                },
+                "data": {
+                    "type": "string",
+                    "description": "数据的json序列化值, 默认为:[]",
+                    "format": "json",
+                    "default": "[]"
+                }
+            }
+        },
+        "KeyPairResponse": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Response"
+                }
+            ],
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/KeyPair"
+                }
+            }
+        },
+        "KeyPairsResponse": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Response"
+                }
+            ],
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/KeyPair"
+                    }
+                }
+            }
+        },
+        "LeadsResponse": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Response"
+                }
+            ],
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Lead"
+                    }
+                }
+            }
+        },
+        "LeadResponse": {
+            "allOf": [
+                {
+                    "$ref": "#/definitions/Response"
+                }
+            ],
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/Lead"
+                }
+            }
+        }
+    },
+    "parameters": {
+        "accessKeyIdParam": {
+            "name": "access_key_id",
+            "in": "query",
+            "description": "访问密钥",
+            "required": true,
+            "type": "string"
+        },
+        "signatureVersionParam": {
+            "name": "signature_version",
+            "in": "query",
+            "description": "签名函数的版本号,目前只支持版本号为 `1`,签名所用哈希算法为HmacSHA256",
+            "required": true,
+            "type": "number",
+            "format": "int32",
+            "default": 1
+        },
+        "signatureParam": {
+            "name": "signature",
+            "in": "query",
+            "description": "请求消息的签名",
+            "required": true,
+            "type": "string"
+        }
+    }
+}

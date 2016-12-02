@@ -1,0 +1,3 @@
+800:plugin.JongoPlugin
+805:plugin.DataInitPlugin
+810:plugin.MetricsPlugin

@@ -1,0 +1,38 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /                                     Application.index
+GET     /status                               Application.status
+POST    /                                     Application.index
+
+# Ignore favicon requests
+GET     /favicon.ico                            404
+
+# Map static resources from the /app/public folder to the /public path
+GET     /public/                                staticDir:public
+GET     /doc/                                   staticDir:doc
+
+# version 2 route
+POST    /v2/auth/register                          v2.Auth.register
+#POST    /v2/auth/{client_id}                         v2.Auth.generateKeyPair
+#POST    /v2/auth/{client_id}/enable                  v2.Auth.enableKeyPair
+#POST    /v2/auth/{client_id}/disable                 v2.Auth.disableKeyPair
+#GET     /v2/auth/{client_id}/validate                v2.Auth.validateAccessKey
+GET     /v2/auth/{client_id}                         v2.Auth.getKeyPairs
+DELETE  /v2/auth/{client_id}/{access_key}            v2.Auth.deleteKeyPair
+
+#leads
+GET		/v2/leads/{lead_id}						v2.Data.detail
+GET     /v2/leads/{client_id}/recommends               v2.Data.recommends
+POST    /v2/leads/{lead_id}/tags                       v2.Data.tags
+GET		/v2/leads/suggests/{company_name}						v2.Data.autoSuggest
+GET		/v2/leads/dict/category						v2.Data.category
+GET     /v2/leads/{client_id}/omnibox               v2.Data.omnibox
+# customers
+
+POST    /v2/customers                       v2.Data.customers
+PUT    /v2/customers/{customer_id}                       v2.Data.customer
+*       /{controller}/{action}                  {controller}.{action}
+*       /.*                                     Application.notFoundPage
