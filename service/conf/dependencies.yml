@@ -1,26 +1,24 @@
 # Application dependencies
-#configurations:
-#    - compile
-#    - runtime
-#    - optional:
-#        exclude: true
+
 require:
-    - com.google.code.maven-play-plugin.org.playframework -> play 1.4.2
-    - play1-base
-    - com.google.guava -> guava 14.0.1
-    - org.apache.commons -> commons-lang3 3.3.2:
-        force: true
-    - javax.servlet -> javax.servlet-api 3.1.0:
-        force: true
-    - com.alibaba -> fastjson 1.1.40: 
-       transitive: false
-    - io.dropwizard.metrics -> metrics-core 3.1.2
-    - org.jongo -> jongo 1.2
-
-
+    - play
+    - play1-base -> api 0.1
+    - play1-base -> jongo 0.1
+    - play-codeborne -> logger 2.1
 repositories:
+    - play-api:
+          type: http
+          artifact: http://play.nll.im/play-api/api-0.1.zip
+          contains:
+            - play1-base -> *
+    - play-jongo:
+          type: http
+          artifact: http://play.nll.im/play-jongo/jongo-0.1.zip
+          contains:
+            - play1-base -> *            
     - play-logger:
           type: http
-          artifact: https://repo.codeborne.com/play-logger/[module]-[revision].zip
+          artifact: https://repo.codeborne.com/play-logger/logger-2.1.zip
           contains:
-              - play-codeborne -> *
+            - play-codeborne -> *
+
