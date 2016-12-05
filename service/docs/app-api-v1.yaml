@@ -87,28 +87,28 @@ definitions:
   User:
     type: object
     properties:
-      phoneNumber:
+      userName:
         type: string
         description: 手机号码
       password:
         type: string
         description: 密码
-      code:
+      createDate:
         type: string
-        description: 短信验证码
-      channel:
-        type: string
-        description: 渠道代码
+        format: date
+        description: 日期
+      state:
+        type: integer
+        format: int32
+        description: 状态
     required:
-      - phoneNumber
+      - userName
       - password
-      - code
-      - channel
     example:
-      phoneNumber: "18955555555"
+      userName: "zhangsan"
       password: "justPass"
-      code: "666666"
-      channel: wQSDOs8
+      createDate: "2016-01-01"
+      state: 0
   Auth:
     type: object
     properties:

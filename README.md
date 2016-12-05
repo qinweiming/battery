@@ -2,7 +2,7 @@
 - frontend
 Web前端，Angular JS 1.x , Bootstrap 3.x
 - android
-Android App, 待定
+Android App , Native 开发
 - service
 后端服务, Play 1.4.x , MongoDB 3.2+
 - blockchain
