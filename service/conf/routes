@@ -1,0 +1,21 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Home page
+GET     /                                       Application.index
+
+# Ignore favicon requests
+GET     /favicon.ico                            404
+
+# Map static resources from the /app/public folder to the /public path
+GET     /public/                                staticDir:public
+GET     /docs/                            staticDir:docs
+GET     /apis/                            staticDir:public/api
+
+GET     /v1/users/{id}                          v1.Users.get
+GET     /v1/users                               v1.Users.list
+POST    /v1/users                               v1.Users.save
+POST    /v1/auth                                v1.Auth.auth
+
+*       /.*                                     api.API.notFoundPage
