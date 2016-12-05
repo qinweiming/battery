@@ -2,6 +2,7 @@ package controllers.v1;
 
 import controllers.api.API;
 import models.User;
+import org.bson.codecs.ObjectIdGenerator;
 import org.bson.types.ObjectId;
 import play.data.validation.Required;
 
@@ -22,7 +23,7 @@ public class Users extends API {
        renderJSON(users);
     }
     public static void get(@Required String  id){
-        User user =  User.getCollection(User.class).findOne("{_id:#}",id).as(User.class);
+        User user =  User.getCollection(User.class).findOne(new ObjectId(id)).as(User.class);
         if (user == null) {
             notFound(id);
         }else {
