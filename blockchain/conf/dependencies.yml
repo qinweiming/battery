@@ -1,0 +1,24 @@
+# Application dependencies
+
+require:
+    - play
+    - play1-base -> api 0.1
+    - play1-base -> jongo 0.1
+    - play-codeborne -> logger 2.1
+repositories:
+    - play-api:
+          type: http
+          artifact: http://play.nll.im/play-api/api-0.1.zip
+          contains:
+            - play1-base -> *
+    - play-jongo:
+          type: http
+          artifact: http://play.nll.im/play-jongo/jongo-0.1.zip
+          contains:
+            - play1-base -> *            
+    - play-logger:
+          type: http
+          artifact: https://repo.codeborne.com/play-logger/logger-2.1.zip
+          contains:
+            - play-codeborne -> *
+
