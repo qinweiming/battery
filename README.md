@@ -19,6 +19,7 @@ version 0.15.1.
  $ cnpm install -g grunt grunt-cli
  $ cd frontend
  $ cnpm install
+ $ cnpm install -g bower
  $ bower install
  ```
  如果提示权限错误，需要用sudo或者管理员身份运行
