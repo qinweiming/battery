@@ -10,12 +10,12 @@ repositories:
           type: http
           artifact: http://play.nll.im/play-api/api-0.1.zip
           contains:
-            - play1-base -> *
+            - play1-base -> api
     - play-jongo:
           type: http
           artifact: http://play.nll.im/play-jongo/jongo-0.1.zip
           contains:
-            - play1-base -> *            
+            - play1-base -> jongo
     - play-logger:
           type: http
           artifact: https://repo.codeborne.com/play-logger/logger-2.1.zip

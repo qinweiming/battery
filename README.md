@@ -1,18 +1,19 @@
-## 项目结构
-- frontend
+## 项目结构   
+- frontend    
 Web前端，Angular JS 1.x , Bootstrap 3.x
-- android
+- frontend   
+基于BlurAdmin布局框架的web前端,Angular JS 1.x , Bootstrap 3.x 等 
+- android   
 Android App , Native 开发
-- service
+- service   
 后端服务, Play 1.4.x , MongoDB 3.2+
-- blockchain
+- blockchain    
 区块链服务，Play 1.4.x
-- security
-安全模块
+- security   
+安全模块，证书与密钥生成，供app和service使用。
 
 ## Frontend 模块
-This project is generated with [yo angular generator](https://github.com/yeoman/generator-angular)
-version 0.15.1.
+使用 [yo angular generator](https://github.com/yeoman/generator-angular) 来生成的基本的Angular与Bootstrap整合的开发脚手架.
 - Install & config
  ```
  $ npm install -g cnpm --registry=https://registry.npm.taobao.org
@@ -29,9 +30,26 @@ version 0.15.1.
 
 Run `grunt` for building and `grunt serve` for preview.
 
-- Testing
+## Frontend-frame 模块  
+基于[BlurAdmin](http://akveo.com/blur-admin/)布局框架的web前端脚手架。
 
-Running `grunt test` will run the unit tests with karma.
+- Install & config      
+ ```
+ $ npm install -g cnpm --registry=https://registry.npm.taobao.org
+ $ cnpm install  gulp 
+ $ cd frontend
+ $ cnpm install
+  
+ ```
+ 如果提示权限错误，需要用sudo或者管理员身份运行
+
+- Build & development    
+
+
+Run `gulp` for building 
+Run `gulp serve` for preview and develop.
+
+
 
 ## Service 模块
 - 框架说明

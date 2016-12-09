@@ -2,7 +2,7 @@
 This project is generated with [BlurAdmin Angular  admin panel front-end framework](http://akveo.com/blur-admin/)
 version 0.15.1.
 
-- Install & config
+- Install & config   
  ```
  $ npm install -g cnpm --registry=https://registry.npm.taobao.org
  $ cnpm install  gulp 
@@ -12,7 +12,7 @@ version 0.15.1.
  ```
  如果提示权限错误，需要用sudo或者管理员身份运行
 
-- Build & development
+- Build & development   
 
 
 Run `gulp` for building 
