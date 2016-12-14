@@ -23,8 +23,92 @@ tags:
     description: 图片上传
   - name: Users
     description: 用户
+  - name: Certs
+    description: 证书申请/审批/查看
+  - name: Tracs
+    description: 追溯信息查询
 
 paths:
+  '/certs':
+    post:
+      summary: 申请证书
+      consumes:
+         - application/json
+      parameters:
+        - name: cert
+          in: body
+          description: 证书申请信息
+          required: true
+          schema:
+             $ref: '#/definitions/Cert'
+      tags:
+        - Certs
+      responses:
+        201:
+          description: 申请成功,等待审核
+
+  '/certs/{id}':
+    get:
+      summary: 获取证书信息
+      consumes:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          description: 证书id
+          type: string
+          required: true
+          schema:
+            $ref: '#/definitions/Cert'
+      tags:
+        - Certs
+      responses:
+        '200':
+          description: 查询成功
+
+  '/certs/{id}/{status}':
+    patch:
+      summary: 审批证书
+      consumes:
+         - application/json
+      parameters:
+        - name: id
+          in: path
+          description: 证书id
+          required: true
+          type: string
+        - name: status
+          in: path
+          description: 证书申请状态；0:未审核(默认) 1：审核通过 2：审核不通过
+          required: true
+          type: integer
+      tags:
+        - Certs
+      responses:
+        201:
+          description: 服务器正常返回
+          schema:
+            $ref: '#/definitions/Cert'
+
+  '/tracs/{type}':
+    get:
+      summary: 追溯信息查询
+      consumes:
+         - application/json
+      parameters:
+        - name: type
+          in: path
+          description: 0:电池厂商 1：汽车厂商 2：all(针对政府内部人员)
+          required: true
+          type: integer
+      tags:
+        - Tracs
+      responses:
+        200:
+          description: 查询成功
+          schema:
+             $ref: '#/definitions/Trac'
+
   '/auth':
     post:
       summary: 获取授权token
@@ -40,7 +124,7 @@ paths:
       tags:
         - Auth
       responses:
-        200:
+        201:
           description: 服务器正常返回
           schema:
             $ref: '#/definitions/Token'
@@ -83,7 +167,93 @@ paths:
             $ref: '#/definitions/User'
 
 definitions:
-
+  Cert:
+    type: object
+    properties:
+      companyType:
+        type: integer
+        description: 企业类型(0:电池厂商 1:汽车厂商)
+      companyName:
+        type: string
+        description: 企业名称
+      creditCode:
+        type: string
+        description: 社会信用码
+      vendorCode:
+        type: string
+        description: 厂商代码
+      contact:
+        type: string
+        description: 联系人
+      phone:
+        type: string
+        description: 联系电话
+      email:
+        type: string
+        description: 电子邮箱
+      uploadCertName:
+        type: string
+        description: 上传的企业法人证书名称
+      status:
+        type: integer
+        description: 申请证书的状态
+    required:
+      - companyType
+      - companyName
+      - creditCode
+      - vendorCode
+      - phone
+      - email
+      - uploadCertName
+    example:
+      companyType: 1
+      companyName: "电池厂商1"
+      creditCode: "91110108786172399R"
+      vendorCode: "111111"
+      contact: "张三"
+      phone: "13728783627"
+      email: "894738373@qq.com"
+      uploadCertName: C:\user\demo.pdf
+  Trac:
+    type: object
+    properties:
+      productTime:
+        type: date
+        description: 生产日期
+      productId:
+        type: string
+        description: 产品Id
+      srcCompany:
+        type: string
+        description: 源厂商
+      desCompany:
+        type: string
+        description: 目的厂商
+      moduleId:
+        type: string
+        description: 模组编号
+      packageId:
+        type: string
+        description: 包编号
+      carId:
+        type: string
+        description: 车架编号
+    required:
+      - productTime
+      - productId
+      - srcCompany
+      - desCompany
+      - moduleId
+      - packageId
+      - carId
+    example:
+      productTime: "2016-11-1"
+      productId: "1111111"
+      srcCompany: "A电池厂商"
+      desCompany: "B汽车销售厂商"
+      moduleId: "AHUWGUU121334HUEU"
+      packageId: "DHFJW7286442HJDHRFJ"
+      carId: "1334"
   User:
     type: object
     properties:
