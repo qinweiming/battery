@@ -18,7 +18,12 @@ version 0.15.1.
 Run `gulp` for building 
 Run `gulp serve` for preview and develop.
 
-
+需要从后台获取数据时，使用[json-server](https://github.com/typicode/json-server) 来模拟后台。
+```
+$ cnpm install -g json-server
+$ 创建db.json 文件 并保存
+$ json-server --watch db.json
+```
 - Refenrence    
 
 Customizable admin panel framework made with :heart: by [Akveo team](http://akveo.com/). Follow us on [Twitter](https://twitter.com/akveo_inc) to get latest news about this template first!
