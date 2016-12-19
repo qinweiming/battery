@@ -25,8 +25,8 @@ tags:
     description: 用户
   - name: Certs
     description: 证书申请/审批/查看
-  - name: Tracs
-    description: 追溯信息查询
+  - name: Uploads
+    description: 文件上传
 
 paths:
   '/certs':
@@ -46,6 +46,10 @@ paths:
       responses:
         201:
           description: 申请成功,等待审核
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
 
   '/certs/{id}':
     get:
@@ -58,25 +62,31 @@ paths:
           description: 证书id
           type: string
           required: true
-          schema:
-            $ref: '#/definitions/Cert'
       tags:
         - Certs
       responses:
         '200':
           description: 查询成功
+          schema:
+            $ref: '#/definitions/Cert'
+        default:
+          description: Unexpected error
+          schema:
+            $ref: '#/definitions/Error'
 
-  '/certs/{id}/{status}':
+  '/certs/{ids}/{status}':
     patch:
       summary: 审批证书
       consumes:
          - application/json
       parameters:
-        - name: id
+        - name: ids
           in: path
           description: 证书id
           required: true
-          type: string
+          type: array
+          items:
+            type: string
         - name: status
           in: path
           description: 证书申请状态；0:未审核(默认) 1：审核通过 2：审核不通过
@@ -88,26 +98,30 @@ paths:
         201:
           description: 服务器正常返回
           schema:
-            $ref: '#/definitions/Cert'
-
-  '/tracs/{type}':
-    get:
-      summary: 追溯信息查询
-      consumes:
-         - application/json
-      parameters:
-        - name: type
-          in: path
-          description: 0:电池厂商 1：汽车厂商 2：all(针对政府内部人员)
-          required: true
-          type: integer
-      tags:
-        - Tracs
-      responses:
-        200:
-          description: 查询成功
+            type: array
+            items:
+              $ref: '#/definitions/Cert'
+        default:
+          description: Unexpected error
           schema:
-             $ref: '#/definitions/Trac'
+            $ref: '#/definitions/Error'
+
+  '/uploads':
+    post:
+      summary: 文件上传
+      consumes:
+         - application/form-data
+      parameters:
+        - name: attachment
+          in: formData
+          description: 文件上传
+          required: true
+          type: file
+      tags:
+        - Uploads
+      responses:
+        201:
+          description: 上传成功
 
   '/auth':
     post:
@@ -191,12 +205,16 @@ definitions:
       email:
         type: string
         description: 电子邮箱
-      uploadCertName:
-        type: string
-        description: 上传的企业法人证书名称
       status:
         type: integer
         description: 申请证书的状态
+      certAddress:
+        type: string
+        description: 证书的地址
+      modifyTime:
+        type: string
+        description: 修改时间
+
     required:
       - companyType
       - companyName
@@ -204,16 +222,16 @@ definitions:
       - vendorCode
       - phone
       - email
-      - uploadCertName
     example:
       companyType: 1
       companyName: "电池厂商1"
-      creditCode: "91110108786172399R"
+      creditCode: "911199R"
       vendorCode: "111111"
       contact: "张三"
       phone: "13728783627"
       email: "894738373@qq.com"
-      uploadCertName: C:\user\demo.pdf
+      status: 0
+
   Trac:
     type: object
     properties:
