@@ -54,7 +54,7 @@
                              
                          }
                          $scope.newSmartTableData = array;
-                             $http.post("http://www.localhost:3003/posts").success(function(data){
+                             $http.put("http://www.localhost:3003/posts").success(function(data){  //put方法有问题
                                  data = $scope.newSmartTableData;
                              }).error(function(){
                                  alert("修改数据失败!");

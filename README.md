@@ -29,6 +29,7 @@ Android App , Native 开发
 
 
 Run `grunt` for building and `grunt serve` for preview.
+需要从后台获取数据时，使用[json-server](https://github.com/typicode/json-server) 来模拟后台。
 
 ## Frontend-frame 模块  
 基于[BlurAdmin](http://akveo.com/blur-admin/)布局框架的web前端脚手架。
@@ -49,8 +50,12 @@ Run `grunt` for building and `grunt serve` for preview.
 Run `gulp` for building 
 Run `gulp serve` for preview and develop.
 
-
-
+需要从后台获取数据时，使用[json-server](https://github.com/typicode/json-server) 来模拟后台。
+```
+$ cnpm install -g json-server
+$ 创建db.json 文件 并保存
+$ json-server --watch db.json
+```
 ## Service 模块
 - 框架说明
   - controller放到controllers.v1 package中，并从 controllers.api.API 继承, 参考Users controller；
