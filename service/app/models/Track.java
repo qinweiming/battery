@@ -9,7 +9,8 @@ import java.util.Date;
 /**
  * Created by xudongmei on 2016/12/13.
  */
-public class Trac extends BaseModel implements Jsonable {
+@SuppressWarnings("ALL")
+public class Track extends BaseModel implements Jsonable {
     @Required
     public Date productTime;
     @Required
