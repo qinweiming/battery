@@ -1,18 +1,18 @@
-<div class="horizontal-scroll">
-<div class="form-group select-page-size-wrap ">
-    <label>
-      <select class="form-control selectpicker show-tick" title="显示页数" selectpicker
-              ng-model="smartTablePageSize" ng-options="i for i in [5,10,15,20,25]">
+<div class="horizontal-scroll" >
+  <div class="form-group select-page-size-wrap ">
+    <label>Rows on page
+      <select class="form-control selectpicker show-tick" title="Rows on page" selectpicker
+              ng-model="newSmartTablePageSize" ng-options="i for i in [5,10,15,20,25]">
       </select>
     </label>
   </div>
-  <table class="table" st-table="smartTableData">
+  <table class="table" st-table="newSmartTableData">
     <thead>
     <tr class="sortable ">
       <th class="table-id" st-sort="id" st-sort-default="true">#</th>
       <th st-sort="firstName">First Name</th>
       <th st-sort="lastName">Last Name</th>
-      <th st-sort="username">Username</th>1
+      <th st-sort="username">Username</th>
       <th st-sort="email">Email</th>
       <th st-sort="age">Age</th>
     </tr>
@@ -31,7 +31,9 @@
     </tr>
     </thead>
     <tbody>
-    <tr ng-repeat="item in smartTableData">
+    <tr ng-repeat="item in newSmartTableData">
+    <td><input type="checkbox" name="chk"  />
+    </td>>
       <td class="table-id">{{item.id}}</td>
       <td>{{item.firstName}}</td>
       <td>{{item.lastName}}</td>
@@ -39,19 +41,39 @@
       <td><a class="email-link" ng-href="mailto:{{item.email}}">{{item.email}}</a></td>
       <td>{{item.age}}</td>
     </tr>
+    <tr>
+
+<td>
+<button class="btn btn-primary editable-table-button btn-xs"   ng-click="shenpiyes()">审批通过</button>
+</td>
+
+<td>
+<button class="btn btn-danger editable-table-button btn-xs" ng-click="shenpino()">审批不通过</button>
+</td>
+</tr>
     </tbody>
     <tfoot>
     <tr>
       <td colspan="6" class="text-center">
-      
-        <div st-pagination="" st-items-by-page="smartTablePageSize" st-displayed-pages="5"></div>
-
-
+        <div st-pagination="" st-items-by-page="newSmartTablePageSize" st-displayed-pages="5"></div>
 
       </td>
     </tr>
     </tfoot>
+
+
+
+
+
   </table>
-</div>
+
+<table align="right" >
+
+</table>
+  
+</div >
+
+
+
 
 

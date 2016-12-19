@@ -19,18 +19,22 @@ POST    /v1/users                               v1.Users.save
 POST    /v1/auth                                v1.Auth.auth
 
 #申请证书
-POST         /v1/certs                               v1.Certs.save
+POST         /v1/certs                            v1.Certs.save
 #查看所有已申请的证书信息
-GET          /v1/certs                               v1.Certs.list
+GET          /v1/certs                            v1.Certs.list
 #查看证书
-GET          /v1/certs/{id}                          v1.Certs.get
+GET          /v1/certs/{id}                       v1.Certs.get
 #审批证书
-PATCH        /v1/certs/{id}/{status}                  v1.Certs.approve
+PATCH        /v1/certs/{ids}/{status}              v1.Certs.approve
 #下载证书
-GET          /v1/certs                               v1.Certs.download
+GET          /v1/certs                            v1.Certs.download
 
+#文件上传
+POST         /v1/uploads                          v1.FileUtils.upload
+#文件下载
+GET          /v1/downloads                          v1.FileUtils.download
 
 #追溯信息查询
-GET          /v1/tracs/{type}                         v1.Tracs.get
+GET          /v1/tracs/{type}                     v1.Tracs.get
 
 *       /.*                                     api.API.notFoundPage
