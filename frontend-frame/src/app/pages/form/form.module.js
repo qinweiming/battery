@@ -29,6 +29,14 @@
             order: 0,
           },
         })
+        .state('form.inputs2', {
+          url: '/inputs2',
+          templateUrl: 'app/pages/form/inputs - 副本/inputs.html',
+          title: '申请证书',
+          sidebarMeta: {
+            order: 1,
+          },
+        })
         .state('form.layouts', {
           url: '/layouts',
           templateUrl: 'app/pages/form/layouts/layouts.html',
@@ -48,5 +56,6 @@
             order: 200,
           },
         });
+        
   }
 })();

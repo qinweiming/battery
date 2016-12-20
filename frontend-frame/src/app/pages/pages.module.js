@@ -16,6 +16,11 @@
     'BlurAdmin.pages.charts',
     'BlurAdmin.pages.maps',
     'BlurAdmin.pages.profile',
+
+     'BlurAdmin.pages.myNewPage',
+
+      'BlurAdmin.pages.submit',
+     
   ])
       .config(routeConfig);
 

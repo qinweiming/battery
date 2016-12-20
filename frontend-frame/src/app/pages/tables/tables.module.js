@@ -16,7 +16,7 @@
           template : '<ui-view></ui-view>',
           abstract: true,
           controller: 'TablesPageCtrl',
-          title: 'Tables',
+          title: '政府系统（内部）',
           sidebarMeta: {
             icon: 'ion-grid',
             order: 300,
@@ -35,7 +35,29 @@
           sidebarMeta: {
             order: 100,
           },
-        });
+        }).state('tables.hello', {
+          url: '/hello',
+          templateUrl: 'app/pages/tables/hello/tables.html',
+          title: 'Hello Tables',
+          sidebarMeta: {
+            order: 100,
+          },
+        }).state('tables.ww', {
+          url: '/ww',
+          templateUrl: 'app/pages/tables/ww/tables.html',
+          title: '审批与发放证书',
+          sidebarMeta: {
+            order: 100,
+          },
+        }).state('tables.shenqin', {
+          url: '/shenqin',
+          templateUrl: 'app/pages/form/inputs - 副本/inputs.html',
+          title: '申请证书',
+          sidebarMeta: {
+            order: 101,
+          },
+        })
+        ;
     $urlRouterProvider.when('/tables','/tables/basic');
   }
 

@@ -44,5 +44,8 @@
   },
   "scripts": {
     "postinstall": "bower install"
+  },
+  "dependencies": {
+    "angular-ui-router": "^0.3.2"
   }
 }

@@ -1,7 +1,7 @@
 <div class="horizontal-scroll">
-  <div class="form-group select-page-size-wrap ">
-    <label>Rows on page
-      <select class="form-control selectpicker show-tick" title="Rows on page" selectpicker
+<div class="form-group select-page-size-wrap ">
+    <label>
+      <select class="form-control selectpicker show-tick" title="显示页数" selectpicker
               ng-model="smartTablePageSize" ng-options="i for i in [5,10,15,20,25]">
       </select>
     </label>
@@ -12,7 +12,7 @@
       <th class="table-id" st-sort="id" st-sort-default="true">#</th>
       <th st-sort="firstName">First Name</th>
       <th st-sort="lastName">Last Name</th>
-      <th st-sort="username">Username</th>
+      <th st-sort="username">Username</th>1
       <th st-sort="email">Email</th>
       <th st-sort="age">Age</th>
     </tr>
@@ -43,9 +43,15 @@
     <tfoot>
     <tr>
       <td colspan="6" class="text-center">
+      
         <div st-pagination="" st-items-by-page="smartTablePageSize" st-displayed-pages="5"></div>
+
+
+
       </td>
     </tr>
     </tfoot>
   </table>
 </div>
+
+
