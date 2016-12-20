@@ -7,7 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.novadata.bottomtabdemo.R;
+import com.novadata.batteryapp.R;
 
 public class fragment_deal extends Fragment {
 
