@@ -1,8 +1,7 @@
 <resources>
-    <string name="app_name">BottomTabDemo</string>
+    <string name="app_name">BatteryAPP</string>
     <string name="itemTitle">电池模组</string>
     <string name="Itemtext1">模组编号：11A2FMZABCDEF1212345AB...</string>
     <string name="Itemtext2">生产信息：2016年8月3日  深圳比克</string>
     <string name="Itemtext3">流通信息：2016年8月30日  深圳比克4S店</string>
-
 </resources>
