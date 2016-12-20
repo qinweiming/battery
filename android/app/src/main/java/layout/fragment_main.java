@@ -15,11 +15,16 @@ import com.bumptech.glide.Glide;
 import com.novadata.batteryapp.R;
 import com.youth.banner.Banner;
 
+import org.json.JSONException;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import adapter.MyItemClickListener;
-import adapter.MyListItemAdapter;
+import adapter.SearchHistoryItemAdapter;
+import utils.JsonLoader;
 
 public class fragment_main extends Fragment implements MyItemClickListener{
 
@@ -27,27 +32,11 @@ public class fragment_main extends Fragment implements MyItemClickListener{
     private Banner banner;
 
     private RecyclerView Rv;
-    private ArrayList<HashMap<String,Object>> listItem;
-    private MyListItemAdapter myAdapter;
+    private ArrayList<HashMap<String,Object>> listItem = new ArrayList<HashMap<String,Object>>();
+    private SearchHistoryItemAdapter shItemAdapter;
 
     //设置图片资源:url或本地资源
-    String[] images= new String[] {
-            "http://img.zcool.cn/community/01c8dc56e1428e6ac72531cbaa5f2c.jpg",
-            "http://img.zcool.cn/community/0166c756e1427432f875520f7cc838.jpg",
-            "http://img.zcool.cn/community/018fdb56e1428632f875520f7b67cb.jpg",
-            "http://img.zcool.cn/community/01c8dc56e1428e6ac72531cbaa5f2c.jpg",
-            "http://img.zcool.cn/community/01fda356640b706ac725b2c8b99b08.jpg",
-            "http://img.zcool.cn/community/01fd2756e142716ac72531cbf8bbbf.jpg",
-            "http://img.zcool.cn/community/0114a856640b6d32f87545731c076a.jpg"};
-
-    //设置图片标题:自动对应
-    /*String[] titles=new String[]{"十大星级品牌联盟，全场2折起",
-            "全场2折起",
-            "十大星级品牌联盟",
-            "嗨购5折不要停",
-            "12趁现在",
-            "嗨购5折不要停，12.12趁现在",
-            "实打实大顶顶顶顶"};*/
+    List<String> Banner_image_url=new ArrayList<String>();
 
     @Nullable
     @Override
@@ -57,8 +46,12 @@ public class fragment_main extends Fragment implements MyItemClickListener{
 
         view = inflater.inflate(R.layout.fragment_main, container, false);
         banner = (Banner) view.findViewById(R.id.banner);
+        //读取json数据
+        JsonLoader jsonLoader = new JsonLoader("db.json");
+        Banner_image_url = jsonLoader.loadJson2container("banner_image_url", Banner_image_url);
+        listItem = jsonLoader.loadJson2container("search_history_item", listItem);
+
         initItemHead();
-        initItemData();
         initView();
 
         return view;
@@ -93,7 +86,7 @@ public class fragment_main extends Fragment implements MyItemClickListener{
         //banner.setImages(images);
 
         //自定义图片加载框架
-        banner.setImages(images, new Banner.OnLoadImageListener() {
+        banner.setImages(Banner_image_url, new Banner.OnLoadImageListener() {
             @Override
             public void OnLoadImage(ImageView Imageview, Object url) {
 //                Toast.makeText(getActivity(),"加载中", Toast.LENGTH_LONG).show();
@@ -111,27 +104,13 @@ public class fragment_main extends Fragment implements MyItemClickListener{
         });
     }
 
-    public void initItemData(){
-        listItem = new ArrayList<>();/*在数组中存放数据*/
-        for (int i = 0; i < 20; i++) {
-            HashMap<String, Object> map = new HashMap<>();
-            map.put("ItemTitle", "电池模组");
-            map.put("ItemText1", "模组编号：11A2FMZABCDEF1212345AB...");
-            map.put("ItemText2", "生产信息：2016年8月3日  深圳比克");
-            map.put("ItemText3", "流通信息：2016年8月30日  深圳比克4S店");
-            map.put("ItemImage",R.drawable.ic_battery);
-            listItem.add(map);
-        }
-
-    }
-
     public void initView(){
         //为ListView绑定适配器
-        myAdapter = new MyListItemAdapter(getActivity(),listItem);
-        myAdapter.setOnItemClickListener(this);
+        shItemAdapter = new SearchHistoryItemAdapter(getActivity(),listItem);
+        shItemAdapter.setOnItemClickListener(this);
 
         Rv = (RecyclerView) view.findViewById(R.id.my_recycler_view);
-        Rv.setAdapter(myAdapter);
+        Rv.setAdapter(shItemAdapter);
         //使用线性布局
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
         Rv.setLayoutManager(layoutManager);
