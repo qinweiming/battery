@@ -15,6 +15,7 @@ public class MainActivity extends AppCompatActivity {
 
     private TabLayout.Tab main_tab;
     private TabLayout.Tab deal_tab;
+    private TabLayout.Tab search_tab;
     private TabLayout.Tab user_tab;
 
 
@@ -45,11 +46,13 @@ public class MainActivity extends AppCompatActivity {
         //指定Tab的位置
         main_tab = mTabLayout.getTabAt(0);
         deal_tab = mTabLayout.getTabAt(1);
-        user_tab = mTabLayout.getTabAt(2);
+        search_tab = mTabLayout.getTabAt(2);
+        user_tab = mTabLayout.getTabAt(3);
 
         //设置Tab的图标
         main_tab.setIcon(R.drawable.ic_home_selector);
         deal_tab.setIcon(R.drawable.ic_deal_selector);
+        search_tab.setIcon(R.drawable.ic_search_selector);
         user_tab.setIcon(R.drawable.ic_user_selector);
 
     }

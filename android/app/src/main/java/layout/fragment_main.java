@@ -10,18 +10,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.novadata.batteryapp.R;
 import com.youth.banner.Banner;
-
-import org.json.JSONException;
-
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import adapter.MyItemClickListener;
 import adapter.SearchHistoryItemAdapter;
 import utils.JsonLoader;
@@ -32,11 +26,12 @@ public class fragment_main extends Fragment implements MyItemClickListener{
     private Banner banner;
 
     private RecyclerView Rv;
+    //设置Item内组件资源
     private ArrayList<HashMap<String,Object>> listItem = new ArrayList<HashMap<String,Object>>();
     private SearchHistoryItemAdapter shItemAdapter;
 
     //设置图片资源:url或本地资源
-    List<String> Banner_image_url=new ArrayList<String>();
+    List<String> Banner_image_url = new ArrayList<String>();
 
     @Nullable
     @Override
@@ -50,7 +45,7 @@ public class fragment_main extends Fragment implements MyItemClickListener{
         JsonLoader jsonLoader = new JsonLoader("db.json");
         Banner_image_url = jsonLoader.loadJson2container("banner_image_url", Banner_image_url);
         listItem = jsonLoader.loadJson2container("search_history_item", listItem);
-
+        //设置banner广告图样式
         initItemHead();
         initView();
 
