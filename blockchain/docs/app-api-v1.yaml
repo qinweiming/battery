@@ -13,7 +13,7 @@ produces:
 securityDefinitions:
   bearer:
     type: 'apiKey'
-    name: 'Token'
+    name: 'Authorization'
     in: header
     description: 基于JWT规范的API 访问token，
 security:
@@ -143,7 +143,7 @@ paths:
       parameters:
         - name: id
           in: path
-          description: 交易id
+          description: 交易id  
           type: string
           required: true
       tags:
@@ -167,6 +167,92 @@ paths:
             $ref: '#/definitions/Error'
         404:
           description: '未找到对应的资源'
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: '服务内部错误'
+          schema:
+            $ref: '#/definitions/Error'
+  '/scans':
+    post:
+      summary: 新增二维码扫描记录
+      consumes:
+        - application/json
+      parameters:
+        - name: scan
+          in: body
+          description: 二维码扫描记录
+          required: true
+          schema:
+            $ref: '#/definitions/Scan'
+      tags:
+        - Trade
+      responses:
+        201:
+          description: '成功,其URI 已经随Location 头信息返回'
+        400:
+          description: '错误的资源请求'
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: '资源授权错误'
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: '禁止访问资源'
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: '未找到对应的资源'
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: '服务内部错误'
+          schema:
+            $ref: '#/definitions/Error'
+    get:
+      tags:
+      - 'Trade'
+      summary: '查询二维码扫描记录数据'
+      description: '查询二维码扫描记录数据'
+      consumes:
+      - 'application/json'
+      parameters:
+        - in: 'query'
+          name: 'filters'
+          type: string
+          description: '查询条件,json 格式'
+          required: true
+        - name: limit
+          in: query
+          type: integer
+          minimum: 0
+          maximum: 100
+          default: 10
+          description: '条数'
+        - name: offset
+          in: query
+          type: integer
+          minimum: 0
+          default: 0
+          description: '起始位置'
+      responses:
+        200:
+          description: '服务器正常返回'
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Scan'
+        400:
+          description: '错误的资源请求'
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: '资源授权错误'
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: '禁止访问资源'
           schema:
             $ref: '#/definitions/Error'
         500:
@@ -334,14 +420,41 @@ definitions:
     example:
       token: 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MywiZXhwIjoxNDcwODI5NDk1LCJ1c2VyIjp7ImlkIjozLCJwYXNzd29yZCI6IjgxY2UyYmRjMTdlMjVmNWY0MjcyMWY1ZjEzYWU5NTYwODBjNzMzOGM4ZGYwODk2OTA4MDY5MzhmNmM3MjAyODEiLCJzYWx0IjoiNTRhOTQ0ZWUtZDRkYy00ZjcyLWE2N2EtNzBiZTE4ZDc3MjMxIiwicGhvbmVOdW1iZXIiOiIxOTk5OTk5OTk5IiwiY3JlYXRUaW1lIjpudWxsLCJ1cGRhdGVUaW1lIjpudWxsLCJwZXJzaXN0ZW50Ijp0cnVlLCJlbnRpdHlJZCI6M30sImlhdCI6MTQ3MDgyNTg5NX0.kwoSodGxS81HPWCiIydk0Z4Of6rljkR6hLAQ1VNeYhs'
       userName: '18955555555'
+  Scan:
+      type: 'object'
+      required:
+        - id
+        - scannerId
+        - barcode
+        - timestamp
+      properties:
+        id:
+          type: string
+          description: 'id'
+        scannerId:
+          type: string
+          description: '扫描者ID'
+        barcode:
+          type: string
+          description: '二维码内容'
+        longitude:
+          type: number
+          format: double
+          description: '扫描者所在位置的经度'
+        latitude:
+          type: number
+          format: double
+          description: '扫描者所在位置的纬度'
+        timestamp:
+          $ref: '#/definitions/Timestamp'
   Trade:
     type: 'object'
     required:
       - block
       - fromId
-      - productId
+      - productIds
       - toId
-      - tradeDate
+      - timestamp
     properties:
       id:
         type: string
@@ -359,13 +472,13 @@ definitions:
       toId:
         type: 'string'
         description: '买家Id'
-      productId:
-        type: 'string'
+      productIds:
+        type: array
+        items:
+          type: string
         description: '交易物品ID'
-      tradeDate:
-        type: string
-        format: date
-        description: 日期.
+      timestamp:
+        $ref: '#/definitions/Timestamp'
       block:
         $ref: '#/definitions/Block'
       transaction:
@@ -445,11 +558,11 @@ definitions:
       seconds:
         type: integer
         format: int64
-        description: 'block id'
+        description: 'seconds from epoch'
       nanos:
         type: integer
         format: int64
-        description: 'block version'
+        description: 'nanos from epoch'
     example:
       seconds: 1453758316
       nanos: 206716775
@@ -470,14 +583,13 @@ definitions:
       manufacturer:
         type: 'string'
         description: '生产厂家'
-      produceDate:
-        type: 'string'
-        description: '生产日期'
+      timestamp:
+        $ref: '#/definitions/Timestamp'
     example:
       packageId: '507f191e810c19729de860ea'
       packageSpec: '{标称容量:5300mAh,电芯内阻:15mΩ,最大充电电流:1C}'
       manufacturer: '波士顿'
-      produceDate: '2016-10-1'
+      timestamp: '{seconds:100000,nanos:23123132}'
   Module:
     type: 'object'
     properties:
@@ -490,15 +602,13 @@ definitions:
       manufacturer:
         type: 'string'
         description: '生产厂家'
-      produceDate:
-        type: 'string'
-        format: date
-        description: '生产日期'
+      timestamp:
+        $ref: '#/definitions/Timestamp'
     example:
       moduleId: '507f191e810c19729de860ea'
       moduleSpec: '{标称容量:5300mAh,电芯内阻:15mΩ,最大充电电流:1C}'
       manufacturer: '波士顿'
-      produceDate: '2016-10-1'
+      timestamp: '{seconds:100000,nanos:23123132}'
   Car:
     type: 'object'
     properties:
@@ -519,17 +629,15 @@ definitions:
       manufacturer:
         type: 'string'
         description: '生产厂家'
-      produceDate:
-        type: 'string'
-        format: date
-        description: '生产日期'
+      timestamp:
+        $ref: '#/definitions/Timestamp'
     example:
       carId: '6e7f191e889019729de860ab'
       vin: 'WDBGP57B6PB127810'
       packageId: '507f191e810c19729de860ea'
       carSpec: '{标称容量:5300mAh,电芯内阻:15mΩ,最大充电电流:1C}'
       manufacturer: '一汽大众'
-      produceDate: '2016-10-1'
+      timestamp: '{seconds:100000,nanos:23123132}'
   Auth:
     type: object
     properties:
