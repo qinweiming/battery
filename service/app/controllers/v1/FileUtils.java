@@ -27,17 +27,6 @@ public class FileUtils extends API{
      * 下载
      */
     public static void download(String fileName) {
-        File file = Play.getFile(storePath);
-        if(file.isDirectory()){
-            File[] files = file.listFiles();
-        }
-        System.out.println("文件下载");
-        //renderBinary(storePath + "/" + fileName);
     }
 
-    public static void main(String[] args) {
-
-        String storePath = Play.configuration.getProperty("attachments.path");
-        System.out.println(storePath);
-    }
 }

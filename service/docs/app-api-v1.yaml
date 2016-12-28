@@ -28,6 +28,8 @@ tags:
     description: 交易信息
   - name: Component
     description: 对应关系数据
+  - name: Codes
+    description: 二维码
 paths:
   '/trades':
     post:
@@ -388,53 +390,162 @@ paths:
           schema:
             $ref: '#/definitions/Error'
   '/certs':
-    post:
-      summary: 申请证书
-      consumes:
-         - application/json
-      parameters:
-        - name: cert
-          in: body
-          description: 证书申请信息
-          required: true
-          schema:
-             $ref: '#/definitions/Cert'
-      tags:
-        - Certs
-      responses:
-        201:
-          description: 申请成功,等待审核
-        default:
-          description: Unexpected error
-          schema:
-            $ref: '#/definitions/Error'
+      post:
+        summary: 提交证书申请
+        consumes:
+          - application/json
+        parameters:
+          - name: cert
+            in: body
+            description: 证书申请信息
+            required: true
+            schema:
+              $ref: '#/definitions/Cert'
+        tags:
+          - Certs
+        responses:
+          201:
+            description: 提交成功，等待审核
+      get:
+        summary: 查询申请信息
+        description: 查询申请信息
+        consumes:
+           - application/json
+        parameters:
+           - in: query
+             name: filters
+             type: string
+             description: 查询条件,json 格式
+             required: true
+           - name: limit
+             in: query
+             type: integer
+             minimum: 0
+             maximum: 100
+             default: 10
+             description: 条数
+           - name: offset
+             in: query
+             type: integer
+             minimum: 0
+             default: 0
+             description: 起始位置
+        tags:
+          - Certs
+        responses:
+          200:
+            description: 成功
+            schema:
+              type: array
+              items:
+                $ref: '#/definitions/Cert'
+          400:
+            description: '错误的资源请求'
+            schema:
+              $ref: '#/definitions/Error'
+          401:
+            description: '资源授权错误'
+            schema:
+              $ref: '#/definitions/Error'
+          403:
+            description: '禁止访问资源'
+            schema:
+              $ref: '#/definitions/Error'
+          404:
+            description: '未找到对应的资源'
+            schema:
+              $ref: '#/definitions/Error'
+          500:
+            description: '服务内部错误'
+            schema:
+              $ref: '#/definitions/Error'
 
   '/certs/{id}':
     get:
-      summary: 获取证书信息
+      summary: 我的申请
+      description: id
       consumes:
         - application/json
       parameters:
         - name: id
           in: path
-          description: 证书id
+          description: id
           type: string
           required: true
       tags:
         - Certs
       responses:
-        '200':
-          description: 查询成功
+        200:
+          description: 成功
           schema:
-            $ref: '#/definitions/Cert'
-        default:
-          description: Unexpected error
+            type: array
+            items:
+              $ref: '#/definitions/Cert'
+        400:
+          description: '错误的资源请求'
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: '资源授权错误'
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: '禁止访问资源'
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: '未找到对应的资源'
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: '服务内部错误'
+          schema:
+            $ref: '#/definitions/Error'
+
+  '/certs/{status}':
+    get:
+      summary: 申请查询(status=0:待审批 status=1:审批通过 status=2:审批不通过)
+      consumes:
+         - application/json
+      parameters:
+        - name: status
+          in: path
+          description: 证书申请状态；0:未审核(默认) 1：审核通过 2：审核不通过
+          required: true
+          type: integer
+      tags:
+        - Certs
+      responses:
+        201:
+          description: 成功
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Cert'
+        400:
+          description: '错误的资源请求'
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: '资源授权错误'
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: '禁止访问资源'
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: '未找到对应的资源'
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: '服务内部错误'
           schema:
             $ref: '#/definitions/Error'
 
   '/certs/{ids}/{status}':
-    patch:
-      summary: 审批证书
+    put:
+      summary: 证书审批
       consumes:
          - application/json
       parameters:
@@ -454,32 +565,96 @@ paths:
         - Certs
       responses:
         201:
-          description: 服务器正常返回
+          description: 成功
           schema:
             type: array
             items:
               $ref: '#/definitions/Cert'
-        default:
-          description: Unexpected error
+        400:
+          description: '错误的资源请求'
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: '资源授权错误'
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: '禁止访问资源'
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: '未找到对应的资源'
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+         description: '服务内部错误'
+         schema:
+            $ref: '#/definitions/Error'
+  '/certs/imports':
+    post:
+      summary:  证书导入
+      description: 将证书打包导入
+      consumes:
+         - application/json
+      parameters:
+         - name: attachment
+           in: formData
+           description: 导入的zip包
+           required: true
+           type: file
+         - name: remark
+           in: query
+           description: 文字说明
+           type: string
+      tags:
+         - Certs
+      responses:
+        201:
+          description: 成功
+        400:
+          description: '错误的资源请求'
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: '资源授权错误'
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: '禁止访问资源'
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: '未找到对应的资源'
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: '服务内部错误'
           schema:
             $ref: '#/definitions/Error'
 
-  '/uploads':
+  '/single2dcodes':
     post:
-      summary: 文件上传
+      summary:  单个二维码生成
+      description: 单个二维码生成
       consumes:
-         - application/form-data
-      parameters:
-        - name: attachment
-          in: formData
-          description: 文件上传
-          required: true
-          type: file
+         - application/json
       tags:
-        - Uploads
+         - Codes
       responses:
-        201:
-          description: 上传成功
+         201:
+          description: success.
+
+  '/batch2dcodes':
+    post:
+      summary:  批量二维码生成
+      description: 批量二维码生成
+      consumes:
+         - application/json
+      tags:
+         - Codes
+      responses:
+         201:
+          description: success.
 
   '/auth':
     post:
@@ -590,47 +765,6 @@ definitions:
       email: "894738373@qq.com"
       status: 0
 
-  Track:
-    type: object
-    properties:
-      productTime:
-        type: string
-        format: date
-        description: 生产日期
-      productId:
-        type: string
-        description: 产品Id
-      srcCompany:
-        type: string
-        description: 源厂商
-      desCompany:
-        type: string
-        description: 目的厂商
-      moduleId:
-        type: string
-        description: 模组编号
-      packageId:
-        type: string
-        description: 包编号
-      carId:
-        type: string
-        description: 车架编号
-    required:
-      - productTime
-      - productId
-      - srcCompany
-      - desCompany
-      - moduleId
-      - packageId
-      - carId
-    example:
-      productTime: "2016-11-1"
-      productId: "1111111"
-      srcCompany: "A电池厂商"
-      desCompany: "B汽车销售厂商"
-      moduleId: "AHUWGUU121334HUEU"
-      packageId: "DHFJW7286442HJDHRFJ"
-      carId: "1334"
   User:
     type: object
     properties:
