@@ -10,8 +10,9 @@ import play.modules.jongo.BaseModel;
 /**
  * Created by xudongmei on 2016/12/13.
  */
-public class Tracs extends BaseModel implements Jsonable{
+public class Tracks extends BaseModel implements Jsonable{
     public static void get(@Required Integer type){
         Track track =  Track.getCollection(Track.class).findOne(new ObjectId()).as(Track.class);
     }
+
 }

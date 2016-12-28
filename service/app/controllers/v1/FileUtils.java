@@ -10,7 +10,6 @@ import java.io.File;
  * 上传下载工具类
  * Created by xudongmei on 2016/12/15.
  */
-@SuppressWarnings("JavaDoc")
 public class FileUtils extends API{
     public static String storePath = Play.configuration.getProperty("attachments.path");
     /**
@@ -37,6 +36,7 @@ public class FileUtils extends API{
     }
 
     public static void main(String[] args) {
+
         String storePath = Play.configuration.getProperty("attachments.path");
         System.out.println(storePath);
     }
