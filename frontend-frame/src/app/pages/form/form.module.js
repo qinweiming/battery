@@ -5,10 +5,18 @@
 (function () {
   'use strict';
 
-  angular.module('BlurAdmin.pages.form', [])
+  angular.module('BlurAdmin.pages.form', ['ngResource'])
       .config(routeConfig);
+  angular.module('BlurAdmin.pages.form').controller('MainCtrl', ['$scope','$http'],function ($scope,$http) {
 
-  /** @ngInject */
+    $http.get('http://localhost:8088/certs/1').then(function(response) {
+        $scope.Cert = response.data;
+      });
+
+  });
+    
+  
+   /** @ngInject */
   function routeConfig($stateProvider) {
     $stateProvider
         .state('form', {
@@ -32,6 +40,14 @@
         .state('form.inputs2', {
           url: '/inputs2',
           templateUrl: 'app/pages/form/inputs - 副本/inputs.html',
+          // controller: 'MainCtrl',
+          controller: function ($scope,$http) {
+            $scope.companyName='abc company';
+            $http.get('http://localhost:8088/certs/1').then(function(response) {
+              
+              $scope.Cert = response.data;
+            });
+          },
           title: '申请证书',
           sidebarMeta: {
             order: 1,

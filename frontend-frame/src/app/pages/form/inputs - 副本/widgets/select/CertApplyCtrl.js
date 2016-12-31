@@ -6,12 +6,16 @@
   'use strict';
 
   angular.module('BlurAdmin.pages.form')
-      .controller('SelectpickerPanelCtrl', SelectpickerPanelCtrl);
+      .controller('CertApplyCtrl', CertApplyCtrl);
 
   /** @ngInject */
-  function SelectpickerPanelCtrl() {
+  function CertApplyCtrl() {
     var vm = this;
-
+    vm.companyName='hello';
+    $http.get('http://localhost:8088/certs/1').then(function(response) {
+      vm.companyName='world';
+      vm.Cert = response.data;
+    });
     vm.standardSelectItems = [
       { label: 'Option 1', value: 1 },
       { label: 'Option 2', value: 2 },
