@@ -14,69 +14,538 @@ produces:
 #    type: "apiKey"
 #    name: "Authorization"
 #    in: header
+#    description: 基于JWT规范的API 访问token，
+#security:
+#  - bearer: []
 tags:
   - name: Auth
     description: 授权
-  - name: Codes
-    description: 短信验证码
-  - name: Images
-    description: 图片上传
   - name: Users
     description: 用户
   - name: Certs
-    description: 证书申请/审批/查看
-  - name: Uploads
-    description: 文件上传
-
+    description: 证书申请/审批/查
+  - name: Trade
+    description: 交易信息
+  - name: Component
+    description: 对应关系数据
+  - name: Codes
+    description: 二维码
 paths:
-  '/certs':
+  '/trades':
     post:
-      summary: 申请证书
+      summary: 新增交易
       consumes:
-         - application/json
+        - application/json
       parameters:
-        - name: cert
+        - name: trade
           in: body
-          description: 证书申请信息
+          description: 交易信息
           required: true
           schema:
-             $ref: '#/definitions/Cert'
+            $ref: '#/definitions/Trade'
       tags:
-        - Certs
+        - Trade
       responses:
         201:
-          description: 申请成功,等待审核
-        default:
-          description: Unexpected error
+          description: '成功,其URI 已经随Location 头信息返回'
+        400:
+          description: '错误的资源请求'
           schema:
             $ref: '#/definitions/Error'
-
-  '/certs/{id}':
+        401:
+          description: '资源授权错误'
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: '禁止访问资源'
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: '未找到对应的资源'
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: '服务内部错误'
+          schema:
+            $ref: '#/definitions/Error'
     get:
-      summary: 获取证书信息
+      tags:
+      - 'Trade'
+      summary: '查询交易数据'
+      description: '查询交易数据'
+      consumes:
+      - 'application/json'
+      parameters:
+        - in: 'query'
+          name: 'filters'
+          type: string
+          description: '查询条件,json 格式'
+          required: true
+        - name: limit
+          in: query
+          type: integer
+          minimum: 0
+          maximum: 100
+          default: 10
+          description: '条数'
+        - name: offset
+          in: query
+          type: integer
+          minimum: 0
+          default: 0
+          description: '起始位置'
+      responses:
+        200:
+          description: '服务器正常返回'
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Trade'
+        400:
+          description: '错误的资源请求'
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: '资源授权错误'
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: '禁止访问资源'
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: '服务内部错误'
+          schema:
+            $ref: '#/definitions/Error'
+  '/trades/{id}':
+    get:
+      summary: 获取交易信息
       consumes:
         - application/json
       parameters:
         - name: id
           in: path
-          description: 证书id
+          description: 交易id
+          type: string
+          required: true
+      tags:
+        - Component
+      responses:
+        200:
+          description: 成功
+          schema:
+            $ref: '#/definitions/Trade'
+        400:
+          description: '错误的资源请求'
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: '资源授权错误'
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: '禁止访问资源'
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: '未找到对应的资源'
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: '服务内部错误'
+          schema:
+            $ref: '#/definitions/Error'
+  '/scans':
+    post:
+      summary: 新增二维码扫描记录
+      consumes:
+        - application/json
+      parameters:
+        - name: scan
+          in: body
+          description: 二维码扫描记录
+          required: true
+          schema:
+            $ref: '#/definitions/Scan'
+      tags:
+        - Trade
+      responses:
+        201:
+          description: '成功,其URI 已经随Location 头信息返回'
+        400:
+          description: '错误的资源请求'
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: '资源授权错误'
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: '禁止访问资源'
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: '未找到对应的资源'
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: '服务内部错误'
+          schema:
+            $ref: '#/definitions/Error'
+    get:
+      tags:
+      - 'Trade'
+      summary: '查询二维码扫描记录数据'
+      description: '查询二维码扫描记录数据'
+      consumes:
+      - 'application/json'
+      parameters:
+        - in: 'query'
+          name: 'filters'
+          type: string
+          description: '查询条件,json 格式'
+          required: true
+        - name: limit
+          in: query
+          type: integer
+          minimum: 0
+          maximum: 100
+          default: 10
+          description: '条数'
+        - name: offset
+          in: query
+          type: integer
+          minimum: 0
+          default: 0
+          description: '起始位置'
+      responses:
+        200:
+          description: '服务器正常返回'
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Scan'
+        400:
+          description: '错误的资源请求'
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: '资源授权错误'
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: '禁止访问资源'
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: '服务内部错误'
+          schema:
+            $ref: '#/definitions/Error'
+  /packages/{id}:
+    get:
+      summary: 获取电池包信息
+      consumes:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          description: 电池包id
+          type: string
+          required: true
+      tags:
+        - Component
+      responses:
+        200:
+          description: 成功
+          schema:
+            $ref: '#/definitions/Package'
+        400:
+          description: '错误的资源请求'
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: '资源授权错误'
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: '禁止访问资源'
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: '未找到对应的资源'
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: '服务内部错误'
+          schema:
+            $ref: '#/definitions/Error'
+  /packages:
+    post:
+      tags:
+      - 'Component'
+      summary: '上传电池包（与模组对应关系）数据'
+      description: '电池生产商上传电池包与模组的对应关系'
+      consumes:
+      - 'application/json'
+      parameters:
+      - in: 'body'
+        name: 'package'
+        description: '电池包信息.'
+        required: true
+        schema:
+          $ref: '#/definitions/Package'
+      responses:
+        201:
+          description: '成功,其URI 已经随Location 头信息返回'
+        400:
+          description: '错误的资源请求'
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: '资源授权错误'
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: '禁止访问资源'
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: '未找到对应的资源'
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: '服务内部错误'
+          schema:
+            $ref: '#/definitions/Error'
+  /cars:
+    post:
+      tags:
+      - 'Component'
+      summary: '上传汽车（与电池包对应关系）数据'
+      description: '汽车制造商上传汽车与电池包的对应关系'
+      consumes:
+      - 'application/json'
+      parameters:
+      - in: 'body'
+        name: 'package'
+        description: '汽车基本信息.'
+        required: true
+        schema:
+          $ref: '#/definitions/Car'
+      responses:
+        201:
+          description: '成功,其URI 已经随Location 头信息返回'
+        400:
+          description: '错误的资源请求'
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: '资源授权错误'
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: '禁止访问资源'
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: '服务内部错误'
+          schema:
+            $ref: '#/definitions/Error'
+  '/cars/{id}':
+    get:
+      summary: 获取汽车基本信息
+      consumes:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          description: 汽车id
+          type: string
+          required: true
+      tags:
+        - Component
+      responses:
+        200:
+          description: 成功
+          schema:
+            $ref: '#/definitions/Car'
+        400:
+          description: '错误的资源请求'
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: '资源授权错误'
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: '禁止访问资源'
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: '未找到对应的资源'
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: '服务内部错误'
+          schema:
+            $ref: '#/definitions/Error'
+  '/certs':
+      post:
+        summary: 提交证书申请
+        consumes:
+          - application/json
+        parameters:
+          - name: cert
+            in: body
+            description: 证书申请信息
+            required: true
+            schema:
+              $ref: '#/definitions/Cert'
+        tags:
+          - Certs
+        responses:
+          201:
+            description: 提交成功，等待审核
+      get:
+        summary: 查询申请信息
+        description: 查询申请信息
+        consumes:
+           - application/json
+        parameters:
+           - in: query
+             name: filters
+             type: string
+             description: 查询条件,json 格式
+             required: true
+           - name: limit
+             in: query
+             type: integer
+             minimum: 0
+             maximum: 100
+             default: 10
+             description: 条数
+           - name: offset
+             in: query
+             type: integer
+             minimum: 0
+             default: 0
+             description: 起始位置
+        tags:
+          - Certs
+        responses:
+          200:
+            description: 成功
+            schema:
+              type: array
+              items:
+                $ref: '#/definitions/Cert'
+          400:
+            description: '错误的资源请求'
+            schema:
+              $ref: '#/definitions/Error'
+          401:
+            description: '资源授权错误'
+            schema:
+              $ref: '#/definitions/Error'
+          403:
+            description: '禁止访问资源'
+            schema:
+              $ref: '#/definitions/Error'
+          404:
+            description: '未找到对应的资源'
+            schema:
+              $ref: '#/definitions/Error'
+          500:
+            description: '服务内部错误'
+            schema:
+              $ref: '#/definitions/Error'
+
+  '/certs/{id}':
+    get:
+      summary: 我的申请
+      description: id
+      consumes:
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          description: id
           type: string
           required: true
       tags:
         - Certs
       responses:
-        '200':
-          description: 查询成功
+        200:
+          description: 成功
           schema:
-            $ref: '#/definitions/Cert'
-        default:
-          description: Unexpected error
+            type: array
+            items:
+              $ref: '#/definitions/Cert'
+        400:
+          description: '错误的资源请求'
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: '资源授权错误'
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: '禁止访问资源'
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: '未找到对应的资源'
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: '服务内部错误'
+          schema:
+            $ref: '#/definitions/Error'
+
+  '/certs/{status}':
+    get:
+      summary: 申请查询(status=0:待审批 status=1:审批通过 status=2:审批不通过)
+      consumes:
+         - application/json
+      parameters:
+        - name: status
+          in: path
+          description: 证书申请状态；0:未审核(默认) 1：审核通过 2：审核不通过
+          required: true
+          type: integer
+      tags:
+        - Certs
+      responses:
+        201:
+          description: 成功
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Cert'
+        400:
+          description: '错误的资源请求'
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: '资源授权错误'
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: '禁止访问资源'
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: '未找到对应的资源'
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: '服务内部错误'
           schema:
             $ref: '#/definitions/Error'
 
   '/certs/{ids}/{status}':
-    patch:
-      summary: 审批证书
+    put:
+      summary: 证书审批
       consumes:
          - application/json
       parameters:
@@ -96,32 +565,96 @@ paths:
         - Certs
       responses:
         201:
-          description: 服务器正常返回
+          description: 成功
           schema:
             type: array
             items:
               $ref: '#/definitions/Cert'
-        default:
-          description: Unexpected error
+        400:
+          description: '错误的资源请求'
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: '资源授权错误'
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: '禁止访问资源'
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: '未找到对应的资源'
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+         description: '服务内部错误'
+         schema:
+            $ref: '#/definitions/Error'
+  '/certs/imports':
+    post:
+      summary:  证书导入
+      description: 将证书打包导入
+      consumes:
+         - application/json
+      parameters:
+         - name: attachment
+           in: formData
+           description: 导入的zip包
+           required: true
+           type: file
+         - name: remark
+           in: query
+           description: 文字说明
+           type: string
+      tags:
+         - Certs
+      responses:
+        201:
+          description: 成功
+        400:
+          description: '错误的资源请求'
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: '资源授权错误'
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: '禁止访问资源'
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: '未找到对应的资源'
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: '服务内部错误'
           schema:
             $ref: '#/definitions/Error'
 
-  '/uploads':
+  '/single2dcodes':
     post:
-      summary: 文件上传
+      summary:  单个二维码生成
+      description: 单个二维码生成
       consumes:
-         - application/form-data
-      parameters:
-        - name: attachment
-          in: formData
-          description: 文件上传
-          required: true
-          type: file
+         - application/json
       tags:
-        - Uploads
+         - Codes
       responses:
-        201:
-          description: 上传成功
+         201:
+          description: success.
+
+  '/batch2dcodes':
+    post:
+      summary:  批量二维码生成
+      description: 批量二维码生成
+      consumes:
+         - application/json
+      tags:
+         - Codes
+      responses:
+         201:
+          description: success.
 
   '/auth':
     post:
@@ -232,46 +765,6 @@ definitions:
       email: "894738373@qq.com"
       status: 0
 
-  Trac:
-    type: object
-    properties:
-      productTime:
-        type: date
-        description: 生产日期
-      productId:
-        type: string
-        description: 产品Id
-      srcCompany:
-        type: string
-        description: 源厂商
-      desCompany:
-        type: string
-        description: 目的厂商
-      moduleId:
-        type: string
-        description: 模组编号
-      packageId:
-        type: string
-        description: 包编号
-      carId:
-        type: string
-        description: 车架编号
-    required:
-      - productTime
-      - productId
-      - srcCompany
-      - desCompany
-      - moduleId
-      - packageId
-      - carId
-    example:
-      productTime: "2016-11-1"
-      productId: "1111111"
-      srcCompany: "A电池厂商"
-      desCompany: "B汽车销售厂商"
-      moduleId: "AHUWGUU121334HUEU"
-      packageId: "DHFJW7286442HJDHRFJ"
-      carId: "1334"
   User:
     type: object
     properties:
@@ -300,18 +793,18 @@ definitions:
   Auth:
     type: object
     properties:
-      phoneNumber:
+      userName:
         type: string
-        description: 手机号码
+        description: user name
       password:
         type: string
         description: 密码
     required:
-      - phoneNumber
+      - userName
       - password
     example:
-      phoneNumber: "18955555555"
-      password: "justPass"
+      userName: '18955555555'
+      password: 'justPass'
 
   Token:
     type: object
@@ -344,24 +837,221 @@ definitions:
       detail:
         type: string
         description: 错误的详细信息
-parameters:
-  accessKeyIdParam:
-    name: access_key_id
-    in: query
-    description: 访问密钥
-    required: true
-    type: string
-  signatureVersionParam:
-    name: signature_version
-    in: query
-    description: '签名函数的版本号,目前只支持版本号为 `1`,签名所用哈希算法为HmacSHA256'
-    required: true
-    type: number
-    format: int32
-    default: 1
-  signatureParam:
-    name: signature
-    in: query
-    description: 请求消息的签名
-    required: true
-    type: string
+  Scan:
+      type: 'object'
+      required:
+        - id
+        - scannerId
+        - barcode
+        - timestamp
+      properties:
+        id:
+          type: string
+          description: 'id'
+        scannerId:
+          type: string
+          description: '扫描者ID'
+        barcode:
+          type: string
+          description: '二维码内容'
+        longitude:
+          type: number
+          format: double
+          description: '扫描者所在位置的经度'
+        latitude:
+          type: number
+          format: double
+          description: '扫描者所在位置的纬度'
+        timestamp:
+          $ref: '#/definitions/Timestamp'
+  Trade:
+    type: 'object'
+    required:
+      - block
+      - fromId
+      - productIds
+      - toId
+      - timestamp
+    properties:
+      id:
+        type: string
+        description: '对象id'
+        maxLength: 30
+      fromId:
+        type: string
+        description: '卖家ID'
+      from:
+        type: 'string'
+        description: '卖家'
+      to:
+        type: 'string'
+        description: '买家'
+      toId:
+        type: 'string'
+        description: '买家Id'
+      productIds:
+        type: array
+        items:
+          type: string
+        description: '交易物品ID'
+      timestamp:
+        $ref: '#/definitions/Timestamp'
+      block:
+        $ref: '#/definitions/Block'
+      transaction:
+        $ref: '#/definitions/Transcation'
+  Block:
+    type: 'object'
+    required:
+      - blockId
+      - timestamp
+      - stateHash
+    properties:
+      blockId:
+        type: string
+        description: 'block id'
+      version:
+        type: 'string'
+        description: 'block version'
+        default: '1'
+      transactions:
+        type: 'array'
+        description: 'transcations of block'
+        items:
+          $ref: '#/definitions/Transcation'
+      timestamp:
+        $ref: '#/definitions/Timestamp'
+      transactionsHash:
+        type: 'string'
+        description: 'The merkle root hash of the block’s transactions.'
+      stateHash:
+        type: 'string'
+        description: 'The merkle root hash of the world state.'
+      previousBlockHash:
+        type: 'string'
+        description: '前一个块的Hash'
+  Transcation:
+    type: 'object'
+    properties:
+      chaincodeId:
+        type: 'string'
+        description: 'chaincode id'
+      chaincodeType:
+        type: 'string'
+        description: 'type'
+        enum:
+          - UNDEFINED
+          - CHAINCODE_DEPLOY
+          - CHAINCODE_INVOKE
+          - CHAINCODE_QUERY
+          - CHAINCODE_TERMINATE
+      uuid:
+        type: 'string'
+        description: 'transcation id'
+      cert:
+        type: 'string'
+        description: 'Certificate of the transactor. '
+      timestamp:
+        $ref: '#/definitions/Timestamp'
+      payload:
+        type: 'string'
+        description: 'payload hash'
+      signature:
+        type: string
+        description: 'Signature of the transactor.'
+    example:
+      chaincodeId: '59d5075e7146d8df37bdcb0c289c293c66ee2a56c0f8d833410ff7cd8d3dd6c65ff0c6966c1914109ed7e04423bc73967b7c693fbeb383bb1a057c75b37e2674'
+      chaincodeType: 'INVOKE'
+      uuid: '1908394-9840-496e-ab58-e9f6688cc3f5'
+      payload: 'Ch4IARIGEgRteWNjGhIKBmludm9rZRIBYRIBYhICMTA='
+      cert: 'MIIB/zCCAYWgAwIBAgIBATAKBggqhkjOPQQDAzApMQswCQYDVQQGEwJVUzEMMAoGA1UEChMDSUJNMQwwCgYDVQQDEwN0Y2EwHhcNMTYwMTI1MjE0MTE3WhcNMTYwNDI0MjE0MTE3WjArMQswCQYDVQQGEwJVUzEMMAoGA1UEChMDSUJNMQ4wDAYDVQQDEwVsdWthczB2MBAGByqGSM49AgEGBSuBBAAiA2IABC/BBkt8izf6Ew8UDd62EdWFikJhyCPY5VO9Wxq9JVzt3D6nubx2jO5JdfWt49q8V1Aythia50MZEDpmKhtM6z7LHOU1RxuxdjcYDOvkNJo6pX144U4N1J8/D3A+97qZpKN/MH0wDgYDVR0PAQH/BAQDAgeAMAwGA1UdEwEB/wQCMAAwDQYDVR0OBAYEBAECAwQwDwYDVR0jBAgwBoAEAQIDBDA9BgYqAwQFBgcBAf8EMABNbPHZ0e/2EToi0H8mkouuUDwurgBYuUB+vZfeMewBre3wXG0irzMtfwHlfECRDDAKBggqhkjOPQQDAwNoADBlAjAoote5zYFv91lHzpbEwTfJL/+r+CG7oMVFUFuoSlvBSCObK2bDIbNkW4VQ+ZC9GTsCMQC5GCgy2oZdHw/x7XYzG2BiqmRkLRTiCS7vYCVJXLivU65P984HopxW0cEqeFM9co0='
+      signature: 'MGUCMCIJaCT3YRsjXt4TzwfmD9hg9pxYnV13kWgf7e1hAW5Nar//05kFtpVlq83X+YtcmAIxAK0IQlCgS6nqQzZEGCLd9r7cg1AkQOT/RgoWB8zcaVjh3bCmgYHsoPAPgMsi3TJktg=='
+  Timestamp:
+    type: 'object'
+    required:
+      - seconds
+      - nanos
+    properties:
+      seconds:
+        type: integer
+        format: int64
+        description: 'seconds from epoch'
+      nanos:
+        type: integer
+        format: int64
+        description: 'nanos from epoch'
+    example:
+      seconds: 1453758316
+      nanos: 206716775
+  Package:
+    type: 'object'
+    properties:
+      packageId:
+        type: 'string'
+        description: '电池包id'
+      packageSpec:
+        type: 'string'
+        description: '电池包规格'
+      modules:
+        type: 'array'
+        description: 'Module collection'
+        items:
+          $ref: '#/definitions/Module'
+      manufacturer:
+        type: 'string'
+        description: '生产厂家'
+      timestamp:
+        $ref: '#/definitions/Timestamp'
+    example:
+      packageId: '507f191e810c19729de860ea'
+      packageSpec: '{标称容量:5300mAh,电芯内阻:15mΩ,最大充电电流:1C}'
+      manufacturer: '波士顿'
+      timestamp: '{seconds:100000,nanos:23123132}'
+  Module:
+    type: 'object'
+    properties:
+      moduleId:
+        type: 'string'
+        description: '电池模组id'
+      moduleSpec:
+        type: 'string'
+        description: '电池模组规格'
+      manufacturer:
+        type: 'string'
+        description: '生产厂家'
+      timestamp:
+        $ref: '#/definitions/Timestamp'
+    example:
+      moduleId: '507f191e810c19729de860ea'
+      moduleSpec: '{标称容量:5300mAh,电芯内阻:15mΩ,最大充电电流:1C}'
+      manufacturer: '波士顿'
+      timestamp: '{seconds:100000,nanos:23123132}'
+  Car:
+    type: 'object'
+    properties:
+      carId:
+        type: 'string'
+        description: '电池模组id'
+        maxLength: 512
+      vin:
+        type: 'string'
+        description: '车架号'
+      packageId:
+        type: 'string'
+        description: '电池包id'
+        maxLength: 512
+      carSpec:
+        type: 'string'
+        description: '规格'
+      manufacturer:
+        type: 'string'
+        description: '生产厂家'
+      timestamp:
+        $ref: '#/definitions/Timestamp'
+    example:
+      carId: '6e7f191e889019729de860ab'
+      vin: 'WDBGP57B6PB127810'
+      packageId: '507f191e810c19729de860ea'
+      carSpec: '{标称容量:5300mAh,电芯内阻:15mΩ,最大充电电流:1C}'
+      manufacturer: '一汽大众'
+      timestamp: '{seconds:100000,nanos:23123132}'

@@ -5,6 +5,8 @@ import models.Cert;
 import org.bson.types.ObjectId;
 import play.Logger;
 import play.data.validation.Required;
+
+import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -37,8 +39,8 @@ public class Certs extends API {
         }
     }
 
-    public static void list(Integer pageNum){
-        List<Cert> certs =  StreamSupport.stream(getCollection(Cert.class).find().limit(pageNum).as(Cert.class).spliterator(),false).collect(Collectors.toList());
+    public static void list(@Required Integer pageSize){
+        List<Cert> certs =  StreamSupport.stream(getCollection(Cert.class).find().limit(pageSize).as(Cert.class).spliterator(),false).collect(Collectors.toList());
         certs.forEach(cert -> Logger.info("List：" + cert.companyName));
         renderJSON(certs);
     }
