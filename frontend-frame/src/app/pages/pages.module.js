@@ -10,16 +10,16 @@
     'BlurAdmin.pages.government',
     'BlurAdmin.pages.ui',
     'BlurAdmin.pages.form',
-<<<<<<< HEAD
+
     'BlurAdmin.pages.gov',
     'BlurAdmin.pages.charts',
-    'BlurAdmin.pages.maps',
-=======
-    'BlurAdmin.pages.tables',
+    /*'BlurAdmin.pages.maps',*/
+
+    /*'BlurAdmin.pages.tables',*/
     // 'BlurAdmin.pages.charts',
->>>>>>> 13fa0bb3c5f48fa9fe212a8a189d43813d47f5ae
+
     'BlurAdmin.pages.profile',
-     'BlurAdmin.pages.myNewPage',
+     /*'BlurAdmin.pages.myNewPage',*/
       'BlurAdmin.pages.submit',
      
   ])
