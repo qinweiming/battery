@@ -631,6 +631,41 @@ paths:
           description: '服务内部错误'
           schema:
             $ref: '#/definitions/Error'
+  '/attachments':
+    post:
+      summary:  附件上传
+      description: 企业法人证书等附件上传
+      parameters:
+         - name: attachment
+           in: formData
+           description: 法人证书
+           required: true
+           type: file
+      tags:
+         - Certs
+      responses:
+        201:
+          description: 成功
+        400:
+          description: '错误的资源请求'
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: '资源授权错误'
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: '禁止访问资源'
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: '未找到对应的资源'
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: '服务内部错误'
+          schema:
+            $ref: '#/definitions/Error'
 
   '/single2dcodes':
     post:
