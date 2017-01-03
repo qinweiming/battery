@@ -14,7 +14,7 @@
         .state('charts.amCharts', {
           url: '/amCharts',
           templateUrl: 'app/pages/charts/amCharts/charts.html',
-          title: 'ccc',
+          title: 'amCharts',
           sidebarMeta: {
             order: 0,
           },
