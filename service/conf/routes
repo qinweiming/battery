@@ -32,7 +32,6 @@ PUT          /v1/certs/{ids}/{status}             v1.Certs.approve
 POST         /v1/Certs/imports                    v1.Certs.certsImport
 #附件上传
 POST         /v1/attachments                      v1.Certs.attachment
-
 #流量分析
 GET          /v1/flows                            v1.Certs.flowAnalysis
 #密度分析

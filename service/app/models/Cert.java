@@ -45,6 +45,6 @@ public class Cert extends BaseModel implements Jsonable {
      */
     @Required
     public Integer status = 0;
-    public String certAddress;
+    public String certPath;
     public Date modifyTime;
 }
