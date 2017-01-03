@@ -20,7 +20,7 @@
           url: '/charts',
           abstract: true,
           template: '<div ui-view></div>',
-          title: 'Charts',
+          title: 'www',
           sidebarMeta: {
             icon: 'ion-stats-bars',
             order: 150,
