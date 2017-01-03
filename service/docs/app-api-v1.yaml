@@ -776,9 +776,9 @@ definitions:
       status:
         type: integer
         description: 申请证书的状态
-      certAddress:
+      certPath:
         type: string
-        description: 证书的地址
+        description: 证书的文件路径
       modifyTime:
         type: string
         description: 修改时间
