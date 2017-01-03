@@ -10,10 +10,13 @@
     'BlurAdmin.pages.government',
     'BlurAdmin.pages.ui',
     'BlurAdmin.pages.form',
+      'BlurAdmin.pages.gov',
     'BlurAdmin.pages.charts',
-    // 'BlurAdmin.pages.tables', //todo:
+    //'BlurAdmin.pages.maps',
+    //'BlurAdmin.pages.tables',
     'BlurAdmin.pages.profile',
-         
+
+
   ])
       .config(routeConfig);
 

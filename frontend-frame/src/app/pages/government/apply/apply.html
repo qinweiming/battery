@@ -1,11 +1,11 @@
 <div>
    <!-- form-horizontal -->
-   <form class="form-horizontal" role="form">
+   <form class="form-horizontal" role="form" name="applyForm" novalidate ng-submit="confirm()">
       <!-- form-group -->
       <div class="form-group">
-         <label for="firstname" class="col-sm-2 control-label">企业类型</label>
+         <label class="col-sm-2 control-label">企业类型</label>
          <div class="col-sm-6">
-            <select class="form-control selectpicker" title="请选择" selectpicker ng-model="applyData.companyType">
+            <select required class="form-control selectpicker" title="请选择" name="companyType" selectpicker ng-model="applyData.companyType">
                <option value="1">电池厂</option>
                <option value="2">汽车厂</option>
             </select>
@@ -18,27 +18,30 @@
       <div class="form-group">
          <label  class="col-sm-2 control-label">企业名称</label>
          <div class="col-sm-6">
-            <input type="text" class="form-control bg-success" placeholder="请输入企业名称" ng-model="applyData.companyName">
+            <input required type="text" class="form-control bg-success"  name="companyName" placeholder="请输入企业名称" ng-model="applyData.companyName">
          </div>
          <div class="col-sm-1">
             <label><span style="color:red;">*</span></label>
          </div>
+          <div class="col-sm-3" ng-show="applyForm.companyName.$dirty&&applyForm.companyName.$invalid&&applyForm.submitted">
+              <lable><span style="color:red;">必填项</span></lable>
+          </div>
       </div>
       <!-- form-group -->
       <div class="form-group">
          <label  class="col-sm-2 control-label">社会信用码</label>
          <div class="col-sm-6">
-            <input type="text" class="form-control" placeholder="请输入社会信用码" ng-model="applyData.creditCode">
+            <input required type="text" class="form-control" name="creditCode" placeholder="请输入社会信用码" ng-model="applyData.creditCode">
          </div>
          <div class="col-sm-1">
             <label><span style="color:red;">*</span></label>
          </div>
       </div>
       <!-- form-group -->
-      <div class="form-group">
+      <div class="form-group" ng-if="applyData.companyType==1">
          <label  class="col-sm-2 control-label">厂商代码</label>
          <div class="col-sm-6">
-            <input type="text" class="form-control bg-success" placeholder="请输入厂商代码" ng-model="applyData.factoryCode">
+            <input required type="text" class="form-control bg-success" name="vendorCode" placeholder="请输入厂商代码" ng-model="applyData.vendorCode">
          </div>
          <div class="col-sm-1">
             <label><span style="color:red;">*</span></label>
@@ -55,7 +58,7 @@
       <div class="form-group">
          <label class="col-sm-2 control-label">联系电话</label>
          <div class="col-sm-6">
-            <input type="text" class="form-control" placeholder="请输入联系电话" ng-model="applyData.phone">
+            <input required type="text" class="form-control" name="phone" placeholder="请输入联系电话" ng-model="applyData.phone">
          </div>
          <div class="col-sm-1">
             <label><span style="color:red;">*</span></label>
@@ -73,7 +76,7 @@
          <label  class="col-sm-2 control-label">企业法人证书</label>
          <div class="col-sm-6">
             <label class="sr-only" for="inputfile">文件输入</label>
-            <input type="file" id="inputfile" ng-model="applyData.certFile">
+            <input type="file" id="inputfile" ng-model="applyData.certPath">
          </div>
       </div>
       <!-- form-group -->
@@ -83,7 +86,7 @@
                <p>注：加<span style="color:red;">*</span>号为必填项</p>
             </div>
          <div class="col-sm-4">
-            <button type="submit" class="btn btn-primary" ng-click="confirm();">确认录入</button>
+            <button type="submit" class="btn btn-primary" >确认录入</button>
          </div>
       </div>
    </form>

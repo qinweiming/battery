@@ -20,7 +20,7 @@
         },
         post: function(scope, elem, attrs) {
           function refresh() {
-            elem.selectpicker('refresh');
+            elem.selectpicker('refresh');   /*这句不明白*/
           }
 
           if (attrs.ngModel) {

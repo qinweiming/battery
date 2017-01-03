@@ -5,7 +5,7 @@
 (function () {
   'use strict';
 
-  angular.module('BlurAdmin.pages.submit')
+  angular.module('BlurAdmin.pages.form')
       .controller('SelectpickerPanelCtrl', SelectpickerPanelCtrl);
 
   /** @ngInject */
@@ -13,9 +13,10 @@
     var vm = this;
 
     vm.standardSelectItems = [
-      { label: '汽车厂', value: 0 },
-      { label: '电池厂', value: 1 },
-
+      { label: 'Option 1', value: 1 },
+      { label: 'Option 2', value: 2 },
+      { label: 'Option 3', value: 3 },
+      { label: 'Option 4', value: 4 },
     ];
 
     vm.selectWithSearchItems = [
@@ -31,6 +32,8 @@
       { label: 'Group 1 - Option 3', value: 3, group: 'Group 1' },
       { label: 'Group 2 - Option 4', value: 4, group: 'Group 2' },
     ];
+
+   vm.user={}
 
   }
 

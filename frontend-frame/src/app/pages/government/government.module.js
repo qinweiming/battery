@@ -41,6 +41,13 @@
           sidebarMeta: {
             order: 101,
           }
+        }).state('government.density', {
+            url: '/density',
+            templateUrl: 'app/pages/government/density/density.html',
+            title: '密度分布图',
+            sidebarMeta: {
+                order: 102,
+            }
         })
         ;
     $urlRouterProvider.when('/government','/government/apply');
