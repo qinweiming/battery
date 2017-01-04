@@ -10,14 +10,14 @@
 
     //默认值
     $scope.applyData = {
-      'companyType': '1',
+      /*'companyType': '1',
       'companyName': '某某电池厂',
       'creditCode': '',
       'factoryCode': '',
       'contact': '',
       'phone': '',
       'email': '',
-      'certFile': ''
+      'certFile': ''*/
     };
 
     //确认录入
