@@ -18,8 +18,12 @@ public class Cert extends BaseModel implements Jsonable {
       */
     @Required
     public Integer companyType;
+
     @Required
     public String companyName;
+
+    @Required
+    public String companyId;
     /**
      * 社会信用码
      */
@@ -30,9 +34,12 @@ public class Cert extends BaseModel implements Jsonable {
      */
     @Required
     public String vendorCode;
+
     public String contact;
+
     @Required
     public String phone;
+
     @Required
     public String email;
     /**
@@ -45,6 +52,15 @@ public class Cert extends BaseModel implements Jsonable {
      */
     @Required
     public Integer status = 0;
-    public String certAddress;
+
+    public String certPath;
+
+    public String certRemark;
+
+    /**
+     * createTime & modifyTime与数据库中的_created & _modified字段重复,这两个字段保留？
+     */
+    public Date createTime;
+
     public Date modifyTime;
 }

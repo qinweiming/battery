@@ -7,4 +7,5 @@
     <color name="gray">#666666</color>
     <color name="colorTabText">#eeeeee</color>
     <color name="colorSelectedTabText">#FFFFFF</color>
+    <color name="custom_gray">#8e8e8e</color>
 </resources>

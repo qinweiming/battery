@@ -5,24 +5,24 @@
         <div class="col-md-5">
           <form class="form-inline" role="form">
             <div class="form-group">
-              <input class="form-control" style="width: 180px" type="text" style="border-radius: 4px;" placeholder="申请日期：起止时间" name="" ng-model="filterData.startDate">
+              <input class="form-control" style="width: 180px" type="text" style="border-radius: 4px;" placeholder="申请日期：起止时间" name="" ng-model="filters.startDate">
               <span>&nbsp--&nbsp</span>
-              <input class="form-control" style="width: 180px" style="border-radius: 4px;" type="text" placeholder="截止时间" name="" ng-model="filterData.endDate">
+              <input class="form-control" style="width: 180px" style="border-radius: 4px;" type="text" placeholder="截止时间" name="" ng-model="filters.endDate">
             </div>
           </form>
         </div>
         <div class="col-md-2 ">
           <div class="form-group">
-            <input  class="form-control" style="width: 180px" style="border-radius: 4px;" type="text" placeholder="请输入企业名称" name=""  ng-model="filterData.companyName">
+            <input  class="form-control" style="width: 180px" style="border-radius: 4px;" type="text" placeholder="请输入企业名称" name=""  ng-model="filters.companyName">
           </div>
         </div>
         <div class="col-md-1 col-md-offset-1 ">
-          <button type="button" class="btn btn-primary" data-toggle="button" ng-click="filter();">查询</button>
+          <button type="button" class="btn btn-primary" data-toggle="button" ng-click="search()">查询</button>
         </div>
       </div>
       <div class="row">
-        <div class="col-md-1"><button type="button" class="btn btn-success">审核通过</button></div>
-        <div class="col-md-2 "><button type="button" class="btn btn-danger">审核不通过</button></div>
+        <div class="col-md-1"><button type="button" class="btn btn-success" ng-click="approveSuccess()">审核通过</button></div>
+        <div class="col-md-2 "><button type="button" class="btn btn-danger" ng-click="approveFail()">审核不通过</button></div>
       </div>
     </div>
   </div>
@@ -30,7 +30,7 @@
   <table class="table table-hover table-striped table-bordered " st-table="smartTableData">
     <thead>
       <tr class="sortable ">
-        <th style="text-align: center;"><input type="checkbox"></th>
+        <th style="text-align: center;"><input type="checkbox" ng-model="select_all" ng-change="selectAll()" ></th>
         <th st-sort="firstName">申请日期</th>
         <th st-sort="lastName">申请序号</th>
         <th st-sort="username">企业名称</th>
@@ -44,11 +44,11 @@
     </thead>
     <tbody>
       <tr ng-repeat="item in approveList">
-        <td ><input type="checkbox"></td>
-        <td>{{item.applyDate}}</td>
-        <td>{{item.applyOrder}}</td>
+        <td ><input type="checkbox"  ng-model="item.checked" ng-change="selectOne()" ></td>
+        <td>{{item.startDate}}</td>
+        <td>{{item.endDate}}</td>
         <td>{{item.companyName}}</td>
-        <td>{{item.creditCode}}</td>
+        <td>{{item.status}}</td>
         <td>{{item.factoryCode}}</td>
         <td>{{item.contact}}</td>
         <td>{{item.phone}}</td>

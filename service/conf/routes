@@ -22,11 +22,24 @@ POST    /v1/auth                                v1.Auth.auth
 POST         /v1/certs                            v1.Certs.save
 #查看所有已申请的证书信息
 GET          /v1/certs                            v1.Certs.list
-#查看证书
+#我的申请
 GET          /v1/certs/{id}                       v1.Certs.get
-#审批证书
-PUT        /v1/certs/{ids}/{status}              v1.Certs.approve
+#申请查询（status=0待审批；status=1审批通过；status=2审批不通过）
+GET          /v1/certs/{status}                   v1.Certs.search
+#证书审批
+PUT          /v1/certs/{ids}/{status}             v1.Certs.approve
+#证书导入
+POST         /v1/Certs/imports                    v1.Certs.certsImport
+#附件上传
+POST         /v1/attachments                      v1.Certs.attachment
+#流量分析
+GET          /v1/flows                            v1.Certs.flowAnalysis
+#密度分析
+GET          /v1/densitys                         v1.Certs.densityAnalysis
 
-
+#生成单个二维码
+POST         /v1/single2dcodes                    v1.Codes.singleCode
+#生成多个二维码
+POST         /v1/batch2dcodes                     v1.Codes.batchCode
 
 *       /.*                                     api.API.notFoundPage

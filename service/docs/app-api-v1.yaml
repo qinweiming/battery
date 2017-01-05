@@ -30,6 +30,12 @@ tags:
     description: 对应关系数据
   - name: Codes
     description: 二维码
+  - name: Densitys
+    description: 密度分析
+  - name: Flows
+    description: 流量分析
+  - name: Pictures
+    description: 图片
 paths:
   '/trades':
     post:
@@ -415,7 +421,7 @@ paths:
            - in: query
              name: filters
              type: string
-             description: 查询条件,json 格式
+             description: 查询条件,json 格式, {companyName:'',startDate:'',endDate:''}
              required: true
            - name: limit
              in: query
@@ -673,11 +679,19 @@ paths:
       description: 单个二维码生成
       consumes:
          - application/json
+      parameters:
+         - in: query
+           name: moduleId
+           type: string
+           description: 查询条件,电池模组id(流水号)
+           required: true
       tags:
          - Codes
-      responses:
+      response:
          201:
-          description: success.
+          description: 服务器正常返回
+          schema:
+            $ref: '#/definitions/Pictures'
 
   '/batch2dcodes':
     post:
@@ -685,11 +699,74 @@ paths:
       description: 批量二维码生成
       consumes:
          - application/json
+      parameters:
+         - in: query
+           name: beginModuleId
+           type: string
+           description: 起始电池模组id(起始流水号)
+           required: true
+         - in: query
+           name: endModuleId
+           type: string
+           description: 截止电池模组id(截止流水号)
+           required: true
       tags:
          - Codes
-      responses:
+      response:
          201:
-          description: success.
+          description: 服务器正常返回
+          schema:
+            $ref: '#/definitions/Pictures'
+
+  '/flows':
+    get:
+      summary:  获取流量分析图
+      description: 获取流量分析图
+      consumes:
+         - application/json
+      parameters:
+        - in: query
+          name: beginModuleId
+          type: string
+          description: 起始电池模组id(起始流水号)
+          required: true
+        - in: query
+          name: endModuleId
+          type: string
+          description: 截止电池模组id(截止流水号)
+          required: true
+      tags:
+         - Flows
+      response:
+         201:
+          description: 服务器正常返回
+          schema:
+            $ref: '#/definitions/Pictures'
+
+  '/densitys':
+    get:
+      summary:  获取密度分析图
+      description: 获取密度分析图
+      consumes:
+         - application/json
+      parameters:
+        - in: query
+          name: beginModuleId
+          type: string
+          description: 起始电池模组id(起始流水号)
+          required: true
+        - in: query
+          name: endModuleId
+          type: string
+          description: 截止电池模组id(截止流水号)
+          required: true
+      tags:
+         - Densitys
+      response:
+         201:
+          description: 服务器正常返回
+          schema:
+            $ref: '#/definitions/Pictures'
 
   '/auth':
     post:
