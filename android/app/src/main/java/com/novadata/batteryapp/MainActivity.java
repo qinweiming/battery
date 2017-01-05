@@ -12,6 +12,7 @@ public class MainActivity extends AppCompatActivity {
     private TabLayout mTabLayout;
     private ViewPager mViewPager;
     private MyFragmentPagerAdapter myFragmentPagerAdapter;
+    public static MainActivity mainActivity;
 
     private TabLayout.Tab main_tab;
     private TabLayout.Tab deal_tab;
@@ -22,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mainActivity = this;
 
         getSupportActionBar().hide();//隐藏掉整个ActionBar
         setContentView(R.layout.activity_main);

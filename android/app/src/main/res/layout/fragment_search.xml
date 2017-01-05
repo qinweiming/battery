@@ -1,39 +1,63 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="layout.fragment_search">
-
-    <SearchView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:background="@color/colorPrimaryDark"
-        android:iconifiedByDefault="false"
-        android:queryHint="请输入电池模组/电池包编码"
-        android:id="@+id/searchView" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="8dp"
-        android:background="@color/colorPrimaryDark"
-        android:gravity="center_horizontal"
-        android:text="清空搜索记录"
-        android:textSize="8pt"/>
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <LinearLayout
+        android:background="@color/colorPrimary"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="50dp">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/search_history_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scrollbars="horizontal"
-            />
+        <LinearLayout
+            android:layout_margin="10dp"
+            android:background="@drawable/input_border_layout"
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:padding="5dp"
+                android:layout_gravity="center_vertical"
+                android:layout_width="30dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/scan"/>
+
+            <EditText
+                android:id="@+id/input_search_content_et"
+                android:layout_margin="5dp"
+                android:textSize="14sp"
+                android:singleLine="true"
+                android:imeOptions="actionSearch"
+                android:layout_gravity="center_vertical"
+                android:background="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="请输入你要搜索的内容"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/search_content_cancel_tv"
+            android:padding="10dp"
+            android:layout_gravity="center_vertical"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:textSize="15sp"
+            android:text="取消"
+            android:textColor="@color/white"/>
 
     </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:id="@+id/search_content_show_ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        </LinearLayout>
+
+    </RelativeLayout>
 
 </LinearLayout>
