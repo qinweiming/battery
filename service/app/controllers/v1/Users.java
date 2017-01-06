@@ -2,7 +2,6 @@ package controllers.v1;
 
 import controllers.api.API;
 import models.User;
-import org.bson.codecs.ObjectIdGenerator;
 import org.bson.types.ObjectId;
 import play.data.validation.Required;
 

@@ -27,6 +27,7 @@ package models;
 
 import models.api.Jsonable;
 import play.data.validation.Required;
+import play.modules.jongo.BaseModel;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ import java.util.Objects;
 /**
  * Trade
  */
-public class Trade  implements Jsonable {
+public class Trade extends BaseModel implements Jsonable {
   @Required
   private String id = null;
 
@@ -69,14 +70,15 @@ public class Trade  implements Jsonable {
     return this;
   }
 
-   /**
+  /**
    * 对象id
    * @return id
-  **/
-
+   **/
+/*
   public String getId() {
     return id;
   }
+*/
 
   public void setId(String id) {
     this.id = id;
@@ -87,10 +89,10 @@ public class Trade  implements Jsonable {
     return this;
   }
 
-   /**
+  /**
    * 卖家ID
    * @return fromId
-  **/
+   **/
 
   public String getFromId() {
     return fromId;
@@ -105,10 +107,10 @@ public class Trade  implements Jsonable {
     return this;
   }
 
-   /**
+  /**
    * 卖家
    * @return from
-  **/
+   **/
 
   public String getFrom() {
     return from;
@@ -123,10 +125,10 @@ public class Trade  implements Jsonable {
     return this;
   }
 
-   /**
+  /**
    * 买家
    * @return to
-  **/
+   **/
 
   public String getTo() {
     return to;
@@ -141,10 +143,10 @@ public class Trade  implements Jsonable {
     return this;
   }
 
-   /**
+  /**
    * 买家Id
    * @return toId
-  **/
+   **/
 
   public String getToId() {
     return toId;
@@ -164,10 +166,10 @@ public class Trade  implements Jsonable {
     return this;
   }
 
-   /**
+  /**
    * 交易物品ID
    * @return productIds
-  **/
+   **/
 
   public List<String> getProductIds() {
     return productIds;
@@ -182,10 +184,10 @@ public class Trade  implements Jsonable {
     return this;
   }
 
-   /**
+  /**
    * Get timestamp
    * @return timestamp
-  **/
+   **/
 
   public Timestamp getTimestamp() {
     return timestamp;
@@ -200,10 +202,10 @@ public class Trade  implements Jsonable {
     return this;
   }
 
-   /**
+  /**
    * Get block
    * @return block
-  **/
+   **/
 
   public Block getBlock() {
     return block;
@@ -218,10 +220,10 @@ public class Trade  implements Jsonable {
     return this;
   }
 
-   /**
+  /**
    * Get transaction
    * @return transaction
-  **/
+   **/
 
   public Transcation getTransaction() {
     return transaction;
@@ -242,14 +244,14 @@ public class Trade  implements Jsonable {
     }
     Trade trade = (Trade) o;
     return Objects.equals(this.id, trade.id) &&
-        Objects.equals(this.fromId, trade.fromId) &&
-        Objects.equals(this.from, trade.from) &&
-        Objects.equals(this.to, trade.to) &&
-        Objects.equals(this.toId, trade.toId) &&
-        Objects.equals(this.productIds, trade.productIds) &&
-        Objects.equals(this.timestamp, trade.timestamp) &&
-        Objects.equals(this.block, trade.block) &&
-        Objects.equals(this.transaction, trade.transaction);
+            Objects.equals(this.fromId, trade.fromId) &&
+            Objects.equals(this.from, trade.from) &&
+            Objects.equals(this.to, trade.to) &&
+            Objects.equals(this.toId, trade.toId) &&
+            Objects.equals(this.productIds, trade.productIds) &&
+            Objects.equals(this.timestamp, trade.timestamp) &&
+            Objects.equals(this.block, trade.block) &&
+            Objects.equals(this.transaction, trade.transaction);
   }
 
   @Override
@@ -262,7 +264,7 @@ public class Trade  implements Jsonable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Trade {\n");
-    
+
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    fromId: ").append(toIndentedString(fromId)).append("\n");
     sb.append("    from: ").append(toIndentedString(from)).append("\n");
@@ -286,6 +288,6 @@ public class Trade  implements Jsonable {
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
 }
 

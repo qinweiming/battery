@@ -27,6 +27,7 @@ package models;
 
 import models.api.Jsonable;
 import play.data.validation.Required;
+import play.modules.jongo.BaseModel;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ import java.util.Objects;
 /**
  * Package
  */
-public class Package implements Jsonable {
+public class Package extends BaseModel implements Jsonable {
   @Required()
   private String packageId = null;
 
@@ -44,7 +45,7 @@ public class Package implements Jsonable {
   private String packageSpec = null;
 
   @Required()
-  private List<Module> modules = new ArrayList<Module>();
+  private List<Module> modules = new ArrayList<>();
 
   @Required()
   private String manufacturer = null;
