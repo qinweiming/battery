@@ -395,6 +395,7 @@ paths:
           description: '服务内部错误'
           schema:
             $ref: '#/definitions/Error'
+
   '/certs':
       post:
         summary: 提交证书申请
@@ -412,105 +413,10 @@ paths:
         responses:
           201:
             description: 提交成功，等待审核
-      get:
-        summary: 查询申请信息
-        description: 查询申请信息
-        consumes:
-           - application/json
-        parameters:
-           - in: query
-             name: filters
-             type: string
-             description: 查询条件,json 格式, {companyName:'',startDate:'',endDate:''}
-             required: true
-           - name: limit
-             in: query
-             type: integer
-             minimum: 0
-             maximum: 100
-             default: 10
-             description: 条数
-           - name: offset
-             in: query
-             type: integer
-             minimum: 0
-             default: 0
-             description: 起始位置
-        tags:
-          - Certs
-        responses:
-          200:
-            description: 成功
-            schema:
-              type: array
-              items:
-                $ref: '#/definitions/Cert'
-          400:
-            description: '错误的资源请求'
-            schema:
-              $ref: '#/definitions/Error'
-          401:
-            description: '资源授权错误'
-            schema:
-              $ref: '#/definitions/Error'
-          403:
-            description: '禁止访问资源'
-            schema:
-              $ref: '#/definitions/Error'
-          404:
-            description: '未找到对应的资源'
-            schema:
-              $ref: '#/definitions/Error'
-          500:
-            description: '服务内部错误'
-            schema:
-              $ref: '#/definitions/Error'
-
-  '/certs/{id}':
-    get:
-      summary: 我的申请
-      description: id
-      consumes:
-        - application/json
-      parameters:
-        - name: id
-          in: path
-          description: id
-          type: string
-          required: true
-      tags:
-        - Certs
-      responses:
-        200:
-          description: 成功
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/Cert'
-        400:
-          description: '错误的资源请求'
-          schema:
-            $ref: '#/definitions/Error'
-        401:
-          description: '资源授权错误'
-          schema:
-            $ref: '#/definitions/Error'
-        403:
-          description: '禁止访问资源'
-          schema:
-            $ref: '#/definitions/Error'
-        404:
-          description: '未找到对应的资源'
-          schema:
-            $ref: '#/definitions/Error'
-        500:
-          description: '服务内部错误'
-          schema:
-            $ref: '#/definitions/Error'
-
   '/certs/{status}':
     get:
       summary: 申请查询(status=0:待审批 status=1:审批通过 status=2:审批不通过)
+      description: status
       consumes:
          - application/json
       parameters:
@@ -519,6 +425,24 @@ paths:
           description: 证书申请状态；0:未审核(默认) 1：审核通过 2：审核不通过
           required: true
           type: integer
+        - in: query
+          name: filters
+          type: string
+          description: 查询条件,json 格式, {companyName:'',startDate:'',endDate:''}
+          required: true
+        - name: limit
+          in: query
+          type: integer
+          minimum: 0
+          maximum: 100
+          default: 10
+          description: 条数
+        - name: offset
+          in: query
+          type: integer
+          minimum: 0
+          default: 0
+          description: 起始位置
       tags:
         - Certs
       responses:
@@ -548,8 +472,7 @@ paths:
           description: '服务内部错误'
           schema:
             $ref: '#/definitions/Error'
-
-  '/certs/{ids}/{status}':
+  '/certs/{ids}':
     put:
       summary: 证书审批
       consumes:
@@ -563,7 +486,7 @@ paths:
           items:
             type: string
         - name: status
-          in: path
+          in: query
           description: 证书申请状态；0:未审核(默认) 1：审核通过 2：审核不通过
           required: true
           type: integer
@@ -595,6 +518,47 @@ paths:
         500:
          description: '服务内部错误'
          schema:
+            $ref: '#/definitions/Error'
+  '/certs/{companyId}':
+    get:
+      summary: 我的申请
+      description: companyId
+      consumes:
+        - application/json
+      parameters:
+        - name: companyId
+          in: path
+          description: 企业Id
+          type: string
+          required: true
+      tags:
+        - Certs
+      responses:
+        200:
+          description: 成功
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/Cert'
+        400:
+          description: '错误的资源请求'
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: '资源授权错误'
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: '禁止访问资源'
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: '未找到对应的资源'
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: '服务内部错误'
+          schema:
             $ref: '#/definitions/Error'
   '/certs/imports':
     post:
@@ -741,7 +705,7 @@ paths:
          201:
           description: 服务器正常返回
           schema:
-            $ref: '#/definitions/Pictures'
+            $ref: '#/definitions/Module'
 
   '/densitys':
     get:
@@ -766,7 +730,7 @@ paths:
          201:
           description: 服务器正常返回
           schema:
-            $ref: '#/definitions/Pictures'
+            $ref: '#/definitions/Module'
 
   '/auth':
     post:
@@ -1012,11 +976,71 @@ definitions:
         $ref: '#/definitions/Block'
       transaction:
         $ref: '#/definitions/Transcation'
+
+  Package:
+    type: 'object'
+    required:
+      - packageId
+      - packageSpec
+      - modules
+      - manufacturer
+      - timestamp
+    properties:
+      packageId:
+        type: 'string'
+        description: '电池包id'
+      packageSpec:
+        type: 'string'
+        description: '电池包规格'
+      modules:
+        type: 'array'
+        items:
+          $ref: '#/definitions/Module'
+      manufacturer:
+        type: 'string'
+        description: '生产厂家'
+      timestamp:
+        $ref: '#/definitions/Timestamp'
+    example:
+      packageId: '507f191e810c19729de860ea'
+      packageSpec: '{标称容量:5300mAh,电芯内阻:15mΩ,最大充电电流:1C}'
+      manufacturer: 'v'
+      modules: [{'moduleId': '507f191e810c19729de860ea','moduleSpec': '{标称容量:5300mAh,电芯内阻:15mΩ,最大充电电流:1C}', 'manufacturer': '波士顿'},
+               {'moduleId': '507f191e810c19729de860eb','moduleSpec': '{标称容量:5300mAh,电芯内阻:15mΩ,最大充电电流:1C}', 'manufacturer': '波士顿'}]
+      timestamp: {'nanos': 206716775}
+  Car:
+    type: 'object'
+    properties:
+      carId:
+        type: 'string'
+        description: '电池模组id'
+        maxLength: 512
+      vin:
+        type: 'string'
+        description: '车架号'
+      packageId:
+        type: 'string'
+        description: '电池包id'
+        maxLength: 512
+      carSpec:
+        type: 'string'
+        description: '规格'
+      manufacturer:
+        type: 'string'
+        description: '生产厂家'
+      timestamp:
+        $ref: '#/definitions/Timestamp'
+    example:
+      carId: '6e7f191e889019729de860ab'
+      vin: 'WDBGP57B6PB127810'
+      packageId: '507f191e810c19729de860ea'
+      carSpec: '{标称容量:5300mAh,电芯内阻:15mΩ,最大充电电流:1C}'
+      manufacturer: '一汽大众'
+      timestamp: {'nanos': 206716775}
   Block:
     type: 'object'
     required:
       - blockId
-      - timestamp
       - stateHash
     properties:
       blockId:
@@ -1031,8 +1055,6 @@ definitions:
         description: 'transcations of block'
         items:
           $ref: '#/definitions/Transcation'
-      timestamp:
-        $ref: '#/definitions/Timestamp'
       transactionsHash:
         type: 'string'
         description: 'The merkle root hash of the block’s transactions.'
@@ -1063,8 +1085,6 @@ definitions:
       cert:
         type: 'string'
         description: 'Certificate of the transactor. '
-      timestamp:
-        $ref: '#/definitions/Timestamp'
       payload:
         type: 'string'
         description: 'payload hash'
@@ -1073,52 +1093,22 @@ definitions:
         description: 'Signature of the transactor.'
     example:
       chaincodeId: '59d5075e7146d8df37bdcb0c289c293c66ee2a56c0f8d833410ff7cd8d3dd6c65ff0c6966c1914109ed7e04423bc73967b7c693fbeb383bb1a057c75b37e2674'
-      chaincodeType: 'INVOKE'
+      chaincodeType: 'UNDEFINED'
       uuid: '1908394-9840-496e-ab58-e9f6688cc3f5'
       payload: 'Ch4IARIGEgRteWNjGhIKBmludm9rZRIBYRIBYhICMTA='
-      cert: 'MIIB/zCCAYWgAwIBAgIBATAKBggqhkjOPQQDAzApMQswCQYDVQQGEwJVUzEMMAoGA1UEChMDSUJNMQwwCgYDVQQDEwN0Y2EwHhcNMTYwMTI1MjE0MTE3WhcNMTYwNDI0MjE0MTE3WjArMQswCQYDVQQGEwJVUzEMMAoGA1UEChMDSUJNMQ4wDAYDVQQDEwVsdWthczB2MBAGByqGSM49AgEGBSuBBAAiA2IABC/BBkt8izf6Ew8UDd62EdWFikJhyCPY5VO9Wxq9JVzt3D6nubx2jO5JdfWt49q8V1Aythia50MZEDpmKhtM6z7LHOU1RxuxdjcYDOvkNJo6pX144U4N1J8/D3A+97qZpKN/MH0wDgYDVR0PAQH/BAQDAgeAMAwGA1UdEwEB/wQCMAAwDQYDVR0OBAYEBAECAwQwDwYDVR0jBAgwBoAEAQIDBDA9BgYqAwQFBgcBAf8EMABNbPHZ0e/2EToi0H8mkouuUDwurgBYuUB+vZfeMewBre3wXG0irzMtfwHlfECRDDAKBggqhkjOPQQDAwNoADBlAjAoote5zYFv91lHzpbEwTfJL/+r+CG7oMVFUFuoSlvBSCObK2bDIbNkW4VQ+ZC9GTsCMQC5GCgy2oZdHw/x7XYzG2BiqmRkLRTiCS7vYCVJXLivU65P984HopxW0cEqeFM9co0='
+      cert: 'wMTI1kjEqeFM9co0='
       signature: 'MGUCMCIJaCT3YRsjXt4TzwfmD9hg9pxYnV13kWgf7e1hAW5Nar//05kFtpVlq83X+YtcmAIxAK0IQlCgS6nqQzZEGCLd9r7cg1AkQOT/RgoWB8zcaVjh3bCmgYHsoPAPgMsi3TJktg=='
   Timestamp:
     type: 'object'
     required:
       - seconds
-      - nanos
     properties:
-      seconds:
-        type: integer
-        format: int64
-        description: 'seconds from epoch'
       nanos:
         type: integer
         format: int64
         description: 'nanos from epoch'
     example:
-      seconds: 1453758316
-      nanos: 206716775
-  Package:
-    type: 'object'
-    properties:
-      packageId:
-        type: 'string'
-        description: '电池包id'
-      packageSpec:
-        type: 'string'
-        description: '电池包规格'
-      modules:
-        type: 'array'
-        description: 'Module collection'
-        items:
-          $ref: '#/definitions/Module'
-      manufacturer:
-        type: 'string'
-        description: '生产厂家'
-      timestamp:
-        $ref: '#/definitions/Timestamp'
-    example:
-      packageId: '507f191e810c19729de860ea'
-      packageSpec: '{标称容量:5300mAh,电芯内阻:15mΩ,最大充电电流:1C}'
-      manufacturer: '波士顿'
-      timestamp: '{seconds:100000,nanos:23123132}'
+      nanos: 2067167
   Module:
     type: 'object'
     properties:
@@ -1137,33 +1127,4 @@ definitions:
       moduleId: '507f191e810c19729de860ea'
       moduleSpec: '{标称容量:5300mAh,电芯内阻:15mΩ,最大充电电流:1C}'
       manufacturer: '波士顿'
-      timestamp: '{seconds:100000,nanos:23123132}'
-  Car:
-    type: 'object'
-    properties:
-      carId:
-        type: 'string'
-        description: '电池模组id'
-        maxLength: 512
-      vin:
-        type: 'string'
-        description: '车架号'
-      packageId:
-        type: 'string'
-        description: '电池包id'
-        maxLength: 512
-      carSpec:
-        type: 'string'
-        description: '规格'
-      manufacturer:
-        type: 'string'
-        description: '生产厂家'
-      timestamp:
-        $ref: '#/definitions/Timestamp'
-    example:
-      carId: '6e7f191e889019729de860ab'
-      vin: 'WDBGP57B6PB127810'
-      packageId: '507f191e810c19729de860ea'
-      carSpec: '{标称容量:5300mAh,电芯内阻:15mΩ,最大充电电流:1C}'
-      manufacturer: '一汽大众'
-      timestamp: '{seconds:100000,nanos:23123132}'
+      timestamp: {'nanos': 206716775}

@@ -19,27 +19,43 @@ POST    /v1/users                               v1.Users.save
 POST    /v1/auth                                v1.Auth.auth
 
 #申请证书
-POST         /v1/certs                            v1.Certs.save
-#查看所有已申请的证书信息
-GET          /v1/certs                            v1.Certs.list
-#我的申请
-GET          /v1/certs/{id}                       v1.Certs.get
+POST         /v1/certs                            v1.Certs.apply
 #申请查询（status=0待审批；status=1审批通过；status=2审批不通过）
-GET          /v1/certs/{status}                   v1.Certs.search
+GET          /v1/certs/{status}                   v1.Certs.list
 #证书审批
-PUT          /v1/certs/{ids}/{status}             v1.Certs.approve
+PUT          /v1/certs/{ids}                      v1.Certs.approve
+#我的申请
+GET          /v1/certs/{companyId}                v1.Certs.get
 #证书导入
 POST         /v1/Certs/imports                    v1.Certs.certsImport
 #附件上传
 POST         /v1/attachments                      v1.Certs.attachment
 #流量分析
-GET          /v1/flows                            v1.Certs.flowAnalysis
+GET          /v1/flows                            v1.Trades.flowAnalysis
 #密度分析
-GET          /v1/densitys                         v1.Certs.densityAnalysis
+GET          /v1/densitys                         v1.Trades.densityAnalysis
 
 #生成单个二维码
 POST         /v1/single2dcodes                    v1.Codes.singleCode
 #生成多个二维码
 POST         /v1/batch2dcodes                     v1.Codes.batchCode
+
+
+#新增交易信息
+POST         /v1/trades                           v1.Trades.save
+#查询交易信息
+GET          /v1/trades                           v1.Trades.list
+#查询交易明细
+GET          /v1/trades/{id}                      v1.Trades.get
+
+
+#电池生产商上传电池包与模组的对应关系
+POST         /v1/packages                         v1.Trades.packageAndModule
+#汽车制造商上传汽车与电池包的对应关系
+POST         /v1/cars                             v1.Trades.carAndPackage
+#获取电池包信息
+GET          /v1/packages/{id}                    v1.Trades.getPackage
+#获取汽车信息
+GET          /v1/cars/{id}                        v1.Trades.getCar
 
 *       /.*                                     api.API.notFoundPage
