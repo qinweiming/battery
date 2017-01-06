@@ -16,9 +16,7 @@
     
 
     'BlurAdmin.pages.profile',
-     
-      'BlurAdmin.pages.submit',
-     
+
   ])
       .config(routeConfig);
 

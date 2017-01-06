@@ -1,6 +1,8 @@
+<script src="../../../../../bower_components/plupload/js/plupload.full.min.js"></script>
+<script src="../../../../../bower_components/angular-plupload/dist/angular-plupload.min.js"></script>
 <div>
    <!-- form-horizontal -->
-   <form class="form-horizontal" role="form" name="applyForm" novalidate ng-submit="confirm()">
+   <form class="form-horizontal" role="form" name="applyForm" novalidate>
       <!-- form-group -->
       <div class="form-group">
          <label class="col-sm-2 control-label">企业类型</label>
@@ -23,9 +25,6 @@
          <div class="col-sm-1">
             <label><span style="color:red;">*</span></label>
          </div>
-          <div class="col-sm-3" ng-show="applyForm.companyName.$dirty&&applyForm.companyName.$invalid&&applyForm.submitted">
-              <lable><span style="color:red;">必填项</span></lable>
-          </div>
       </div>
       <!-- form-group -->
       <div class="form-group">
@@ -74,10 +73,8 @@
       <!-- form-group -->
       <div class="form-group">
          <label  class="col-sm-2 control-label">企业法人证书</label>
-         <div class="col-sm-6">
-            <label class="sr-only" for="inputfile">文件输入</label>
-            <input type="file" id="inputfile" ng-model="applyData.certPath">
-         </div>
+          <button plupload="fileUpload.url" plupload-options="fileUpload.options" plupload-callbacks="fileUpload.callbacks">选择文件</button>
+          <label plupload-callbacks="fileUpload.callbacks" ng-model="fileStatus">{{fileStatus}}</label>
       </div>
       <!-- form-group -->
       <div class="form-group ">
@@ -86,7 +83,7 @@
                <p>注：加<span style="color:red;">*</span>号为必填项</p>
             </div>
          <div class="col-sm-4">
-            <button type="submit" class="btn btn-primary" >确认录入</button>
+            <button type="submit" class="btn btn-primary" ng-click="confirm()" >确认录入</button>
          </div>
       </div>
    </form>
