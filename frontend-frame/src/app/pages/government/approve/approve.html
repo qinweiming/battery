@@ -1,40 +1,36 @@
-<div class="widgets">
-
-<div class="row">
-    <div class="col-md-12">
-      <div ba-panel ba-panel-title="证书审批" ba-panel-class="with-scroll">
 <div class="horizontal-scroll">
- <div class="panel panel-success">
-   <div class="panel-body panel-success">
-  
-  <div  class="row">
-    <div class="col-md-5">
-        <form class="form-inline" role="form">
-   <div class="form-group">
-        <input class="form-control" style="width: 180px" type="date" value="2017-01-01" style="border-radius: 4px;" placeholder="申请日期：起始时间" name="">&nbsp--&nbsp<input class="form-control" style="width: 180px" style="border-radius: 4px;" type="date" value="2017-01-01" placeholder="截止时间" name="">
-         </div></form></div>
-         <div class="col-md-2 ">
-        
-   <div class="form-group">
-         <input  class="form-control" style="width: 180px" style="border-radius: 4px;" type="text" placeholder="请输入企业名称" name="">
-         </div>
+  <div class="panel panel-success">
+    <div class="panel-body panel-success">
+      <div class="row">
+        <div class="col-md-5">
+          <form class="form-inline" role="form">
+            <div class="form-group">
+              <input class="form-control" style="width: 180px" type="text" style="border-radius: 4px;" placeholder="申请日期：起止时间" name="" ng-model="filters.startDate">
+              <span>&nbsp--&nbsp</span>
+              <input class="form-control" style="width: 180px" style="border-radius: 4px;" type="text" placeholder="截止时间" name="" ng-model="filters.endDate">
+            </div>
+          </form>
         </div>
-        <div class="col-md-1 " style="margin-left: 3.33333333%; ">
-           <button type="button" class="btn btn-primary" 
-   data-toggle="button"> 查询
-</button>
+        <div class="col-md-2 ">
+          <div class="form-group">
+            <input  class="form-control" style="width: 180px" style="border-radius: 4px;" type="text" placeholder="请输入企业名称" name=""  ng-model="filters.companyName">
+          </div>
         </div>
-        <div class="col-md-1" style="margin-left: 5.33333333%; "><button type="button" class="btn btn-success">审核通过</button></div>
-        <div class="col-md-1  " style="margin-left: 3.33333333%;"><button type="button" class="btn btn-danger" >审核不通过</button></div>
+        <div class="col-md-1 col-md-offset-1 ">
+          <button type="button" class="btn btn-primary" data-toggle="button" ng-click="search()">查询</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-1"><button type="button" class="btn btn-success" ng-click="approveSuccess()">审核通过</button></div>
+        <div class="col-md-2 "><button type="button" class="btn btn-danger" ng-click="approveFail()">审核不通过</button></div>
+      </div>
+    </div>
   </div>
-   </div>
-</div>
-
 
   <table class="table table-hover table-striped table-bordered " st-table="smartTableData">
     <thead>
       <tr class="sortable ">
-        <th style="text-align: center;"><input type="checkbox"></th>
+        <th style="text-align: center;"><input type="checkbox" ng-model="select_all" ng-change="selectAll()" ></th>
         <th st-sort="firstName">申请日期</th>
         <th st-sort="lastName">申请序号</th>
         <th st-sort="username">企业名称</th>
@@ -47,12 +43,12 @@
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="item in approveList">
-        <td ><input type="checkbox"></td>
-        <td>{{item.applyDate}}</td>
-        <td>{{item.applyOrder}}</td>
+      <tr ng-repeat="item in currentPageData">
+        <td ><input type="checkbox"  ng-model="item.checked" ng-change="selectOne()" ></td>
+        <td>{{item.startDate}}</td>
+        <td>{{item.endDate}}</td>
         <td>{{item.companyName}}</td>
-        <td>{{item.creditCode}}</td>
+        <td>{{item.status}}</td>
         <td>{{item.factoryCode}}</td>
         <td>{{item.contact}}</td>
         <td>{{item.phone}}</td>
@@ -67,14 +63,30 @@
             <div class="form-group select-page-size-wrap col-md-4">
               <label>
                 <select class="form-control selectpicker show-tick" title="显示页数" selectpicker
-            ng-model="smartTablePageSize" ng-options="i for i in [5,10,15,20,25]"></select>
+            ng-model="tablePageSize" ng-options="i for i in [5,10,15,20,25]"></select>
               </label>
             </div>
             <div class="col-md-4 col-md-offset-2" st-pagination="" st-items-by-page="smartTablePageSize" st-displayed-pages="5"></div>
             <div class="col-md-2 col-md-pull-1 ">
               <ul class="pagination">
-                <li><a href="#">上一页</a></li>
-                <li><a href="#">下一页</a></li>
+                <!-- <li><a href="#">上一页</a></li>
+                <li><a href="#">下一页</a></li> -->
+
+                <li>
+                  <a ng-click="Previous()">
+                  <span>上一页</span>
+                  </a>
+                  </li>
+                  <li ng-repeat="page in pageList" ng-class="{active: isActivePage(page)}" >
+                  <a ng-click="selectPage(page)" >{{ page }}</a>
+                  </li>
+                  <li>
+                  <a ng-click="Next()">
+                  <span>下一页</span>
+                  </a>
+                  </li>
+
+
               </ul>
             </div>
           </div>
@@ -82,9 +94,4 @@
       </tr>
     </tfoot>
   </table>
-</div>
-</div>
-    </div>
-  </div>
-
 </div>
