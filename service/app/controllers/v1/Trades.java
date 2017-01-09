@@ -4,9 +4,8 @@ import controllers.api.API;
 import models.*;
 import models.Package;
 import org.bson.types.ObjectId;
-import play.Logger;
 import play.data.validation.Required;
-import utils.StringUtils;
+import utils.SafeGuard;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,35 +28,39 @@ public class Trades extends API {
     /**
      * 2.获取交易信息
      */
-    public static void list() {
-        Integer limit = Integer.valueOf(request.params.get("limit"));
-        Integer offset = Integer.valueOf(request.params.get("offset"));
-        Search search = readFilters(Search.class);//获取列表页的查询条件
-        /**
-         * sql查询语句
-         * fromId、toId、startDate、endDate、startProductId、endProductId为查询条件
-         */
-        String sql = "";
-        if(StringUtils.isNotNullOrEmpty(search.fromId)) {
-            sql += "{fromId: " + search.fromId;
-        }if(StringUtils.isNotNullOrEmpty(search.toId)) {
-            sql += ",toId: " + search.toId;
-        }else if(search.startDate != null && search.endDate != null) {
-            sql += ",createTime: {\"$gte\": " + search.startDate + ", \"$lte\": " + search.endDate + "}";
-        }else if(search.startDate != null) {
-            sql += ",createTime: {\"$gte\": " + search.startDate + "}";
-        }else if(search.endDate != null) {
-            sql += ",createTime: {\"$lte\": " + search.endDate + "}";
-        }else if(search.startProductId != null && search.endProductId != null) {
-            sql += ",productIds: {\"$gte\": " + search.startProductId + ", \"$lte\": " + search.endProductId + "}";
-        }else if(search.startProductId != null) {
-            sql += ",productIds: {\"$gte\": " + search.startProductId + "}";
-        }else if(search.endProductId != null) {
-            sql += ",productIds: {\"$lte\": " + search.endProductId + "}";
-        }
-        sql += "}";
-        Logger.info("sql: " + sql);
-        List<Trades> trades = StreamSupport.stream(getCollection(Trades.class).find(sql).limit(limit).skip(offset).as(Trades.class).spliterator(),false).collect(Collectors.toList());
+    public static void list(String filters,Integer limit,Integer offset) {
+
+          filters= SafeGuard.safeFilters(filters);
+          limit = SafeGuard.safeLimit(limit);
+          offset= SafeGuard.safeOffset(offset);
+
+//        Search search = readFilters(Search.class);//获取列表页的查询条件
+//        /**
+//         * sql查询语句
+//         * fromId、toId、startDate、endDate、startProductId、endProductId为查询条件
+//         */
+//        String sql = "";
+//        if(StringUtils.isNotNullOrEmpty(search.fromId)) {
+//            sql += "{fromId: " + search.fromId;
+//        }if(StringUtils.isNotNullOrEmpty(search.toId)) {
+//            sql += ",toId: " + search.toId;
+//        }else if(search.startDate != null && search.endDate != null) {
+//            sql += ",createTime: {\"$gte\": " + search.startDate + ", \"$lte\": " + search.endDate + "}";
+//        }else if(search.startDate != null) {
+//            sql += ",createTime: {\"$gte\": " + search.startDate + "}";
+//        }else if(search.endDate != null) {
+//            sql += ",createTime: {\"$lte\": " + search.endDate + "}";
+//        }else if(search.startProductId != null && search.endProductId != null) {
+//            sql += ",productIds: {\"$gte\": " + search.startProductId + ", \"$lte\": " + search.endProductId + "}";
+//        }else if(search.startProductId != null) {
+//            sql += ",productIds: {\"$gte\": " + search.startProductId + "}";
+//        }else if(search.endProductId != null) {
+//            sql += ",productIds: {\"$lte\": " + search.endProductId + "}";
+//        }
+//        sql += "}";
+//        Logger.info("sql: " + sql);
+        List<Trades> trades = StreamSupport.stream(getCollection(Trades.class).find().limit(limit).skip(offset).as(Trades.class).spliterator(),false).collect(Collectors.toList());
+        //todo: get row count and set into http response HEADER field: X-Total-Count
         renderJSON(trades);
     }
 

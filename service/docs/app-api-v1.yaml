@@ -18,24 +18,20 @@ produces:
 #security:
 #  - bearer: []
 tags:
-  - name: Auth
+  - name: 授权
     description: 授权
-  - name: Users
+  - name: 用户
     description: 用户
-  - name: Certs
+  - name: 证书
     description: 证书申请/审批/查
-  - name: Trade
+  - name: 交易
     description: 交易信息
-  - name: Component
+  - name: 组件
     description: 对应关系数据
-  - name: Codes
+  - name: 二维码
     description: 二维码
-  - name: Densitys
-    description: 密度分析
-  - name: Flows
-    description: 流量分析
-  - name: Pictures
-    description: 图片
+  - name: 统计分析
+    description: 统计分析
 paths:
   '/trades':
     post:
@@ -50,7 +46,8 @@ paths:
           schema:
             $ref: '#/definitions/Trade'
       tags:
-        - Trade
+        - 交易
+        - 厂商
       responses:
         201:
           description: '成功,其URI 已经随Location 头信息返回'
@@ -76,7 +73,9 @@ paths:
             $ref: '#/definitions/Error'
     get:
       tags:
-      - 'Trade'
+      - '交易'
+      - 厂商
+      - 认证中心
       summary: '查询交易数据'
       description: '查询交易数据'
       consumes:
@@ -107,6 +106,10 @@ paths:
             type: array
             items:
               $ref: '#/definitions/Trade'
+          headers:
+            X-Total-Count:
+              type: integer
+              description: 总行数
         400:
           description: '错误的资源请求'
           schema:
@@ -135,7 +138,9 @@ paths:
           type: string
           required: true
       tags:
-        - Component
+        - 交易
+        - 厂商
+        - 认证中心
       responses:
         200:
           description: 成功
@@ -178,6 +183,10 @@ paths:
       responses:
         201:
           description: '成功,其URI 已经随Location 头信息返回'
+          headers:
+            Location:
+              type: string
+              description: 新创建的此扫描记录对应的资源URI
         400:
           description: '错误的资源请求'
           schema:
@@ -200,7 +209,9 @@ paths:
             $ref: '#/definitions/Error'
     get:
       tags:
-      - 'Trade'
+      - 交易
+      - 认证中心
+      - 厂商
       summary: '查询二维码扫描记录数据'
       description: '查询二维码扫描记录数据'
       consumes:
@@ -231,6 +242,10 @@ paths:
             type: array
             items:
               $ref: '#/definitions/Scan'
+          headers:
+            X-Total-Count:
+              type: integer
+              description: 总行数
         400:
           description: '错误的资源请求'
           schema:
@@ -303,6 +318,10 @@ paths:
       responses:
         201:
           description: '成功,其URI 已经随Location 头信息返回'
+          headers:
+            Location:
+              type: string
+              description: 新创建的此扫描记录对应的资源URI
         400:
           description: '错误的资源请求'
           schema:
@@ -341,6 +360,10 @@ paths:
       responses:
         201:
           description: '成功,其URI 已经随Location 头信息返回'
+          headers:
+            Location:
+              type: string
+              description: 新创建的此扫描记录对应的资源URI
         400:
           description: '错误的资源请求'
           schema:
@@ -413,65 +436,63 @@ paths:
         responses:
           201:
             description: 提交成功，等待审核
-  '/certs/{status}':
-    get:
-      summary: 申请查询(status=0:待审批 status=1:审批通过 status=2:审批不通过)
-      description: status
-      consumes:
-         - application/json
-      parameters:
-        - name: status
-          in: path
-          description: 证书申请状态；0:未审核(默认) 1：审核通过 2：审核不通过
-          required: true
-          type: integer
-        - in: query
-          name: filters
-          type: string
-          description: 查询条件,json 格式, {companyName:'',startDate:'',endDate:''}
-          required: true
-        - name: limit
-          in: query
-          type: integer
-          minimum: 0
-          maximum: 100
-          default: 10
-          description: 条数
-        - name: offset
-          in: query
-          type: integer
-          minimum: 0
-          default: 0
-          description: 起始位置
-      tags:
-        - Certs
-      responses:
-        201:
-          description: 成功
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/Cert'
-        400:
-          description: '错误的资源请求'
-          schema:
-            $ref: '#/definitions/Error'
-        401:
-          description: '资源授权错误'
-          schema:
-            $ref: '#/definitions/Error'
-        403:
-          description: '禁止访问资源'
-          schema:
-            $ref: '#/definitions/Error'
-        404:
-          description: '未找到对应的资源'
-          schema:
-            $ref: '#/definitions/Error'
-        500:
-          description: '服务内部错误'
-          schema:
-            $ref: '#/definitions/Error'
+      get:
+        summary: 证书申请查询
+        description: 证书申请查询
+        consumes:
+           - application/json
+        parameters:
+          - in: query
+            name: filters
+            type: string
+            description: 查询条件,json 格式, {companyName:'',startDate:'',endDate:''}
+            required: true
+          - name: limit
+            in: query
+            type: integer
+            minimum: 0
+            maximum: 100
+            default: 10
+            description: 条数
+          - name: offset
+            in: query
+            type: integer
+            minimum: 0
+            default: 0
+            description: 起始位置
+        tags:
+          - Certs
+        responses:
+          201:
+            description: 成功
+            schema:
+              type: array
+              items:
+                $ref: '#/definitions/Cert'
+            headers:
+              X-Total-Count:
+                type: integer
+                description: 总行数
+          400:
+            description: '错误的资源请求'
+            schema:
+              $ref: '#/definitions/Error'
+          401:
+            description: '资源授权错误'
+            schema:
+              $ref: '#/definitions/Error'
+          403:
+            description: '禁止访问资源'
+            schema:
+              $ref: '#/definitions/Error'
+          404:
+            description: '未找到对应的资源'
+            schema:
+              $ref: '#/definitions/Error'
+          500:
+            description: '服务内部错误'
+            schema:
+              $ref: '#/definitions/Error'
   '/certs/{ids}':
     put:
       summary: 证书审批
@@ -495,10 +516,6 @@ paths:
       responses:
         201:
           description: 成功
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/Cert'
         400:
           description: '错误的资源请求'
           schema:
@@ -519,9 +536,9 @@ paths:
          description: '服务内部错误'
          schema:
             $ref: '#/definitions/Error'
-  '/certs/{companyId}':
+  '/company/{companyId}/certs':
     get:
-      summary: 我的申请
+      summary: 查询企业的证书信息
       description: companyId
       consumes:
         - application/json
@@ -540,6 +557,10 @@ paths:
             type: array
             items:
               $ref: '#/definitions/Cert'
+          headers:
+            X-Total-Count:
+              type: integer
+              description: 总行数
         400:
           description: '错误的资源请求'
           schema:
@@ -560,22 +581,26 @@ paths:
           description: '服务内部错误'
           schema:
             $ref: '#/definitions/Error'
-  '/certs/imports':
     post:
-      summary:  证书导入
-      description: 将证书打包导入
+      summary:  企业的证书导入
+      description: 将企业的证书压缩包进行导入
       consumes:
          - application/json
       parameters:
-         - name: attachment
-           in: formData
-           description: 导入的zip包
-           required: true
-           type: file
-         - name: remark
-           in: query
-           description: 文字说明
-           type: string
+        - name: companyId
+          in: path
+          description: 企业Id
+          type: string
+          required: true
+        - name: attachment
+          in: formData
+          description: 导入的zip包
+          required: true
+          type: file
+        - name: remark
+          in: query
+          description: 文字说明
+          type: string
       tags:
          - Certs
       responses:
@@ -616,6 +641,10 @@ paths:
       responses:
         201:
           description: 成功
+          headers:
+            Location:
+              type: string
+              description: 新创建的此扫描记录对应的资源URI
         400:
           description: '错误的资源请求'
           schema:
@@ -637,27 +666,27 @@ paths:
           schema:
             $ref: '#/definitions/Error'
 
-  '/single2dcodes':
+  '/2dcodes/{moduleId}':
     post:
       summary:  单个二维码生成
       description: 单个二维码生成
       consumes:
          - application/json
       parameters:
-         - in: query
+         - in: path
            name: moduleId
            type: string
-           description: 查询条件,电池模组id(流水号)
+           description: 电池模组id(流水号)
            required: true
       tags:
          - Codes
-      response:
+      responses:
          201:
-          description: 服务器正常返回
+          description: 服务器正常返回, 二维码图片的base64
           schema:
-            $ref: '#/definitions/Pictures'
+            type: string
 
-  '/batch2dcodes':
+  '/2dcodes':
     post:
       summary:  批量二维码生成
       description: 批量二维码生成
@@ -676,11 +705,19 @@ paths:
            required: true
       tags:
          - Codes
-      response:
+      responses:
          201:
           description: 服务器正常返回
           schema:
-            $ref: '#/definitions/Pictures'
+            type: array
+            items:
+              type: object
+              properties:
+                moduleId:
+                  type: string
+                2dcode:
+                  type: string
+                  description: 二维码base64
 
   '/flows':
     get:
@@ -701,7 +738,7 @@ paths:
           required: true
       tags:
          - Flows
-      response:
+      responses:
          201:
           description: 服务器正常返回
           schema:
@@ -715,18 +752,13 @@ paths:
          - application/json
       parameters:
         - in: query
-          name: beginModuleId
+          name: filters
           type: string
-          description: 起始电池模组id(起始流水号)
-          required: true
-        - in: query
-          name: endModuleId
-          type: string
-          description: 截止电池模组id(截止流水号)
+          description: 过滤条件, eg:{year:2016}
           required: true
       tags:
          - Densitys
-      response:
+      responses:
          201:
           description: 服务器正常返回
           schema:
@@ -1100,9 +1132,11 @@ definitions:
       signature: 'MGUCMCIJaCT3YRsjXt4TzwfmD9hg9pxYnV13kWgf7e1hAW5Nar//05kFtpVlq83X+YtcmAIxAK0IQlCgS6nqQzZEGCLd9r7cg1AkQOT/RgoWB8zcaVjh3bCmgYHsoPAPgMsi3TJktg=='
   Timestamp:
     type: 'object'
-    required:
-      - seconds
     properties:
+      seconds:
+        type: integer
+        format: int64
+        description: 'seconds from epoch'
       nanos:
         type: integer
         format: int64
