@@ -8,4 +8,6 @@
     <color name="colorTabText">#eeeeee</color>
     <color name="colorSelectedTabText">#FFFFFF</color>
     <color name="custom_gray">#8e8e8e</color>
+    <color name="navigationBarColor">#f46444</color>
+    <color name="colorPrimaryDarkTrans">#CCf57257</color>
 </resources>
