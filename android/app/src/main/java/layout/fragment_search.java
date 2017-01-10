@@ -67,7 +67,6 @@ public class fragment_search extends Fragment implements View.OnClickListener {
         searchRecordsLl = (LinearLayout) view.findViewById(R.id.search_content_show_ll);
         searchContentEt = (EditText) view.findViewById(R.id.input_search_content_et);
         scanButtonIv = (ImageView) view.findViewById(R.id.search_scan_button);
-
         //添加搜索view
         searchRecordsLl.addView(recordsHistoryView);
 
@@ -102,7 +101,7 @@ public class fragment_search extends Fragment implements View.OnClickListener {
 
     private void initListener() {
         clearAllRecordsTv.setOnClickListener(this);
-        scanButtonIv.setOnClickListener(this);
+         scanButtonIv.setOnClickListener(this);
         searchContentEt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 
             @Override
@@ -185,9 +184,9 @@ public class fragment_search extends Fragment implements View.OnClickListener {
                 recordsAdapter.notifyDataSetChanged();
                 searchRecordsLl.setVisibility(View.GONE);
                 break;
-            case R.id.search_scan_button:
-                Intent intent = new Intent(MainActivity.mainActivity, ScanActivity.class);
-                startActivity(intent);
+                case R.id.search_scan_button:
+                    Intent intent = new Intent(MainActivity.mainActivity, ScanActivity.class);
+                    startActivity(intent);
         }
     }
 
