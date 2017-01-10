@@ -828,6 +828,9 @@ definitions:
       companyType:
         type: integer
         description: 企业类型(0:电池厂商 1:汽车厂商)
+      companyId:
+        type: integer
+        description: 企业Id
       companyName:
         type: string
         description: 企业名称
@@ -858,6 +861,7 @@ definitions:
 
     required:
       - companyType
+      - companyId
       - companyName
       - creditCode
       - vendorCode
@@ -865,6 +869,7 @@ definitions:
       - email
     example:
       companyType: 1
+      companyId: 21424
       companyName: "电池厂商1"
       creditCode: "911199R"
       vendorCode: "111111"

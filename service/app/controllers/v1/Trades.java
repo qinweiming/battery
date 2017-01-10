@@ -7,6 +7,7 @@ import org.bson.types.ObjectId;
 import play.data.validation.Required;
 import utils.SafeGuard;
 
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -137,4 +138,25 @@ public class Trades extends API {
             renderJSON(car);
         }
     }
+
+    /**
+     * 10.新增二维码扫描记录
+     */
+    public static void addRecord(){
+        Scan scan = readBody(Scan.class);
+        scan.save();
+    }
+
+    /**
+     * 11.查询二维码扫描记录
+     */
+ /*   public static void getRecord(String filters,Integer limit,Integer offset){
+        filters= SafeGuard.safeFilters(filters);
+        limit = SafeGuard.safeLimit(limit);
+        offset= SafeGuard.safeOffset(offset);
+        List<Scan> scans = StreamSupport.stream(getCollection(Scan.class).find(filters).limit(limit).skip(offset).as(Scan.class).spliterator(),false).collect(Collectors.toList());
+        Long totalCount = getCollection(Scan.class).count(filters);
+        response.setHeader("X-Total-Count",String.valueOf(totalCount));
+        renderJSON(scans);
+    }*/
 }

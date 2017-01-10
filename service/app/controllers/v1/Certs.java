@@ -2,14 +2,12 @@ package controllers.v1;
 
 import controllers.api.API;
 import models.Cert;
-import models.Search;
 import org.bson.types.ObjectId;
 import play.Logger;
 import play.Play;
 import play.data.validation.Required;
 import play.libs.Files;
 import utils.SafeGuard;
-import utils.StringUtils;
 
 import java.io.File;
 import java.util.Date;
@@ -45,27 +43,13 @@ public class Certs extends API {
         filters= SafeGuard.safeFilters(filters);
         limit = SafeGuard.safeLimit(limit);
         offset= SafeGuard.safeOffset(offset);
-//        Search search = readFilters(Search.class);//获取列表页的查询条件
-//        /**
-//         * sql查询语句
-//         * companyName、startDate、endDate为查询条件
-//         */
-//        String sql = "{status: " + status;
-//        if(StringUtils.isNotNullOrEmpty(search.companyName)) {
-//            sql += ",companyName: " + search.companyName;
-//        }else if(search.startDate != null && search.endDate != null) {
-//            sql += ",createTime: {\"$gte\": " + search.startDate + ", \"$lte\": " + search.endDate + "}";
-//        }else if(search.startDate != null) {
-//            sql += ",createTime: {\"$gte\": " + search.startDate + "}";
-//        }else if(search.endDate != null) {
-//            sql += ",createTime: {\"$lte\": " + search.endDate + "}";
-//        }
-//        sql += "}";
-//        Logger.info("sql: " + sql);
-//        Logger.info("search.startDate: " + search.startDate);
-//        Logger.info("search.endDate: " + search.endDate);
         List<Cert> certs = StreamSupport.stream(getCollection(Cert.class).find(filters).limit(limit).skip(offset).as(Cert.class).spliterator(),false).collect(Collectors.toList());
         //todo: get row count and set into http response HEADER field: X-Total-Count
+        //Logger.info("filters: " + filters);
+        //Logger.info("certs len: " + certs.size());
+        Long totalCount = getCollection(Cert.class).count(filters);
+        response.setHeader("X-Total-Count",String.valueOf(totalCount));
+        //Logger.info("X-Total-Count: " + response.getHeader("X-Total-Count"));
         renderJSON(certs);
     }
 
@@ -87,7 +71,7 @@ public class Certs extends API {
     }
 
     /**
-     * 3.我的申请
+     * 3.查询企业的证书信息
      * @param companyId 企业的Id
      */
     public static void get(@Required String companyId){
