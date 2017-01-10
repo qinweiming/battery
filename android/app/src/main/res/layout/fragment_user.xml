@@ -67,6 +67,8 @@
         android:layout_height="50dp"
         android:id="@+id/imageButton"
         android:src="@drawable/login_next"
+         android:paddingRight="10dp"
+         android:background="@color/colorPrimary"
         android:background="@color/white"
         android:layout_centerVertical="true"
         android:layout_toEndOf="@+id/login_username_group" />
