@@ -8,7 +8,6 @@ import play.Logger;
 import play.Play;
 import play.data.validation.Required;
 import play.libs.Files;
-import utils.SafeGuard;
 import utils.StringUtils;
 
 import java.io.File;
@@ -40,32 +39,29 @@ public class Certs extends API {
      * 2.政府内部用户-申请状态查询（status=0待审批；status=1审批通过；status=2审批不通过）
      * 通过 status 的取值进入到待审批列表、已审批列表
      */
-    public static void list(String filters,Integer limit,Integer offset) {
-
-        filters= SafeGuard.safeFilters(filters);
-        limit = SafeGuard.safeLimit(limit);
-        offset= SafeGuard.safeOffset(offset);
-//        Search search = readFilters(Search.class);//获取列表页的查询条件
-//        /**
-//         * sql查询语句
-//         * companyName、startDate、endDate为查询条件
-//         */
-//        String sql = "{status: " + status;
-//        if(StringUtils.isNotNullOrEmpty(search.companyName)) {
-//            sql += ",companyName: " + search.companyName;
-//        }else if(search.startDate != null && search.endDate != null) {
-//            sql += ",createTime: {\"$gte\": " + search.startDate + ", \"$lte\": " + search.endDate + "}";
-//        }else if(search.startDate != null) {
-//            sql += ",createTime: {\"$gte\": " + search.startDate + "}";
-//        }else if(search.endDate != null) {
-//            sql += ",createTime: {\"$lte\": " + search.endDate + "}";
-//        }
-//        sql += "}";
-//        Logger.info("sql: " + sql);
-//        Logger.info("search.startDate: " + search.startDate);
-//        Logger.info("search.endDate: " + search.endDate);
-        List<Cert> certs = StreamSupport.stream(getCollection(Cert.class).find(filters).limit(limit).skip(offset).as(Cert.class).spliterator(),false).collect(Collectors.toList());
-        //todo: get row count and set into http response HEADER field: X-Total-Count
+    public static void list(@Required Integer status) {
+        Integer limit = Integer.valueOf(request.params.get("limit"));
+        Integer offset = Integer.valueOf(request.params.get("offset"));
+        Search search = readFilters(Search.class);//获取列表页的查询条件
+        /**
+         * sql查询语句
+         * companyName、startDate、endDate为查询条件
+         */
+        String sql = "{status: " + status;
+        if(StringUtils.isNotNullOrEmpty(search.companyName)) {
+            sql += ",companyName: " + search.companyName;
+        }else if(search.startDate != null && search.endDate != null) {
+            sql += ",createTime: {\"$gte\": " + search.startDate + ", \"$lte\": " + search.endDate + "}";
+        }else if(search.startDate != null) {
+            sql += ",createTime: {\"$gte\": " + search.startDate + "}";
+        }else if(search.endDate != null) {
+            sql += ",createTime: {\"$lte\": " + search.endDate + "}";
+        }
+        sql += "}";
+        Logger.info("sql: " + sql);
+        Logger.info("search.startDate: " + search.startDate);
+        Logger.info("search.endDate: " + search.endDate);
+        List<Cert> certs = StreamSupport.stream(getCollection(Cert.class).find(sql).limit(limit).skip(offset).as(Cert.class).spliterator(),false).collect(Collectors.toList());
         renderJSON(certs);
     }
 

@@ -15,7 +15,6 @@
             android:layout_height="match_parent">
 
             <ImageView
-                android:id="@+id/search_scan_button"
                 android:padding="5dp"
                 android:layout_gravity="center_vertical"
                 android:layout_width="30dp"

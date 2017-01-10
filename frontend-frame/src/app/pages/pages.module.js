@@ -10,19 +10,13 @@
     'BlurAdmin.pages.government',
     'BlurAdmin.pages.ui',
     'BlurAdmin.pages.form',
-    //'BlurAdmin.pages.components',
 
-   // 'BlurAdmin.pages.gov',
-   // 'BlurAdmin.pages.charts',
-    //'BlurAdmin.pages.maps',
+    
+    'BlurAdmin.pages.charts',
+    
 
-    //'BlurAdmin.pages.tables',
-    // 'BlurAdmin.pages.charts',
+    'BlurAdmin.pages.profile',
 
-   // 'BlurAdmin.pages.profile',
-   //  'BlurAdmin.pages.myNewPage',
-      'BlurAdmin.pages.submit',
-     
   ])
       .config(routeConfig);
 

@@ -1,6 +1,5 @@
 package layout;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,15 +12,12 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.novadata.batteryapp.MainActivity;
 import com.novadata.batteryapp.R;
-import com.novadata.batteryapp.ScanActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +33,6 @@ public class fragment_search extends Fragment implements View.OnClickListener {
     private View recordsHistoryView;
     private ListView recordsListLv;
     private TextView clearAllRecordsTv;
-    private ImageView scanButtonIv;
     private TextView cancelTv;
     private LinearLayout searchRecordsLl;
 
@@ -66,7 +61,6 @@ public class fragment_search extends Fragment implements View.OnClickListener {
 
         searchRecordsLl = (LinearLayout) view.findViewById(R.id.search_content_show_ll);
         searchContentEt = (EditText) view.findViewById(R.id.input_search_content_et);
-        scanButtonIv = (ImageView) view.findViewById(R.id.search_scan_button);
 
         //添加搜索view
         searchRecordsLl.addView(recordsHistoryView);
@@ -102,7 +96,6 @@ public class fragment_search extends Fragment implements View.OnClickListener {
 
     private void initListener() {
         clearAllRecordsTv.setOnClickListener(this);
-        scanButtonIv.setOnClickListener(this);
         searchContentEt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 
             @Override
@@ -185,9 +178,6 @@ public class fragment_search extends Fragment implements View.OnClickListener {
                 recordsAdapter.notifyDataSetChanged();
                 searchRecordsLl.setVisibility(View.GONE);
                 break;
-            case R.id.search_scan_button:
-                Intent intent = new Intent(MainActivity.mainActivity, ScanActivity.class);
-                startActivity(intent);
         }
     }
 
