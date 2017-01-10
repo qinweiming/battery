@@ -7,7 +7,6 @@ import org.bson.types.ObjectId;
 import play.data.validation.Required;
 import utils.SafeGuard;
 
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
@@ -31,9 +30,9 @@ public class Trades extends API {
      */
     public static void list(String filters,Integer limit,Integer offset) {
 
-        filters= SafeGuard.safeFilters(filters);
-        limit = SafeGuard.safeLimit(limit);
-        offset= SafeGuard.safeOffset(offset);
+          filters= SafeGuard.safeFilters(filters);
+          limit = SafeGuard.safeLimit(limit);
+          offset= SafeGuard.safeOffset(offset);
 
 //        Search search = readFilters(Search.class);//获取列表页的查询条件
 //        /**
@@ -61,9 +60,7 @@ public class Trades extends API {
 //        sql += "}";
 //        Logger.info("sql: " + sql);
         List<Trades> trades = StreamSupport.stream(getCollection(Trades.class).find().limit(limit).skip(offset).as(Trades.class).spliterator(),false).collect(Collectors.toList());
-        Long totalCount = getCollection(Trade.class).count(filters);
-        response.setHeader("X-Total-Count",String.valueOf(totalCount));
-        //Logger.info("X-Total-Count: " + response.getHeader("X-Total-Count"));
+        //todo: get row count and set into http response HEADER field: X-Total-Count
         renderJSON(trades);
     }
 
@@ -140,25 +137,4 @@ public class Trades extends API {
             renderJSON(car);
         }
     }
-
-    /**
-     * 10.新增二维码扫描记录
-     */
-    public static void addRecord(){
-        Scan scan = readBody(Scan.class);
-        scan.save();
-    }
-
-    /**
-     * 11.查询二维码扫描记录
-     */
- /*   public static void getRecord(String filters,Integer limit,Integer offset){
-        filters= SafeGuard.safeFilters(filters);
-        limit = SafeGuard.safeLimit(limit);
-        offset= SafeGuard.safeOffset(offset);
-        List<Scan> scans = StreamSupport.stream(getCollection(Scan.class).find(filters).limit(limit).skip(offset).as(Scan.class).spliterator(),false).collect(Collectors.toList());
-        Long totalCount = getCollection(Scan.class).count(filters);
-        response.setHeader("X-Total-Count",String.valueOf(totalCount));
-        renderJSON(scans);
-    }*/
 }

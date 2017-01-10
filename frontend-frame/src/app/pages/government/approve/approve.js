@@ -2,21 +2,17 @@
   'use strict';
 
   angular.module('BlurAdmin.pages.government')
-  .controller('ApproveCtrl', ApproveCtrl);
+      .controller('ApproveCtrl', ApproveCtrl);
 
   /** @ngInject */
   function ApproveCtrl($scope, $http, toastr) {
-
+    
     var getCertsApi = "http://localhost:3003/certs";
     $scope.approveList = [];
-    $scope.newUri = '';
-    $scope.idList = [];
-    $scope.itemList = [];
     $scope.array = [];
     $scope.limit = 5;
     $scope.offset = 0;
     $scope.Parameters = '';
-    $scope.rowCount = 10;
     
     $scope.filters = {
       "startDate": "",
@@ -24,28 +20,28 @@
       "companyName": "" 
     };
     //设置查询条件，只从后台中选出checked属性值为false的项
-    $scope.newFilters = '{"checked": false}';
+    $scope.newFilters = {
+      "checked": false
+    };
     //每页数据的查询条件
     $scope.Parameters={
+      "checked": false,
       "_limit": $scope.limit,
       "_start": $scope.offset
     };
     
-    $scope.newUri = encodeURIComponent($scope.newFilters);
     //获取证书列表数据
-    $http.get(getCertsApi+'?'+'filters='+$scope.newUri).success(function(data){
-      $scope.approveList = data;
-      $scope.array = $scope.approveList;
-      //分页总数
-      $scope.pageSize = 5;
-      $scope.selPage = 1;
-      $scope.cutPage(); 
+    $http.get(getCertsApi,{params:$scope.newFilters}).success(function(data){
+        $scope.approveList = data;
+        $scope.array = $scope.approveList;
+        
+    //分页总数
+        $scope.pageSize = 5;
+        $scope.selPage = 1;
+        $scope.cutPage(); 
     });
     //获取第一页的数据
-    
-    console.log($scope.newUri);
-    $http.get(getCertsApi+'?' +'filters=' + $scope.newUri
-              ,{params:$scope.Parameters}).success(function(data){
+    $http.get(getCertsApi,{params:$scope.Parameters}).success(function(data){
       $scope.currentPageData =data;
     }).error(function(data){
       alert("选择失败");
@@ -53,13 +49,13 @@
 
     //分页
     $scope.cutPage = function(){
-      $scope.pages = Math.ceil($scope.approveList.length /*$scope.rowCount*/ / $scope.pageSize);//分页数
-      console.log($scope.pages);
-      $scope.newPages = $scope.pages >5?5:$scope.pages;
-      $scope.pageList = [];
-      for(var i=0;i<$scope.newPages;i++){
-        $scope.pageList.push(i+1);
-      }
+    $scope.pages = Math.ceil($scope.approveList.length / $scope.pageSize);//分页数
+    console.log($scope.pages);
+    $scope.newPages = $scope.pages >5?5:$scope.pages;
+    $scope.pageList = [];
+    for(var i=0;i<$scope.newPages;i++){
+      $scope.pageList.push(i+1);
+    }
     },
 
     //设置分页的表格数据源
@@ -67,34 +63,33 @@
     //通过当前页数筛选出表格当前显示数据
       $scope.offset = ($scope.selPage - 1) * $scope.limit;
       $scope.Parameters._start = $scope.offset;
-      $http.get(getCertsApi+'?' +'filters=' + $scope.newUri
-              ,{params:$scope.Parameters}).success(function(data){
-        $scope.currentPageData =data;
-      }).error(function(data){
-        alert("选择失败");
-      });
+      $http.get(getCertsApi,{params:$scope.Parameters}).success(function(data){
+      $scope.currentPageData =data;
+    }).error(function(data){
+      alert("选择失败");
+    });
     },
 
     //打印当前选中页索引
     $scope.selectPage = function (page){
     //不能小于1大于最大
-      if(page<1 || page>$scope.pages)return;
+    if(page<1 || page>$scope.pages)return;
     //最多显示分页数5
-      if(page>2){
+    if(page>2){
     //因为只显示5个页数，大于2页就开始分页转换
-      var newpageList = [];
-      for(var i=(page - 3);i<((page + 2)>$scope.pages?$scope.pages:(page+2));i++){
+    var newpageList = [];
+    for(var i=(page - 3);i<((page + 2)>$scope.pages?$scope.pages:(page+2));i++){
       newpageList.push(i + 1);
-      }
-      $scope.pageList = newpageList;
-      }
-      $scope.selPage = page;
-      $scope.setData();
-      $scope.isActivePage(page);
-      $scope.select_all = false;
-      console.log("选择的页:" + page);
+    }
+    $scope.pageList = newpageList;
+    }
+    $scope.selPage = page;
+    $scope.setData();
+    $scope.isActivePage(page);
+    $scope.select_all = false;
+    console.log("选择的页:" + page);
     },
-
+    
     //设置当前选中页样式
     $scope.isActivePage = function(page){
       return $scope.selPage == page;
@@ -114,137 +109,120 @@
 
     //查询
     $scope.search = function(){ 
+
       $http.get(getCertsApi,{params:$scope.filters}).success(function(data){
-        $scope.currentPageData = data; 
+        $scope.approveList = data; 
       });
+
     },
 
-    $scope.approveSuccess = function(){    
-    //新的逻辑
-    var putCertsApi = "http://localhost:3003/certs";
-      if($scope.checked.length == 0){
-        alert("请至少选择一项数据");
-      }else{
-        $scope.idList = [];
-        $scope.itemList = [];
-        var i=0;
-        angular.forEach($scope.currentPageData,function(item){
-          if(item.checked == true){
-            console.log(item.id);
-            item.status = "1";
-            $scope.idList[i] = item.id; 
-            $scope.itemList[i] = {
-            "id": item.id,
-            "startDate": item.startDate,
-            "endDate": item.endDate,
-            "companyName": item.companyName,
-            "status": item.status,
-            "checked": item.checked
-            };
-            i++;
-            console.log($scope.idList);
-          }
-        })
-        $http.put(putCertsApi + '/' + $scope.idList, $scope.itemList).success(function(data,headers){
-          data = $scope.itemList;
-          var rowCount=10;
-          console.log(headers);
-          //todo: headers.
-          $scope.setData();
-          $scope.cutPage();
-          toastr.success('录入成功', '', {
-           "timeOut": "1000",
-           "closeButton": false,
-          });
-        }).error(function(data){
-          toastr.error('录入失败', '', {});
-          console.log("error: ", data);
-        });
-       }
-    },
+   
+    
 
-    $scope.approveFail = function(){    
-    //新的逻辑
+    $scope.approveSuccess = function() {
       var putCertsApi = "http://localhost:3003/certs";
+      //判断是否选中了数据
       if($scope.checked.length == 0){
         alert("请至少选择一项数据");
       }else{
-        $scope.idList = [];
-        $scope.itemList = [];
-        var i=0;
-        angular.forEach($scope.currentPageData,function(item){
-          if(item.checked == true){
-            console.log(item.id);
-            item.status = "2";
-            $scope.idList[i] = item.id; 
-            $scope.itemList= {
-            "id": item.id,
-            "startDate": item.startDate,
-            "endDate": item.endDate,
-            "companyName": item.companyName,
-            "status": item.status,
-            "checked": item.checked
-            };
-            i++;
-            console.log($scope.idList);
+        //遍历数组中的元素，将选中的元素的status属性的值改为"1",checked属性的值改为"true"，并通过put方法送到后台（审批通过）
+      for(var j=0;j<$scope.checked.length;j++){
+        for(var i=0;i<$scope.array.length;i++){
+          if($scope.array[i].id==$scope.checked[j]){
+            $scope.array[i].status = "1";
+            $scope.array[i].checked = true;
+            $http.put(putCertsApi + '/' + i ,$scope.array[i]).success(function(data){
+              data = $scope.array[i];  
+              //更新视图
+              $http.get(getCertsApi,{params:$scope.newFilters}).success(function(data){
+               $scope.approveList = data;
+               $scope.setData();
+               $scope.cutPage();
+              });
+              toastr.success('录入成功', '', {
+                "timeOut": "1000",
+                "closeButton": false,
+              });
+            }).error(function(data){
+              toastr.error('录入失败', '', {});
+              console.log("error: ", data);
+              });
+          } 
+        }
+      }
+      } 
+    },
+    
+    $scope.approveFail = function(){
+      var putCertsApi = "http://localhost:3003/certs";
+      //判断是否选中了数据
+      if($scope.checked.length == 0){
+        alert("请至少选择一项数据");
+      }else{
+        //遍历数组中的元素，将选中的元素的status属性的值改为"2",checked属性的值改为"true"，并通过put方法送到后台（审批不通过）
+      for(var j=0;j<$scope.checked.length;j++){
+        for(var i=0;i<$scope.array.length;i++){
+          if($scope.array[i].id==$scope.checked[j]){
+            $scope.array[i].status = "2";
+            $scope.array[i].checked = true;
+            $http.put(putCertsApi + '/' + i ,$scope.array[i]).success(function(data){
+              data = $scope.array[i];  
+              //更新视图
+              $http.get(getCertsApi,{params:$scope.newFilters}).success(function(data){
+              $scope.approveList = data;
+              $scope.setData();
+              $scope.cutPage();
+              });
+              toastr.success('录入成功', '', {
+                "timeOut": "1000",
+                "closeButton": false,
+              });
+            }).error(function(data){
+                toastr.error('录入失败', '', {});
+                console.log("error: ", data);
+              });
           }
-        })
-        $http.put(putCertsApi + '/' + $scope.idList, $scope.itemList).success(function(data,headers){
-          data = $scope.itemList;
-          var rowCount=10;
-          console.log(headers);
-          //todo: headers.
-          $scope.setData();
-          $scope.cutPage();
-          toastr.success('录入成功', '', {
-           "timeOut": "1000",
-           "closeButton": false,
-          });
-          }).error(function(data){
-            toastr.error('录入失败', '', {});
-            console.log("error: ", data);
-          });
-         }
+        }
+      }
+      }
     },
 
-    //全选
+//全选
     $scope.selectAll = function () {
-      if($scope.select_all == true) {
-        $scope.checked = [];
-        angular.forEach($scope.currentPageData, function (item) {
-          item.checked = true;
-          $scope.checked.push(item.id);
-        })
-      }else {
-        angular.forEach($scope.currentPageData, function (item) {
-          item.checked = false;
-          $scope.checked = [];
-        })
-      }
-      console.log($scope.checked);
+        if($scope.select_all == true) {
+            $scope.checked = [];
+            angular.forEach($scope.currentPageData, function (item) {
+                item.checked = true;
+                $scope.checked.push(item.id);
+            })
+        }else {
+            angular.forEach($scope.currentPageData, function (item) {
+                item.checked = false;
+                $scope.checked = [];
+            })
+        }
+        console.log($scope.checked);
     },
 
-    //单选
+//单选
     $scope.selectOne = function () {
-      $scope.checked = [];
-      angular.forEach($scope.currentPageData , function (item) {
-        var index = $scope.checked.indexOf(item.id);
-        if(item.checked && index == -1) {
-          $scope.checked.push(item.id);
-        } else if (!item.checked && index != -1){
-          $scope.checked.splice(index, 1);
-        };            
-      })
-
-      if ($scope.currentPageData.length == $scope.checked.length) {
-        $scope.select_all = true;
-      } else {
-        $scope.select_all = false;
-      }
-      console.log($scope.checked);
+        $scope.checked = [];
+        angular.forEach($scope.currentPageData , function (item) {
+            var index = $scope.checked.indexOf(item.id);
+            if(item.checked && index == -1) {
+                $scope.checked.push(item.id);
+            } else if (!item.checked && index != -1){
+                $scope.checked.splice(index, 1);
+            };            
+        })
+        if ($scope.currentPageData.length == $scope.checked.length) {
+            $scope.select_all = true;
+        } else {
+            $scope.select_all = false;
+        }
+        console.log($scope.checked);
     };
-
-}
+  }
 
 })();
 
