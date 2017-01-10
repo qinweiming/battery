@@ -40,8 +40,6 @@ POST         /v1/2dcodes/{moduleId}               v1.Codes.singleCode
 #生成多个二维码
 POST         /v1/2dcodes                          v1.Codes.batchCode
 
-
-
 #新增交易信息
 POST         /v1/trades                           v1.Trades.save
 #查询交易信息

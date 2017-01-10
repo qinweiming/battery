@@ -62,7 +62,7 @@ public class Scan extends BaseModel implements Jsonable {
 /*   *//**
    * id
    * @return id
-  **//*
+   **//*
 
   public String getId() {
     return id;
@@ -77,10 +77,10 @@ public class Scan extends BaseModel implements Jsonable {
     return this;
   }
 
-   /**
+  /**
    * 扫描者ID
    * @return scannerId
-  **/
+   **/
 
   public String getScannerId() {
     return scannerId;
@@ -95,10 +95,10 @@ public class Scan extends BaseModel implements Jsonable {
     return this;
   }
 
-   /**
+  /**
    * 二维码内容
    * @return barcode
-  **/
+   **/
 
   public String getBarcode() {
     return barcode;
@@ -113,10 +113,10 @@ public class Scan extends BaseModel implements Jsonable {
     return this;
   }
 
-   /**
+  /**
    * 扫描者所在位置的经度
    * @return longitude
-  **/
+   **/
 
   public Double getLongitude() {
     return longitude;
@@ -131,10 +131,10 @@ public class Scan extends BaseModel implements Jsonable {
     return this;
   }
 
-   /**
+  /**
    * 扫描者所在位置的纬度
    * @return latitude
-  **/
+   **/
 
   public Double getLatitude() {
     return latitude;
@@ -149,10 +149,10 @@ public class Scan extends BaseModel implements Jsonable {
     return this;
   }
 
-   /**
+  /**
    * Get timestamp
    * @return timestamp
-  **/
+   **/
 
   public Timestamp getTimestamp() {
     return timestamp;
@@ -173,11 +173,11 @@ public class Scan extends BaseModel implements Jsonable {
     }
     Scan scan = (Scan) o;
     return Objects.equals(this.id, scan.id) &&
-        Objects.equals(this.scannerId, scan.scannerId) &&
-        Objects.equals(this.barcode, scan.barcode) &&
-        Objects.equals(this.longitude, scan.longitude) &&
-        Objects.equals(this.latitude, scan.latitude) &&
-        Objects.equals(this.timestamp, scan.timestamp);
+            Objects.equals(this.scannerId, scan.scannerId) &&
+            Objects.equals(this.barcode, scan.barcode) &&
+            Objects.equals(this.longitude, scan.longitude) &&
+            Objects.equals(this.latitude, scan.latitude) &&
+            Objects.equals(this.timestamp, scan.timestamp);
   }
 
   @Override
@@ -190,7 +190,7 @@ public class Scan extends BaseModel implements Jsonable {
   public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Scan {\n");
-    
+
     sb.append("    id: ").append(toIndentedString(id)).append("\n");
     sb.append("    scannerId: ").append(toIndentedString(scannerId)).append("\n");
     sb.append("    barcode: ").append(toIndentedString(barcode)).append("\n");
@@ -211,6 +211,6 @@ public class Scan extends BaseModel implements Jsonable {
     }
     return o.toString().replace("\n", "\n    ");
   }
-  
+
 }
 
