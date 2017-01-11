@@ -31,7 +31,7 @@ POST         /v1/company/{companyId}/certs        v1.Certs.certsImport
 #附件上传
 POST         /v1/attachments                      v1.Certs.attachment
 #证书下载
-GET         /v1/certs/{id}                        v1.Certs.download
+GET         /v1/certs/{ids}                       v1.Certs.download
 
 #获取流量分析图
 GET          /v1/flows                            v1.Trades.flowAnalysis

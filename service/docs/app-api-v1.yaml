@@ -536,6 +536,42 @@ paths:
          description: '服务内部错误'
          schema:
             $ref: '#/definitions/Error'
+    get:
+      summary:  证书下载
+      description: 证书下载
+      consumes:
+         - application/json
+      parameters:
+        - in: path
+          name: ids
+          type: string
+          description: 证书id
+          required: true
+      tags:
+         - Certs
+      responses:
+        201:
+          description: 成功
+        400:
+          description: '错误的资源请求'
+          schema:
+            $ref: '#/definitions/Error'
+        401:
+          description: '资源授权错误'
+          schema:
+            $ref: '#/definitions/Error'
+        403:
+          description: '禁止访问资源'
+          schema:
+            $ref: '#/definitions/Error'
+        404:
+          description: '未找到对应的资源'
+          schema:
+            $ref: '#/definitions/Error'
+        500:
+          description: '服务内部错误'
+          schema:
+            $ref: '#/definitions/Error'
   '/company/{companyId}/certs':
     get:
       summary: 查询企业的证书信息
@@ -636,45 +672,6 @@ paths:
            description: 法人证书
            required: true
            type: file
-      tags:
-         - Certs
-      responses:
-        201:
-          description: 成功
-          headers:
-            Location:
-              type: string
-              description: 新创建的此扫描记录对应的资源URI
-        400:
-          description: '错误的资源请求'
-          schema:
-            $ref: '#/definitions/Error'
-        401:
-          description: '资源授权错误'
-          schema:
-            $ref: '#/definitions/Error'
-        403:
-          description: '禁止访问资源'
-          schema:
-            $ref: '#/definitions/Error'
-        404:
-          description: '未找到对应的资源'
-          schema:
-            $ref: '#/definitions/Error'
-        500:
-          description: '服务内部错误'
-          schema:
-            $ref: '#/definitions/Error'
-  '/certs/{id}':
-    get:
-      summary:  证书下载
-      description: 证书下载
-      parameters:
-         - name: id
-           in: path
-           description: 法人证书id
-           required: true
-           type: String
       tags:
          - Certs
       responses:

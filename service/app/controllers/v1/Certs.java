@@ -112,8 +112,8 @@ public class Certs extends API {
      * 6.文件下载
      * @param id
      */
-    public static void download(@Required String id) {
-        Cert cert =  getCollection(Cert.class).findOne(new ObjectId(id)).as(Cert.class);
+    public static void download(@Required String ids) {
+        Cert cert =  getCollection(Cert.class).findOne(new ObjectId(ids)).as(Cert.class);
         notFoundIfNull(cert);
         Logger.info("下载证书的名字为：" + cert.certName);
         renderBinary(cert.legalPersonCert.get(),cert.certName);
