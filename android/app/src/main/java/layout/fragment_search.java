@@ -67,6 +67,7 @@ public class fragment_search extends Fragment implements View.OnClickListener {
         searchRecordsLl = (LinearLayout) view.findViewById(R.id.search_content_show_ll);
         searchContentEt = (EditText) view.findViewById(R.id.input_search_content_et);
         scanButtonIv = (ImageView) view.findViewById(R.id.search_scan_button);
+        cancelTv = (TextView) view.findViewById(R.id.search_content_cancel_tv);
 
         //添加搜索view
         searchRecordsLl.addView(recordsHistoryView);
@@ -103,6 +104,7 @@ public class fragment_search extends Fragment implements View.OnClickListener {
     private void initListener() {
         clearAllRecordsTv.setOnClickListener(this);
         scanButtonIv.setOnClickListener(this);
+        cancelTv.setOnClickListener(this);
         searchContentEt.setOnEditorActionListener(new TextView.OnEditorActionListener() {
 
             @Override
@@ -160,7 +162,7 @@ public class fragment_search extends Fragment implements View.OnClickListener {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //将获取到的字符串传到搜索结果界面
-                //searchContentEt.setText(   );
+                searchContentEt.setText(searchRecordsList.get(position));
             }
         });
     }
@@ -185,9 +187,28 @@ public class fragment_search extends Fragment implements View.OnClickListener {
                 recordsAdapter.notifyDataSetChanged();
                 searchRecordsLl.setVisibility(View.GONE);
                 break;
-            case R.id.search_scan_button:
+            case R.id.search_content_cancel_tv:
+                searchContentEt.setText(null);
+                break;
+            case R.id.search_scan_button://点击扫描二维码按钮，
                 Intent intent = new Intent(MainActivity.mainActivity, ScanActivity.class);
-                startActivity(intent);
+                Bundle bundle=new Bundle();
+                bundle.putString("result", "result");
+                intent.putExtras(bundle);
+                startActivityForResult(intent, 0);
+                break;
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == getActivity().RESULT_OK){
+            Bundle bundle=data.getExtras();
+            String result= bundle.getString("result");
+            searchContentEt.setText(result);
+        } if(resultCode == getActivity().RESULT_CANCELED) {
+            Toast.makeText(getActivity(), "扫描取消", Toast.LENGTH_SHORT).show();
         }
     }
 

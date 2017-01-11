@@ -57,7 +57,11 @@ public class ScanActivity extends AppCompatActivity implements QRCodeView.Delega
         Log.i(TAG, "result:" + result);
         Toast.makeText(this, result, Toast.LENGTH_SHORT).show();
         vibrate();
-        mQRCodeView.startSpot();
+        Bundle bundle=this.getIntent().getExtras();
+        bundle.putString("result", result);
+        this.getIntent().putExtras(bundle);
+        ScanActivity.this.setResult(RESULT_OK, this.getIntent());
+        ScanActivity.this.finish();
     }
 
     @Override
@@ -67,40 +71,40 @@ public class ScanActivity extends AppCompatActivity implements QRCodeView.Delega
 
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.start_spot:
+            case R.id.start_spot://开始扫描
                 mQRCodeView.startSpot();
                 break;
-            case R.id.stop_spot:
+            case R.id.stop_spot://停止扫描
                 mQRCodeView.stopSpot();
                 break;
-            case R.id.start_spot_showrect:
+            case R.id.start_spot_showrect://显示扫描框并开始扫描
                 mQRCodeView.startSpotAndShowRect();
                 break;
-            case R.id.stop_spot_hiddenrect:
+            case R.id.stop_spot_hiddenrect://隐藏扫描框并停止扫描
                 mQRCodeView.stopSpotAndHiddenRect();
                 break;
-            case R.id.show_rect:
+            case R.id.show_rect://显示扫描框
                 mQRCodeView.showScanRect();
                 break;
-            case R.id.hidden_rect:
+            case R.id.hidden_rect://隐藏扫描框
                 mQRCodeView.hiddenScanRect();
                 break;
-            case R.id.start_preview:
+            case R.id.start_preview://开始预览，即保持画面不定格
                 mQRCodeView.startCamera();
                 break;
-            case R.id.stop_preview:
+            case R.id.stop_preview://停止预览，即将画面定格
                 mQRCodeView.stopCamera();
                 break;
-            case R.id.open_flashlight:
+            case R.id.open_flashlight://开启闪光灯
                 mQRCodeView.openFlashlight();
                 break;
-            case R.id.close_flashlight:
+            case R.id.close_flashlight://关闭闪光灯
                 mQRCodeView.closeFlashlight();
                 break;
-            case R.id.scan_barcode:
+            case R.id.scan_barcode://扫描条形码
                 mQRCodeView.changeToScanBarcodeStyle();
                 break;
-            case R.id.scan_qrcode:
+            case R.id.scan_qrcode://扫描二维码
                 mQRCodeView.changeToScanQRCodeStyle();
                 break;
         }
