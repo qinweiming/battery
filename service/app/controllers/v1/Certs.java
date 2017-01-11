@@ -6,10 +6,14 @@ import org.bson.types.ObjectId;
 import play.Logger;
 import play.Play;
 import play.data.validation.Required;
+import play.db.jpa.Blob;
 import play.libs.Files;
+import play.libs.MimeTypes;
 import utils.SafeGuard;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -95,14 +99,24 @@ public class Certs extends API {
      * 5.附件上传
      * @param attachment
      */
-    public static void attachment(@Required File attachment) {
-        String fileName = attachment.getName();
-        File storeFile = new File(storePath + "/" + fileName);
-        Files.copy(attachment, storeFile);
-        Cert cert = new Cert();
-/*        cert.legalPersonCert = storeFile;
-        cert.certPath = storeFile.getPath();
-        cert.save();*/
+    public static void attachment(@Required File attachment) throws FileNotFoundException {
+        final Cert cert = new Cert();
+        cert.certName = attachment.getName();
+        cert.legalPersonCert = new Blob();
+        cert.legalPersonCert.set(new FileInputStream(attachment),
+                MimeTypes.getContentType(attachment.getName()));
+        cert.save();
+    }
+
+    /**
+     * 6.文件下载
+     * @param id
+     */
+    public static void download(@Required String id) {
+        Cert cert =  getCollection(Cert.class).findOne(new ObjectId(id)).as(Cert.class);
+        notFoundIfNull(cert);
+        Logger.info("下载证书的名字为：" + cert.certName);
+        renderBinary(cert.legalPersonCert.get(),cert.certName);
     }
 
     /**

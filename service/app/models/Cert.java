@@ -2,6 +2,7 @@ package models;
 
 import models.api.Jsonable;
 import play.data.validation.Required;
+import play.db.jpa.Blob;
 import play.modules.jongo.BaseModel;
 
 import java.io.File;
@@ -45,14 +46,20 @@ public class Cert extends BaseModel implements Jsonable {
     /**
      * 法人证书
      */
-    public File legalPersonCert;
+    public Blob legalPersonCert;
+    /**
+     * 法人证书名称
+     */
+    public String certName;
     /**
      * 申请证书的状态
      * 0：未审核 1：审核通过 2：审核不通过
      */
     @Required
     public Integer status = 0;
-
+    /**
+     * 法人证书服务器保存地址
+     */
     public String certPath;
 
     public String certRemark;
