@@ -20,26 +20,26 @@ POST    /v1/auth                                v1.Auth.auth
 
 #申请证书
 POST         /v1/certs                            v1.Certs.apply
-#申请查询（status=0待审批；status=1审批通过；status=2审批不通过）
-GET          /v1/certs/{status}                   v1.Certs.list
+#证书申请查询（status=0待审批；status=1审批通过；status=2审批不通过）
+GET          /v1/certs                            v1.Certs.list
 #证书审批
 PUT          /v1/certs/{ids}                      v1.Certs.approve
-#我的申请
-GET          /v1/certs/{companyId}                v1.Certs.get
-#证书导入
-POST         /v1/Certs/imports                    v1.Certs.certsImport
+#查询企业的证书信息
+GET          /v1/company/{companyId}/certs        v1.Certs.get
+#企业的证书导入
+POST         /v1/company/{companyId}/certs        v1.Certs.certsImport
 #附件上传
 POST         /v1/attachments                      v1.Certs.attachment
-#流量分析
+
+#获取流量分析图
 GET          /v1/flows                            v1.Trades.flowAnalysis
-#密度分析
+#获取密度分析图
 GET          /v1/densitys                         v1.Trades.densityAnalysis
 
 #生成单个二维码
-POST         /v1/single2dcodes                    v1.Codes.singleCode
+POST         /v1/2dcodes/{moduleId}               v1.Codes.singleCode
 #生成多个二维码
-POST         /v1/batch2dcodes                     v1.Codes.batchCode
-
+POST         /v1/2dcodes                          v1.Codes.batchCode
 
 #新增交易信息
 POST         /v1/trades                           v1.Trades.save
@@ -47,6 +47,12 @@ POST         /v1/trades                           v1.Trades.save
 GET          /v1/trades                           v1.Trades.list
 #查询交易明细
 GET          /v1/trades/{id}                      v1.Trades.get
+
+#新增二维码扫描记录
+POST          /v1/scans                           v1.Trades.addRecord
+#查询二维码扫描记录
+GET          /v1/scans                            v1.Trades.getRecord
+
 
 
 #电池生产商上传电池包与模组的对应关系
