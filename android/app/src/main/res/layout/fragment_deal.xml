@@ -4,10 +4,11 @@
     android:layout_height="match_parent"
     tools:context="layout.fragment_deal">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="fragment_deal" />
+        android:orientation="vertical"
+        android:id="@+id/deal_layout">
+    </LinearLayout>
 
 </LinearLayout>
