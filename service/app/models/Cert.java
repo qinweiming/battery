@@ -2,17 +2,13 @@ package models;
 
 import models.api.Jsonable;
 import play.data.validation.Required;
-import play.db.jpa.Blob;
 import play.modules.jongo.BaseModel;
-
-import java.io.File;
-import java.util.Date;
 
 /**
  * 证书的数据模型
  * Created by xudongmei on 2016/12/13.
  */
-@SuppressWarnings("ALL")
+
 public class Cert extends BaseModel implements Jsonable {
     /**
      * 企业类型 0：电池厂 1：汽车厂
@@ -44,13 +40,10 @@ public class Cert extends BaseModel implements Jsonable {
     @Required
     public String email;
     /**
-     * 法人证书
+     * 营业执照证书图片的Base64格式
      */
-    public Blob legalPersonCert;
-    /**
-     * 法人证书名称
-     */
-    public String certName;
+    public String  licensePicture;
+
     /**
      * 申请证书的状态
      * 0：未审核 1：审核通过 2：审核不通过
@@ -64,10 +57,99 @@ public class Cert extends BaseModel implements Jsonable {
 
     public String certRemark;
 
-    /**
-     * createTime & modifyTime与数据库中的_created & _modified字段重复,这两个字段保留？
-     */
-    public Date createTime;
+    public Integer getCompanyType() {
+        return companyType;
+    }
 
-    public Date modifyTime;
+    public void setCompanyType(Integer companyType) {
+        this.companyType = companyType;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+    public String getCompanyId() {
+        return companyId;
+    }
+
+    public void setCompanyId(String companyId) {
+        this.companyId = companyId;
+    }
+
+    public String getCreditCode() {
+        return creditCode;
+    }
+
+    public void setCreditCode(String creditCode) {
+        this.creditCode = creditCode;
+    }
+
+    public String getVendorCode() {
+        return vendorCode;
+    }
+
+    public void setVendorCode(String vendorCode) {
+        this.vendorCode = vendorCode;
+    }
+
+    public String getContact() {
+        return contact;
+    }
+
+    public void setContact(String contact) {
+        this.contact = contact;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getLicensePicture() {
+        return licensePicture;
+    }
+
+    public void setLicensePicture(String licensePicture) {
+        this.licensePicture = licensePicture;
+    }
+
+    public Integer getStatus() {
+        return status;
+    }
+
+    public void setStatus(Integer status) {
+        this.status = status;
+    }
+
+    public String getCertPath() {
+        return certPath;
+    }
+
+    public void setCertPath(String certPath) {
+        this.certPath = certPath;
+    }
+
+    public String getCertRemark() {
+        return certRemark;
+    }
+
+    public void setCertRemark(String certRemark) {
+        this.certRemark = certRemark;
+    }
 }

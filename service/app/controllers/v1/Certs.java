@@ -1,19 +1,29 @@
 package controllers.v1;
 
+import com.google.common.base.Strings;
+import com.google.common.io.ByteArrayDataInput;
 import controllers.api.API;
 import models.Cert;
+import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
+import org.jongo.MongoCursor;
 import play.Logger;
 import play.Play;
+import play.data.binding.As;
+import play.data.validation.Range;
 import play.data.validation.Required;
 import play.db.jpa.Blob;
 import play.libs.Files;
 import play.libs.MimeTypes;
+import play.mvc.Router;
+import play.vfs.VirtualFile;
 import utils.SafeGuard;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.nio.file.Path;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,37 +32,40 @@ import java.util.stream.StreamSupport;
 import static play.modules.jongo.BaseModel.getCollection;
 
 /**
+ * 证书管理
  * Created by xudongmei on 2016/12/13.
  */
-@SuppressWarnings("ALL")
 public class Certs extends API {
 
-    public static String storePath = Play.configuration.getProperty("attachments.path");
+    public static String certFilesPath = Play.configuration.getProperty("attachments.path")+File.separator+"certs";
     /**
      * 1.政府内部用户-离线信息录入（申请证书）
      */
     public static void apply() {
         Cert cert = readBody(Cert.class);
-        cert.createTime = new Date();//添加创建时间
-        cert.modifyTime = new Date();//添加修改时间
         cert.save();
+        created(cert);
     }
 
     /**
      * 2.政府内部用户-申请状态查询（status=0待审批；status=1审批通过；status=2审批不通过）
      * 通过 status 的取值进入到待审批列表、已审批列表
      */
-    public static void list(String filters,Integer limit,Integer offset) {
+    public static void list(String filters, @As(value = ",") List<String> params, @Range(min = 0,max = 100) Integer limit, @Range(min = 0) Integer offset) {
 
-        filters= SafeGuard.safeFilters(filters);
-        limit = SafeGuard.safeLimit(limit);
-        offset= SafeGuard.safeOffset(offset);
-        List<Cert> certs = StreamSupport.stream(getCollection(Cert.class).find(filters).limit(limit).skip(offset).as(Cert.class).spliterator(),false).collect(Collectors.toList());
-        //todo: get row count and set into http response HEADER field: X-Total-Count
-        //Logger.info("filters: " + filters);
-        Long totalCount = getCollection(Cert.class).count(filters);
-        response.setHeader("X-Total-Count",String.valueOf(totalCount));
-        //Logger.info("X-Total-Count: " + response.getHeader("X-Total-Count"));
+        if(Strings.isNullOrEmpty(filters)){
+            filters="{companyName: {$regex: #},createTime:{$gte:#},createTime:{$lte:#},status:#}";
+        }else {
+            filters = SafeGuard.safeFilters(filters);
+        }
+        if(StringUtils.countMatches(filters,"#") != params.size()){
+            badRequest("filters args size should equals params size!");
+        }
+        //todo: 处理params中的数据类型
+        MongoCursor<Cert> mongoCursor = getCollection(Cert.class).find(filters,params).limit(limit).skip(offset).as(Cert.class);
+        response.setHeader("X-Total-Count",String.valueOf(mongoCursor.count()));
+
+        List<Cert> certs = StreamSupport.stream(mongoCursor.spliterator(),false).collect(Collectors.toList());
         renderJSON(certs);
     }
 
@@ -61,16 +74,18 @@ public class Certs extends API {
      * @param ids
      */
     public static void approve(@Required String ids) {
+
         Integer status = Integer.valueOf(request.params.get("status"));
         String[] idArr = ids.split(",");
         Date modifyTime = new Date();
-        Logger.info("modifyTime: " + modifyTime);
+
         /**
-         * 没考虑 id 不存在的情况
+         * todo: 没考虑 id 不存在的情况
          */
         for(String id : idArr) {
-            getCollection(Cert.class).update(new ObjectId(id)).with("{$set:{status:#,modifyTime:#}}",status,modifyTime).isUpdateOfExisting();
+            getCollection(Cert.class).update(new ObjectId(id)).multi().with("{$set:{status:#,modifyTime:#}}",status,modifyTime).isUpdateOfExisting();
         }
+        //todo: 证书审批后,需要生成证书(zip压缩包格式)文件并保存
     }
 
     /**
@@ -100,23 +115,20 @@ public class Certs extends API {
      * @param attachment
      */
     public static void attachment(@Required File attachment) throws FileNotFoundException {
-        final Cert cert = new Cert();
-        cert.certName = attachment.getName();
-        cert.legalPersonCert = new Blob();
-        cert.legalPersonCert.set(new FileInputStream(attachment),
-                MimeTypes.getContentType(attachment.getName()));
-        cert.save();
+        //todo: 通用的附件上传
+//        new FileInputStream(attachment),
+//                MimeTypes.getContentType(attachment.getName());
     }
 
     /**
-     * 6.文件下载
+     *  证书(压缩包文件)下载
      * @param id
      */
-    public static void download(@Required String ids) {
-        Cert cert =  getCollection(Cert.class).findOne(new ObjectId(ids)).as(Cert.class);
+    public static void download(@Required String id) {
+        Cert cert =  getCollection(Cert.class).findOne(new ObjectId(id)).as(Cert.class);
         notFoundIfNull(cert);
-        Logger.info("下载证书的名字为：" + cert.certName);
-        renderBinary(cert.legalPersonCert.get(),cert.certName);
+        renderBinary(new ByteArrayInputStream(VirtualFile.fromRelativePath(certFilesPath+File.separator+cert.getCertPath()).content()),cert.getCompanyName()+".zip");
+
     }
 
     /**
