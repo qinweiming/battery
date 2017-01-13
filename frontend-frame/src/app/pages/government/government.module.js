@@ -42,10 +42,10 @@
           sidebarMeta: {
             order: 151,
           }
-        }).state('government.view', {
-          url: '/view',
-          templateUrl: 'app/pages/government/view/view.html',
-         // controller: 'ViewCtrl',
+        }).state('government.alreadyApprove', {
+          url: '/alreadyApprove',
+          templateUrl: 'app/pages/government/alreadyApprove/alreadyApprove.html',
+          controller: 'alreadyApproveCtrl',
           title: '已审批证书查看',
           sidebarMeta: {
             order: 153,

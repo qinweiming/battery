@@ -21,7 +21,7 @@
 
    // 'BlurAdmin.pages.profile',
    //  'BlurAdmin.pages.myNewPage',
-      'BlurAdmin.pages.submit',
+      //'BlurAdmin.pages.submit',
      
   ])
       .config(routeConfig);

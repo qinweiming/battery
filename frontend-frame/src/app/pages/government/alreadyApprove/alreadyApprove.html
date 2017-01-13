@@ -5,9 +5,9 @@
         <div class="col-md-5">
           <form class="form-inline" role="form">
             <div class="form-group">
-              <input class="form-control" style="width: 180px" type="date"  style="border-radius: 4px;" placeholder="申请日期：起止时间" name="" ng-model="filters.startDate">
+              <input class="form-control" style="width: 180px" type="text" style="border-radius: 4px;" placeholder="申请日期：起止时间" name="" ng-model="filters.startDate">
               <span>&nbsp--&nbsp</span>
-              <input class="form-control" style="width: 180px" style="border-radius: 4px;" type="date" value="2017-01-01"placeholder="截止时间" name="" ng-model="filters.endDate">
+              <input class="form-control" style="width: 180px" style="border-radius: 4px;" type="text" placeholder="截止时间" name="" ng-model="filters.endDate">
             </div>
           </form>
         </div>
@@ -30,7 +30,6 @@
   <table class="table table-hover table-striped table-bordered " st-table="smartTableData">
     <thead>
       <tr class="sortable ">
-        <th style="text-align: center;"><input type="checkbox" ng-model="select_all" ng-change="selectAll()" ></th>
         <th st-sort="firstName">申请日期</th>
         <th st-sort="lastName">申请序号</th>
         <th st-sort="username">企业名称</th>
@@ -43,8 +42,7 @@
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="item in currentPageData">
-        <td ><input type="checkbox"  ng-model="item.checked" ng-change="selectOne()" ></td>
+      <tr ng-repeat="item in newPageData">
         <td>{{item.applyDate}}</td>
         <td>{{item.applyOrder}}</td>
         <td>{{item.companyName}}</td>
@@ -63,7 +61,7 @@
             <div class="form-group select-page-size-wrap col-md-4">
               <label>
                 <select class="form-control selectpicker show-tick" title="显示页数" selectpicker
-            ng-model="tablePageSize" ng-options="i for i in [5,10,15,20,25]"></select>
+            ng-model="newLimit" ng-options="i for i in [5,10,15,20,25]"></select>
               </label>
             </div>
             <!-- <div class="col-md-4 col-md-offset-2" st-pagination="" st-items-by-page="smartTablePageSize" st-displayed-pages="5"></div> -->
