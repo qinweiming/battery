@@ -1,6 +1,5 @@
 package edu.ustb.security.common.utils;
 
-import com.sun.tools.internal.jxc.ap.Const;
 import edu.ustb.security.common.constants.Constants;
 
 import java.io.InputStream;
