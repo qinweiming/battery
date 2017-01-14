@@ -1,5 +1,10 @@
 package edu.ustb.security.service.ecc.impl;
 
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.MultiFormatWriter;
+import com.google.zxing.WriterException;
+import com.google.zxing.client.j2se.MatrixToImageWriter;
+import com.google.zxing.common.BitMatrix;
 import edu.ustb.security.common.constants.Constants;
 import edu.ustb.security.common.utils.DESUtils;
 import edu.ustb.security.common.utils.TypeTransUtils;
@@ -8,21 +13,66 @@ import edu.ustb.security.domain.vo.ecc.ECPoint;
 import edu.ustb.security.domain.vo.ecc.Key;
 import edu.ustb.security.domain.vo.ecc.Pair;
 import edu.ustb.security.domain.vo.ecc.elliptic.EllipticCurve;
+import edu.ustb.security.domain.vo.ecc.elliptic.InsecureCurveException;
 import edu.ustb.security.domain.vo.ecc.elliptic.NoCommonMotherException;
+import edu.ustb.security.domain.vo.ecc.elliptic.secp256r1;
 import edu.ustb.security.service.ecc.CpkCores;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * Created by sunyichao on 2016/12/20.
  * cpk算法核心实现
  */
 public class CpkCoresImpl implements CpkCores {
+    private EllipticCurve defaultEllipticCurve;
+
+    public CpkCoresImpl() {
+        try {
+            defaultEllipticCurve = new EllipticCurve(new secp256r1());
+        } catch (InsecureCurveException e) {
+            e.printStackTrace();
+            defaultEllipticCurve = null;
+        }
+    }
+
     /**
-     * @param skm           私钥矩阵
-     * @param pkm           公钥矩阵
-     * @param ellipticCurve 指定曲线
-     * @return 矩阵生成结果
+     * 指定固定曲线 创建CpkCores
+     *
+     * @param defaultEllipticCurve 指定曲线
+     */
+    public CpkCoresImpl(EllipticCurve defaultEllipticCurve) {
+        this.defaultEllipticCurve = defaultEllipticCurve;
+    }
+
+    /**
+     * @see CpkCores#getDefaultEllipticCurve()
+     */
+    public String getDefaultEllipticCurve() {
+        return defaultEllipticCurve.toString();
+    }
+
+    /**
+     * @see CpkCores#setDefaultEllipticCurve(EllipticCurve)
+     */
+    public void setDefaultEllipticCurve(EllipticCurve defaultEllipticCurve) {
+        this.defaultEllipticCurve = defaultEllipticCurve;
+    }
+
+    /**
+     * @see CpkCores#generateCpkMatrix(BigInteger[][], ECPoint[][])
+     */
+    @Override
+    public boolean generateCpkMatrix(BigInteger[][] skm, ECPoint[][] pkm) {
+        return generateCpkMatrix(skm, pkm, defaultEllipticCurve);
+    }
+
+    /**
+     * @see CpkCores#generateCpkMatrix(BigInteger[][], ECPoint[][], EllipticCurve)
      */
     @Override
     public boolean generateCpkMatrix(BigInteger[][] skm, ECPoint[][] pkm, EllipticCurve ellipticCurve) {
@@ -35,7 +85,7 @@ public class CpkCoresImpl implements CpkCores {
                     pkm[i][j] = key.getPk();
                 }
             }
-            return true;
+            result = true;
         }
         return result;
     }
@@ -46,16 +96,25 @@ public class CpkCoresImpl implements CpkCores {
     @Override
     public ECPoint generatePkById(String Id, ECPoint[][] pkm) {
         ECPoint pk = null;
-        if (pkm != null) {
-            int[] YS = IdToYs(Id, Constants.MD);
-            BigInteger[] a = IdToA2(Id, Constants.MD);
-            try {
-                pk = generatePk(YS, a, pkm);
-            } catch (NoCommonMotherException e) {
-                e.printStackTrace();
+        try {
+            if (pkm != null) {
+                int[] YS = IdToYs(Id.getBytes(Constants.CHARSET), Constants.MD);
+                BigInteger[] a = IdToA2(Id, Constants.MD);
+                try {
+                    pk = generatePk(YS, a, pkm);
+                } catch (NoCommonMotherException e) {
+                    e.printStackTrace();
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return pk;
+    }
+
+    @Override
+    public BigInteger generateSkById(String Id, BigInteger[][] skm) {
+        return generateSkById(Id, skm, defaultEllipticCurve.getOrder());
     }
 
     /**
@@ -64,19 +123,32 @@ public class CpkCoresImpl implements CpkCores {
     @Override
     public BigInteger generateSkById(String Id, BigInteger[][] skm, BigInteger order) {
         BigInteger sk = null;
-        if (skm != null && order != null) {
-            int[] YS = IdToYs(Id, Constants.MD);
-            BigInteger[] a = IdToA2(Id, Constants.MD);
-            sk = generateSk(YS, a, skm, order);
+        try {
+            if (skm != null && order != null) {
+                int[] YS = IdToYs(Id.getBytes(Constants.CHARSET), Constants.MD);
+                BigInteger[] a = IdToA2(Id, Constants.MD);
+                sk = generateSk(YS, a, skm, order);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return sk;
     }
 
     /**
-     * @see CpkCores#sign(BigInteger, BigInteger, EllipticCurve)
+     * @see CpkCores#sign(BigInteger, byte[])
      */
     @Override
-    public Pair sign(BigInteger sk, BigInteger mac, EllipticCurve ellipticCurve) {
+    public Pair sign(BigInteger sk, byte[] hashBytes) {
+        return sign(sk, hashBytes, defaultEllipticCurve);
+    }
+
+    /**
+     * @see CpkCores#sign(BigInteger, byte[], EllipticCurve)
+     */
+    @Override
+    public Pair sign(BigInteger sk, byte[] hashBytes, EllipticCurve ellipticCurve) {
+        BigInteger mac = new BigInteger(hashBytes);
         Pair sig = new Pair();
         ECPoint g = new ECPoint(ellipticCurve.getGenerator());
         BigInteger order = ellipticCurve.getOrder();
@@ -96,10 +168,19 @@ public class CpkCoresImpl implements CpkCores {
     }
 
     /**
-     * @see CpkCores#verify(ECPoint, BigInteger, Pair, EllipticCurve)
+     * @see CpkCores#verify(ECPoint, byte[], Pair)
      */
     @Override
-    public boolean verify(ECPoint pk, BigInteger mac, Pair sig, EllipticCurve ellipticCurve) {
+    public boolean verify(ECPoint pk, byte[] hashBytes, Pair sign) {
+        return false;
+    }
+
+    /**
+     * @see CpkCores#verify(ECPoint, byte[], Pair, EllipticCurve)
+     */
+    @Override
+    public boolean verify(ECPoint pk, byte[] hashBytes, Pair sig, EllipticCurve ellipticCurve) {
+        BigInteger mac = new BigInteger(hashBytes);
         ECPoint g = new ECPoint(ellipticCurve.getGenerator());
         BigInteger r = sig.r;
         BigInteger s = sig.s;
@@ -131,6 +212,14 @@ public class CpkCoresImpl implements CpkCores {
         return false;
     }
 
+    @Override
+    public void generateQRcode(OutputStream outputStream, String src, Pair pair) {
+        String x = pair.r.toString(32);
+        String y = pair.s.toString(32);
+        String QRString = src + "/" + x + "/" + y;
+        generateQRcode(outputStream, QRString);
+    }
+
     /**
      * 生成私钥
      *
@@ -159,7 +248,7 @@ public class CpkCoresImpl implements CpkCores {
      * @param a   系数序列，点加运算系数
      * @param PKM 种子公钥
      * @return 公钥
-     * @throws NoCommonMotherException
+     * @throws NoCommonMotherException 不在同一条曲线上
      */
     private ECPoint generatePk(int[] YS, BigInteger[] a, ECPoint[][] PKM) throws NoCommonMotherException {
         ECPoint[] pubkeyAdd = new ECPoint[32];
@@ -181,9 +270,24 @@ public class CpkCoresImpl implements CpkCores {
      * @return YS系数数组
      */
     private int[] IdToYs(String strSrc, String MD) {
-        String strDes = TypeTransUtils.Digest(strSrc, MD);
-        String binaryId = TypeTransUtils.hexString2binaryString(strDes);
-        return part32by5(binaryId);
+        byte[] bytes = null;
+        int[] Ys = null;
+        try {
+            bytes = strSrc.getBytes(Constants.CHARSET);
+            String strDes = TypeTransUtils.Digest(strSrc, MD);
+            String binaryId = TypeTransUtils.hexString2binaryString(strDes);
+            Ys = part32by5(binaryId);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        return Ys;
+    }
+
+    private int[] IdToYs(byte[] srcBytes, String MD) throws NoSuchAlgorithmException {
+        byte[] hashBytes = TypeTransUtils.Digest(srcBytes, MD);
+        String binary = TypeTransUtils.binary(hashBytes, 2);
+        return part32by5(binary);
+
     }
 
     /**
@@ -233,5 +337,32 @@ public class CpkCoresImpl implements CpkCores {
             }
         }
         return bigIntegers32;
+    }
+
+
+    /**
+     * 输入要生成二维码的字符串，输出到指定输出流
+     *
+     * @param outputStream
+     * @param encodeString
+     */
+    private void generateQRcode(OutputStream outputStream, String encodeString) {
+        BitMatrix bitMatrix = null;
+
+        try {
+            bitMatrix = new MultiFormatWriter().encode(encodeString, BarcodeFormat.QR_CODE, 300, 300);
+            MatrixToImageWriter.writeToStream(bitMatrix, "png", outputStream);
+        } catch (WriterException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                outputStream.flush();
+                outputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
