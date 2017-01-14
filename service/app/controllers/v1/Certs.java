@@ -3,6 +3,7 @@ package controllers.v1;
 import com.google.common.base.Strings;
 import com.google.common.io.ByteArrayDataInput;
 import controllers.api.API;
+import models.Car;
 import models.Cert;
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
@@ -114,8 +115,11 @@ public class Certs extends API {
      * 5.附件上传
      * @param attachment
      */
-    public static void attachment(@Required File attachment) throws FileNotFoundException {
+    public static void attachment( File attachment) throws FileNotFoundException {
         //todo: 通用的附件上传
+        renderJSON("{\"success\":\"ok\"}");
+//        Car car = new Car();
+//        renderJSON(car.toPrettyJson());
 //        new FileInputStream(attachment),
 //                MimeTypes.getContentType(attachment.getName());
     }

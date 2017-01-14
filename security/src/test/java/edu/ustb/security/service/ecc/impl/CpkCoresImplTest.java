@@ -1,15 +1,21 @@
 package edu.ustb.security.service.ecc.impl;
 
+import edu.ustb.security.common.utils.TypeTransUtils;
 import edu.ustb.security.domain.vo.ecc.ECPoint;
 import edu.ustb.security.domain.vo.ecc.Pair;
 import edu.ustb.security.domain.vo.ecc.elliptic.EllipticCurve;
 import edu.ustb.security.domain.vo.ecc.elliptic.secp256r1;
+import edu.ustb.security.domain.vo.matrix.Matrixs;
+import edu.ustb.security.service.ecc.CpkMatrixsFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.math.BigInteger;
 
 import static org.junit.Assert.*;
@@ -26,39 +32,47 @@ public class CpkCoresImplTest {
     private BigInteger skm[][] = new BigInteger[32][32];
     private ECPoint pkm[][] = new ECPoint[32][32];
     private String id = "sunyichao";
-    private BigInteger mac = new BigInteger("1231231");
+    private String src = "sunyichao";
+    BigInteger sk = null;
+    Pair sign = null;
+    ECPoint pk = null;
+
 
     @Before
     public void setUp() throws Exception {
-        cpkCores = new CpkCoresImpl();
-        ellipticCurve = new EllipticCurve(new secp256r1());
-        cpkCores.generateCpkMatrix(skm, pkm, ellipticCurve);
+        //生成种子矩阵
+        Matrixs matrixs = CpkMatrixsFactory.generateCpkMatrix();
+        //实例化cpkCores核心类
+        cpkCores = new CpkCoresImpl(matrixs);
+
     }
 
-    /**
-     *
-     * @throws Exception
-     */
+
     @Test
-    public void AGenerateCpkMatrix() throws Exception {
-        BigInteger[][] skm = new BigInteger[32][32];
-        ECPoint[][] pkm = new ECPoint[32][32];
-        cpkCores.generateCpkMatrix(skm, pkm, ellipticCurve);
-        for (int i = 0; i < 32; i++) {
-            for (int j = 0; j < 32; j++) {
-                ECPoint temp = ellipticCurve.getGenerator().multiply(skm[i][j]);
-                Assert.assertArrayEquals(pkm[i][j].getx().toByteArray(), temp.getx().toByteArray());
-            }
+    public void BGenerateSk() {
+        //生成私钥
+        sk = cpkCores.generateSkById(id);
+        //生成签名
+        sign = cpkCores.sign(sk, src);
+        //生成公钥
+        pk = cpkCores.generatePkById(id);
+        //验证签名
+        boolean verify = cpkCores.verify(pk, src, sign);
+        //生成二维码
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(new File("qr.png"));
+            //生成二维码接口
+            cpkCores.generateQRcode(fos, id, sign);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
+        Assert.assertTrue(verify);
+
     }
 
     @Test
-    public void SignAndVerify() throws Exception {
-        BigInteger sk = cpkCores.generateSkById(id, skm, ellipticCurve.getOrder());
-        Pair sign = cpkCores.sign(sk, mac, ellipticCurve);
-        ECPoint pk = cpkCores.generatePkById(id, pkm);
-        boolean verify = cpkCores.verify(pk, mac, sign, ellipticCurve);
-        Assert.assertTrue(verify);
-    }
+    public void CGenerateQR() {
 
+    }
 }

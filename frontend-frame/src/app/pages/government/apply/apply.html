@@ -1,90 +1,95 @@
-<script src="../../../../../bower_components/plupload/js/plupload.full.min.js"></script>
-<script src="../../../../../bower_components/angular-plupload/dist/angular-plupload.min.js"></script>
-<div>
-   <!-- form-horizontal -->
-   <form class="form-horizontal" role="form" name="applyForm" novalidate>
-      <!-- form-group -->
-      <div class="form-group">
-         <label class="col-sm-2 control-label">企业类型</label>
-         <div class="col-sm-6">
-            <select required class="form-control selectpicker" title="请选择" name="companyType" selectpicker ng-model="applyData.companyType">
-               <option value="1">电池厂</option>
-               <option value="2">汽车厂</option>
-            </select>
-         </div>
-         <div class="col-sm-1">
-            <label><span style="color:red;">*</span></label>
-         </div>
-      </div>
-      <!-- form-group -->
-      <div class="form-group">
-         <label  class="col-sm-2 control-label">企业名称</label>
-         <div class="col-sm-6">
-            <input required type="text" class="form-control bg-success"  name="companyName" placeholder="请输入企业名称" ng-model="applyData.companyName">
-         </div>
-         <div class="col-sm-1">
-            <label><span style="color:red;">*</span></label>
-         </div>
-      </div>
-      <!-- form-group -->
-      <div class="form-group">
-         <label  class="col-sm-2 control-label">社会信用码</label>
-         <div class="col-sm-6">
-            <input required type="text" class="form-control" name="creditCode" placeholder="请输入社会信用码" ng-model="applyData.creditCode">
-         </div>
-         <div class="col-sm-1">
-            <label><span style="color:red;">*</span></label>
-         </div>
-      </div>
-      <!-- form-group -->
-      <div class="form-group" ng-if="applyData.companyType==1">
-         <label  class="col-sm-2 control-label">厂商代码</label>
-         <div class="col-sm-6">
-            <input required type="text" class="form-control bg-success" name="vendorCode" placeholder="请输入厂商代码" ng-model="applyData.vendorCode">
-         </div>
-         <div class="col-sm-1">
-            <label><span style="color:red;">*</span></label>
-         </div>
-      </div>
-      <!-- form-group -->
-      <div class="form-group">
-         <label  class="col-sm-2 control-label">联系人</label>
-         <div class="col-sm-6">
-            <input type="text" class="form-control" placeholder="请输入联系人" ng-model="applyData.contact">
-         </div>
-      </div>
-      <!-- form-group -->
-      <div class="form-group">
-         <label class="col-sm-2 control-label">联系电话</label>
-         <div class="col-sm-6">
-            <input required type="text" class="form-control" name="phone" placeholder="请输入联系电话" ng-model="applyData.phone">
-         </div>
-         <div class="col-sm-1">
-            <label><span style="color:red;">*</span></label>
-         </div>
-      </div>
-      <!-- form-group -->
-      <div class="form-group">
-         <label  class="col-sm-2 control-label">电子邮箱</label>
-         <div class="col-sm-6">
-            <input type="email" class="form-control" placeholder="请输入电子邮箱" ng-model="applyData.email">
-         </div>
-      </div>
-      <!-- form-group -->
-      <div class="form-group">
-         <label  class="col-sm-2 control-label">企业法人证书</label>
-          <button plupload="fileUpload.url" plupload-options="fileUpload.options" plupload-callbacks="fileUpload.callbacks">选择文件</button>
-          <label plupload-callbacks="fileUpload.callbacks" ng-model="fileStatus">{{fileStatus}}</label>
-      </div>
-      <!-- form-group -->
-      <div class="form-group ">
-         <div class="row ">
-            <div class="col-sm-offset-2 col-sm-2">
-               <p>注：加<span style="color:red;">*</span>号为必填项</p>
+<div class="widgets">
+   <div class="row" ba-panel>
+      <!-- form-horizontal -->
+      <form class="form-horizontal" role="form" name="applyForm" novalidate>
+         <!-- form-group -->
+         <div class="form-group">
+            <label class="col-sm-2 control-label">企业类型</label>
+            <div class="col-sm-6">
+               <select required class="form-control selectpicker" title="请选择" name="companyType" selectpicker ng-model="applyData.companyType">
+                  <option value="1">电池厂</option>
+                  <option value="2">汽车厂</option>
+               </select>
             </div>
-         <div class="col-sm-4">
-            <button type="submit" class="btn btn-primary" ng-click="confirm()" >确认录入</button>
+            <div class="col-sm-1">
+               <label><span style="color:red;">*</span></label>
+            </div>
          </div>
-      </div>
-   </form>
+         <!-- form-group -->
+         <div class="form-group">
+            <label  class="col-sm-2 control-label">企业名称</label>
+            <div class="col-sm-6">
+               <input required type="text" class="form-control bg-success"  name="companyName" placeholder="请输入企业名称" ng-model="applyData.companyName">
+            </div>
+            <div class="col-sm-1">
+               <label><span style="color:red;">*</span></label>
+            </div>
+         </div>
+         <!-- form-group -->
+         <div class="form-group">
+            <label  class="col-sm-2 control-label">社会信用码</label>
+            <div class="col-sm-6">
+               <input required type="text" class="form-control" name="creditCode" placeholder="请输入社会信用码" ng-model="applyData.creditCode">
+            </div>
+            <div class="col-sm-1">
+               <label><span style="color:red;">*</span></label>
+            </div>
+         </div>
+         <!-- form-group -->
+         <div class="form-group" ng-if="applyData.companyType==1">
+            <label  class="col-sm-2 control-label">厂商代码</label>
+            <div class="col-sm-6">
+               <input required type="text" class="form-control bg-success" name="vendorCode" placeholder="请输入厂商代码" ng-model="applyData.vendorCode">
+            </div>
+            <div class="col-sm-1">
+               <label><span style="color:red;">*</span></label>
+            </div>
+         </div>
+         <!-- form-group -->
+         <div class="form-group">
+            <label  class="col-sm-2 control-label">联系人</label>
+            <div class="col-sm-6">
+               <input type="text" class="form-control" placeholder="请输入联系人" ng-model="applyData.contact">
+            </div>
+         </div>
+         <!-- form-group -->
+         <div class="form-group">
+            <label class="col-sm-2 control-label">联系电话</label>
+            <div class="col-sm-6">
+               <input required type="text" class="form-control" name="phone" placeholder="请输入联系电话" ng-model="applyData.phone">
+            </div>
+            <div class="col-sm-1">
+               <label><span style="color:red;">*</span></label>
+            </div>
+         </div>
+         <!-- form-group -->
+         <div class="form-group">
+            <label  class="col-sm-2 control-label">电子邮箱</label>
+            <div class="col-sm-6">
+               <input type="email" class="form-control" placeholder="请输入电子邮箱" ng-model="applyData.email">
+            </div>
+         </div>
+         <!-- form-group -->
+         <div class="form-group">
+            <label  class="col-sm-2 control-label">企业法人证书</label>
+             <button plupload="fileUpload.url" plupload-options="fileUpload.options" plupload-callbacks="fileUpload.callbacks">选择文件</button>
+             <label plupload-callbacks="fileUpload.callbacks" ng-model="fileStatus">{{fileStatus}}</label>
+         </div>
+         <!-- form-group -->
+         <div class="form-group">
+            <label  class="col-sm-2 control-label">文件上传：</label>
+            <input type="file" onchange="angular.element(this).scope().uploadFile(this)">
+         </div>
+         <!-- form-group -->
+         <div class="form-group ">
+            <div class="row ">
+               <div class="col-sm-offset-2 col-sm-2">
+                  <p>注：加<span style="color:red;">*</span>号为必填项</p>
+               </div>
+            <div class="col-sm-4">
+               <button type="submit" class="btn btn-primary" ng-click="confirm()" >确认录入</button>
+            </div>
+         </div>
+      </form>     
+   </div>
 </div>
