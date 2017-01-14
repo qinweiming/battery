@@ -12,10 +12,9 @@ import edu.ustb.security.domain.vo.ecc.ECKey;
 import edu.ustb.security.domain.vo.ecc.ECPoint;
 import edu.ustb.security.domain.vo.ecc.Key;
 import edu.ustb.security.domain.vo.ecc.Pair;
-import edu.ustb.security.domain.vo.ecc.elliptic.EllipticCurve;
-import edu.ustb.security.domain.vo.ecc.elliptic.InsecureCurveException;
-import edu.ustb.security.domain.vo.ecc.elliptic.NoCommonMotherException;
-import edu.ustb.security.domain.vo.ecc.elliptic.secp256r1;
+import edu.ustb.security.domain.vo.ecc.elliptic.*;
+import edu.ustb.security.domain.vo.matrix.Matrix;
+import edu.ustb.security.domain.vo.matrix.Matrixs;
 import edu.ustb.security.service.ecc.CpkCores;
 
 import java.io.IOException;
@@ -30,71 +29,36 @@ import java.security.NoSuchAlgorithmException;
  */
 public class CpkCoresImpl implements CpkCores {
     private EllipticCurve defaultEllipticCurve;
+    private BigInteger[][] skm = new BigInteger[32][32];
+    private ECPoint[][] pkm = new ECPoint[32][32];
 
-    public CpkCoresImpl() {
+    public CpkCoresImpl(Matrixs matrixs) {
         try {
             defaultEllipticCurve = new EllipticCurve(new secp256r1());
         } catch (InsecureCurveException e) {
             e.printStackTrace();
             defaultEllipticCurve = null;
         }
-    }
-
-    /**
-     * 指定固定曲线 创建CpkCores
-     *
-     * @param defaultEllipticCurve 指定曲线
-     */
-    public CpkCoresImpl(EllipticCurve defaultEllipticCurve) {
-        this.defaultEllipticCurve = defaultEllipticCurve;
-    }
-
-    /**
-     * @see CpkCores#getDefaultEllipticCurve()
-     */
-    public String getDefaultEllipticCurve() {
-        return defaultEllipticCurve.toString();
-    }
-
-    /**
-     * @see CpkCores#setDefaultEllipticCurve(EllipticCurve)
-     */
-    public void setDefaultEllipticCurve(EllipticCurve defaultEllipticCurve) {
-        this.defaultEllipticCurve = defaultEllipticCurve;
-    }
-
-    /**
-     * @see CpkCores#generateCpkMatrix(BigInteger[][], ECPoint[][])
-     */
-    @Override
-    public boolean generateCpkMatrix(BigInteger[][] skm, ECPoint[][] pkm) {
-        return generateCpkMatrix(skm, pkm, defaultEllipticCurve);
-    }
-
-    /**
-     * @see CpkCores#generateCpkMatrix(BigInteger[][], ECPoint[][], EllipticCurve)
-     */
-    @Override
-    public boolean generateCpkMatrix(BigInteger[][] skm, ECPoint[][] pkm, EllipticCurve ellipticCurve) {
-        boolean result = false;
-        if (ellipticCurve != null) {
-            for (int i = 0; i < 32; i++) {
-                for (int j = 0; j < 32; j++) {
-                    Key key = new ECKey(ellipticCurve);
-                    skm[i][j] = key.getSk();
-                    pkm[i][j] = key.getPk();
+        int k = 0;
+        Matrix[] matrices = matrixs.getMatrices();
+        for (int i = 0; i < 32; i++) {
+            for (int j = 0; j < 32; j++) {
+                skm[i][j] = new BigInteger(matrices[k].getPrivateKey(), 32);
+                try {
+                    pkm[i][j] = new ECPoint(defaultEllipticCurve, new BigInteger(matrices[k].getPublicKeyX(), 32), new BigInteger(matrices[k].getPublicKeyY(), 32));
+                } catch (NotOnMotherException e) {
+                    e.printStackTrace();
                 }
             }
-            result = true;
         }
-        return result;
+
     }
 
     /**
-     * @see CpkCores#generatePkById(String, ECPoint[][])
+     * @see CpkCores#generatePkById(String,)
      */
     @Override
-    public ECPoint generatePkById(String Id, ECPoint[][] pkm) {
+    public ECPoint generatePkById(String Id) {
         ECPoint pk = null;
         try {
             if (pkm != null) {
@@ -113,15 +77,11 @@ public class CpkCoresImpl implements CpkCores {
     }
 
     @Override
-    public BigInteger generateSkById(String Id, BigInteger[][] skm) {
+    public BigInteger generateSkById(String Id) {
         return generateSkById(Id, skm, defaultEllipticCurve.getOrder());
     }
 
-    /**
-     * @see CpkCores#generateSkById(String, BigInteger[][], BigInteger)
-     */
-    @Override
-    public BigInteger generateSkById(String Id, BigInteger[][] skm, BigInteger order) {
+    private BigInteger generateSkById(String Id, BigInteger[][] skm, BigInteger order) {
         BigInteger sk = null;
         try {
             if (skm != null && order != null) {
@@ -135,26 +95,21 @@ public class CpkCoresImpl implements CpkCores {
         return sk;
     }
 
-    /**
-     * @see CpkCores#sign(BigInteger, byte[])
-     */
     @Override
-    public Pair sign(BigInteger sk, byte[] hashBytes) {
-        return sign(sk, hashBytes, defaultEllipticCurve);
-    }
-
-    /**
-     * @see CpkCores#sign(BigInteger, byte[], EllipticCurve)
-     */
-    @Override
-    public Pair sign(BigInteger sk, byte[] hashBytes, EllipticCurve ellipticCurve) {
+    public Pair sign(BigInteger sk, String src) {
+        byte[] hashBytes = null;
+        try {
+            hashBytes = src.getBytes(Constants.CHARSET);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         BigInteger mac = new BigInteger(hashBytes);
         Pair sig = new Pair();
-        ECPoint g = new ECPoint(ellipticCurve.getGenerator());
-        BigInteger order = ellipticCurve.getOrder();
+        ECPoint g = new ECPoint(defaultEllipticCurve.getGenerator());
+        BigInteger order = defaultEllipticCurve.getOrder();
         do {
             //为增加安全度，签名随机数位数限制
-            BigInteger k = ellipticCurve.randomBigInteger(order.subtract(BigInteger.ONE));
+            BigInteger k = defaultEllipticCurve.randomBigInteger(order.subtract(BigInteger.ONE));
             ECPoint gk = g.multiply(k);
             sig.r = (gk.getx()).mod(order);
             if (!(sig.r.compareTo(BigInteger.ZERO) == 0)) {
@@ -167,25 +122,20 @@ public class CpkCoresImpl implements CpkCores {
         return sig;
     }
 
-    /**
-     * @see CpkCores#verify(ECPoint, byte[], Pair)
-     */
     @Override
-    public boolean verify(ECPoint pk, byte[] hashBytes, Pair sign) {
-        return false;
-    }
-
-    /**
-     * @see CpkCores#verify(ECPoint, byte[], Pair, EllipticCurve)
-     */
-    @Override
-    public boolean verify(ECPoint pk, byte[] hashBytes, Pair sig, EllipticCurve ellipticCurve) {
+    public boolean verify(ECPoint pk, String src, Pair sig) {
+        byte[] hashBytes = null;
+        try {
+            hashBytes = src.getBytes(Constants.CHARSET);
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
         BigInteger mac = new BigInteger(hashBytes);
-        ECPoint g = new ECPoint(ellipticCurve.getGenerator());
+        ECPoint g = new ECPoint(defaultEllipticCurve.getGenerator());
         BigInteger r = sig.r;
         BigInteger s = sig.s;
         BigInteger w, u1, u2;
-        BigInteger order = ellipticCurve.getOrder();
+        BigInteger order = defaultEllipticCurve.getOrder();
         if ((r.compareTo(BigInteger.ONE) >= 0) &&
                 (r.compareTo(order.subtract(BigInteger.ONE)) <= 0) &&
                 (s.compareTo(BigInteger.ONE) >= 0) &&
