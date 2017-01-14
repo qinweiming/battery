@@ -31,13 +31,13 @@
                     <ImageView
                         android:layout_width="30dp"
                         android:layout_height="30dp"
-                        android:src="@drawable/ic_battery"
+                        android:src="@drawable/location_icon"
                         android:id="@+id/searchResult_icon" />
 
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:text="@string/itemTitle"
+                        android:text="深圳比克汽车厂"
                         android:gravity="center_vertical"
                         android:textSize="6pt"
                         android:id="@+id/searchResult_Itemtitle" />
@@ -47,23 +47,37 @@
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/Itemtext1"
+                    android:text="交付日期：2016年8月3日 "
                     android:textSize="6pt"
                     android:id="@+id/searchResult_Itemtext1" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/Itemtext2"
+                    android:text="电池包匹配：11A2FMZABCDEF1212345AB..."
                     android:textSize="6pt"
                     android:id="@+id/searchResult_Itemtext2" />
 
                 <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/Itemtext3"
+                    android:text="汽车匹配状态：已匹配"
                     android:textSize="6pt"
                     android:id="@+id/searchResult_Itemtext3" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="汽车匹配车架号：7758521"
+                    android:textSize="6pt"
+                    android:id="@+id/searchResult_Itemtext4" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="售后投诉电话：0045-77892122"
+                    android:textSize="6pt"
+                    android:id="@+id/searchResult_Itemtext5" />
 
             </LinearLayout>
 

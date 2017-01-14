@@ -208,7 +208,7 @@ public class fragment_search extends Fragment implements View.OnClickListener {
             String result= bundle.getString("result");
             searchContentEt.setText(result);
         } if(resultCode == getActivity().RESULT_CANCELED) {
-            Toast.makeText(getActivity(), "扫描取消", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), "相机打开出错，扫描取消", Toast.LENGTH_SHORT).show();
         }
     }
 
