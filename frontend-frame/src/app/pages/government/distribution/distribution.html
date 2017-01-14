@@ -5,21 +5,61 @@
     <div class="horizontal-scroll">
      <div class="panel panel-success">
       <div class="panel-body panel-success">
-       <div class="row">请输入流水号范围 :</div><br>
+       <div class="row">请输入查询时间范围 :</div><br>
        <div class="row"></div>
        <div class="row">
         <div class="">
          <form class="form-inline" role="form">
           <div class="form-group">
-           <input type="text" class="form-control" style="width: 200px" placeholder="请输入起始流水号" name="">&nbsp--&nbsp<input type="text" style="width: 200px" class="form-control" placeholder="请输入截至流水号" name="">
+           <input type="text" class="form-control" style="width: 200px" placeholder="请输入起始时间" name="" ng-model="filters.startDate">&nbsp--&nbsp<input type="text" style="width: 200px" class="form-control" placeholder="请输入终止时间" name="" ng-model="filters.endDate">
+           &nbsp&nbsp&nbsp&nbsp&nbsp<input type="text" style="width: 200px" class="form-control" placeholder="请输入公司名称" name="" ng-model="filters.companyName">
           </div>
-          <button ng-click="show" style="margin-left: 10px" type="button" class="btn btn-primary" id="midu">显示密度分布</button>
+          <button ng-click="showTable()" style="margin-left: 10px" type="button" class="btn btn-primary" id="midu">显示密度分布</button>
+          </div>
          </form>
         </div> 
        </div>
       </div>
      </div>
      </div>
+
+     <table>
+     
+     <script src="echarts.min.js"></script>
+     <script src="china.js"></script>
+     <div id="main" style="width: 600px;height:400px;"></div>
+     <script type="text/javascript">
+       
+       // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById('main'));
+
+        // 指定图表的配置项和数据
+        var option = {
+            title: {
+                text: 'ECharts 入门示例'
+            },
+            tooltip: {},
+            legend: {
+                data:['销量']
+            },
+            xAxis: {
+                data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
+            },
+            yAxis: {},
+            series: [{
+                name: '销量',
+                type: 'bar',
+                data: [5, 20, 36, 10, 10, 20]
+            }]
+        };
+
+        // 使用刚指定的配置项和数据显示图表。
+        myChart.setOption(option);
+    
+
+     </script>
+     
+     </table>
  <!--    </div> -->
 
 
