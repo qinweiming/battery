@@ -5,13 +5,11 @@
   .controller('alreadyApproveCtrl', alreadyApproveCtrl);
 
   /** @ngInject */
-  function alreadyApproveCtrl($scope, $http, toastr) {
+  function alreadyApproveCtrl($scope, $http, toastr, $filter) {
 
     var getCertsApi = "http://localhost:3003/certs";
     $scope.approveList = [];
-    $scope.newUri = '';
     $scope.idList = [];
-    $scope.itemList = [];
     $scope.array = [];
     $scope.limit = 5;
     $scope.offset = 0;
@@ -21,19 +19,19 @@
     $scope.filters = {
       "startDate": "",
       "endDate": "",
-      "companyName": "" 
-    };
-    //设置查询条件，只从后台中选出checked属性值为false的项
-    $scope.newFilters = '{"checked": false}';
+      "companyName": ""
+    };  
+
+    //设置查询条件，从后台中选出审批通过的
+    $scope.newFilters = 'true,1';
     //每页数据的查询条件
     $scope.Parameters={
-      "_limit": $scope.limit,
-      "_start": $scope.offset
+      "limit": $scope.limit,
+      "offset": $scope.offset
     };
     
-    $scope.newUri = encodeURIComponent($scope.newFilters);
     //获取证书列表数据
-    $http.get(getCertsApi+'?'+'filters='+$scope.newUri).success(function(data){
+    $http.get(getCertsApi+'?'+'params='+$scope.newFilters).success(function(data){
       $scope.approveList = data;
       $scope.array = $scope.approveList;
       //分页总数
@@ -44,9 +42,9 @@
     //获取第一页的数据
     
     console.log($scope.newUri);
-    $http.get(getCertsApi+'?' +'filters=' + $scope.newUri
+    $http.get(getCertsApi+'?' +'params=' + $scope.newFilters
               ,{params:$scope.Parameters}).success(function(data){
-      $scope.newPageData =data;
+      $scope.alreadyPageData =data;
     }).error(function(data){
       alert("选择失败");
     });
@@ -67,9 +65,9 @@
     //通过当前页数筛选出表格当前显示数据
       $scope.offset = ($scope.selPage - 1) * $scope.limit;
       $scope.Parameters._start = $scope.offset;
-      $http.get(getCertsApi+'?' +'filters=' + $scope.newUri
+      $http.get(getCertsApi+'?' +'params=' + $scope.newFilters
               ,{params:$scope.Parameters}).success(function(data){
-        $scope.newPageData =data;
+        $scope.alreadyPageData =data;
       }).error(function(data){
         alert("选择失败");
       });
@@ -114,8 +112,14 @@
 
     //查询
     $scope.search = function(){ 
-      $http.get(getCertsApi,{params:$scope.filters}).success(function(data){
-        $scope.newPageData = data; 
+      $scope.selectComp = '';
+      $scope.selectComp =   "'.*" + $scope.filters.companyName + ".*'" +"," + "\'" 
+                           + $filter('date')($scope.filters.startDate,'yyyy-MM-dd') + "\'"
+                           +","+ "\'" + $filter('date')($scope.filters.endDate,'yyyy-MM-dd') + "\'";
+      $scope.newParams = encodeURI($scope.selectComp);
+      console.log($scope.newParams);
+      $http.get(getCertsApi+ '?params='+$scope.newParams).success(function(data){
+        $scope.alreadyPageData = data; 
       });
     };
 

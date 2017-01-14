@@ -53,7 +53,7 @@
         }).state('government.trace', {
           url: '/trace',
           templateUrl: 'app/pages/government/trace/trace.html',
-         //controller: 'TraceCtrl',
+          controller: 'TraceCtrl',
           title: '追溯查询',
           sidebarMeta: {
             order: 154,
@@ -61,7 +61,7 @@
         }).state('government.distribution', {
           url: '/distribution',
           templateUrl: 'app/pages/government/distribution/distribution.html',
-          controller: 'DistributionPageCtrl',
+          //controller: 'DistributionPageCtrl',
           title: '密度分布',
           sidebarMeta: {
             order: 156,

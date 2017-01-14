@@ -9,35 +9,33 @@
 
     var getCertsApi = "http://localhost:3003/certs";
     $scope.approveList = [];
-    $scope.newUri = '';
+    /*$scope.newUri = '';*/
     $scope.idList = [];
-    $scope.itemList = [];
+    /*$scope.itemList = [];*/
     $scope.array = [];
     $scope.limit = 5;
     $scope.offset = 0;
     $scope.Parameters = '';
     $scope.rowCount = 10;
-    
-    $scope.selectComp = '';
-    
+    $scope.newFilters = ''; 
+
     $scope.filters = {
       "startDate": "",
       "endDate": "",
-      "companyName":""  
-    };
+      "companyName": ""
+    };  
 
-     
-      console.log($scope.selectComp);
     //设置查询条件，只从后台中选出checked属性值为false的项
-    $scope.newFilters = '{"checked": false}';
+    $scope.newFilters = "false,0" ;
+    console.log($scope.newFilters);
     //每页数据的查询条件
     $scope.Parameters={
-      "_limit": $scope.limit,
-      "_start": $scope.offset
+      "limit": $scope.limit,
+      "offset": $scope.offset
     };
-    $scope.newUri = encodeURIComponent($scope.newFilters);
+    /*$scope.newUri = encodeURIComponent($scope.newFilters);*/
     //获取证书列表数据
-    $http.get(getCertsApi+'?'+'filters='+$scope.newUri).success(function(data){
+    $http.get(getCertsApi+'?'+'params='+$scope.newFilters).success(function(data){
       $scope.approveList = data;
       $scope.array = $scope.approveList;
       //分页总数
@@ -48,7 +46,7 @@
     //获取第一页的数据
     
     console.log($scope.newUri);
-    $http.get(getCertsApi+'?' +'filters=' + $scope.newUri
+    $http.get(getCertsApi+'?' +'params=' + $scope.newFilters
               ,{params:$scope.Parameters}).success(function(data){
       $scope.currentPageData =data;
     }).error(function(data){
@@ -57,6 +55,8 @@
 
     //分页
     $scope.cutPage = function(){
+      
+      console.log($scope.pageSize);
       $scope.pages = Math.ceil($scope.approveList.length /*$scope.rowCount*/ / $scope.pageSize);//分页数
       console.log($scope.pages);
       $scope.newPages = $scope.pages >5?5:$scope.pages;
@@ -71,7 +71,7 @@
     //通过当前页数筛选出表格当前显示数据
       $scope.offset = ($scope.selPage - 1) * $scope.limit;
       $scope.Parameters._start = $scope.offset;
-      $http.get(getCertsApi+'?' +'filters=' + $scope.newUri
+      $http.get(getCertsApi+'?' +'params=' + $scope.newUri
               ,{params:$scope.Parameters}).success(function(data){
         $scope.currentPageData =data;
       }).error(function(data){
@@ -119,6 +119,7 @@
     //查询
     $scope.search = function(){ 
       //添加查询条件
+      $scope.selectComp = '';
       $scope.selectComp =   "'.*" + $scope.filters.companyName + ".*'" +"," + "\'" 
                            + $filter('date')($scope.filters.startDate,'yyyy-MM-dd') + "\'"
                            +","+ "\'" + $filter('date')($scope.filters.endDate,'yyyy-MM-dd') + "\'";
@@ -136,18 +137,14 @@
         alert("请至少选择一项数据");
       }else{
         $scope.idList = [];
-        $scope.itemList = [];
-        var i=0;
         angular.forEach($scope.currentPageData,function(item){
           if(item.checked == true){
             console.log(item.id);
-            $scope.idList[i] =item.id; 
-            $scope.itemList.push(item);
-            i++;
+            $scope.idList.push(item.id); 
             console.log($scope.idList);
           }
         })
-        $http.put(putCertsApi + '/' + $scope.idList + '?status=1',$scope.itemList).success(function(data,headers){
+        $http.put(putCertsApi + '/' + $scope.idList + '?status=1').success(function(data,headers){
           var rowCount=10;
           console.log(headers);
           //todo: headers.
@@ -171,18 +168,16 @@
         alert("请至少选择一项数据");
       }else{
         $scope.idList = [];
-        $scope.itemList = [];
         var i=0;
         angular.forEach($scope.currentPageData,function(item){
           if(item.checked == true){
             console.log(item.id);
-            $scope.idList[i] =item.id; 
-            $scope.itemList.push(item);
+            $scope.idList.push(item.id); 
             i++;
             console.log($scope.idList);
           }
         })
-        $http.put(putCertsApi + '/' + $scope.idList + '?status=2',$scope.itemList).success(function(data,headers){
+        $http.put(putCertsApi + '/' + $scope.idList + '?status=2').success(function(data,headers){
           var rowCount=10;
           console.log(headers);
           //todo: headers.
