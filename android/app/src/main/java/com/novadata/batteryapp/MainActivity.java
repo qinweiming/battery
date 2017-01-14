@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.widget.Toast;
 
 import java.util.List;
 
@@ -70,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements EasyPermissions.P
     protected void onStart() {
         super.onStart();
         requestCodeQRCodePermissions();
+        Toast.makeText(this, "交易功能需要在 “我” 标签页登录后使用",Toast.LENGTH_SHORT);
     }
 
     @Override

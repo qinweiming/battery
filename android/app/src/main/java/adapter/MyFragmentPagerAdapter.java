@@ -3,14 +3,11 @@ package adapter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.widget.Toast;
-
-import com.novadata.batteryapp.MainActivity;
 
 import layout.fragment_deal;
 import layout.fragment_main;
-import layout.fragment_user;
 import layout.fragment_search;
+import layout.fragment_user;
 
 public class MyFragmentPagerAdapter extends FragmentPagerAdapter {
 
