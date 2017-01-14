@@ -1,5 +1,6 @@
 package edu.ustb.security.service.ecc.impl;
 
+import edu.ustb.security.common.utils.TypeTransUtils;
 import edu.ustb.security.domain.vo.ecc.ECPoint;
 import edu.ustb.security.domain.vo.ecc.Pair;
 import edu.ustb.security.domain.vo.ecc.elliptic.EllipticCurve;
@@ -10,6 +11,9 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.math.BigInteger;
 
 import static org.junit.Assert.*;
@@ -26,7 +30,11 @@ public class CpkCoresImplTest {
     private BigInteger skm[][] = new BigInteger[32][32];
     private ECPoint pkm[][] = new ECPoint[32][32];
     private String id = "sunyichao";
-    private BigInteger mac = new BigInteger("1231231");
+    private byte[] mac = "sunyichao".getBytes();
+    BigInteger sk = null;
+    Pair sign = null;
+    ECPoint pk = null;
+
 
     @Before
     public void setUp() throws Exception {
@@ -36,7 +44,6 @@ public class CpkCoresImplTest {
     }
 
     /**
-     *
      * @throws Exception
      */
     @Test
@@ -53,12 +60,24 @@ public class CpkCoresImplTest {
     }
 
     @Test
-    public void SignAndVerify() throws Exception {
-        BigInteger sk = cpkCores.generateSkById(id, skm, ellipticCurve.getOrder());
-        Pair sign = cpkCores.sign(sk, mac, ellipticCurve);
-        ECPoint pk = cpkCores.generatePkById(id, pkm);
+    public void BGenerateSk() {
+        sk = cpkCores.generateSkById(id, skm, ellipticCurve.getOrder());
+        sign = cpkCores.sign(sk, mac, ellipticCurve);
+        pk = cpkCores.generatePkById(id, pkm);
         boolean verify = cpkCores.verify(pk, mac, sign, ellipticCurve);
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(new File("qr.png"));
+            cpkCores.generateQRcode(fos,id,sign);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
         Assert.assertTrue(verify);
+
     }
 
+    @Test
+    public void CGenerateQR(){
+
+    }
 }
