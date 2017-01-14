@@ -21,14 +21,14 @@
 
    // 'BlurAdmin.pages.profile',
    //  'BlurAdmin.pages.myNewPage',
-      'BlurAdmin.pages.submit',
+      // 'BlurAdmin.pages.submit',
      
   ])
-      .config(routeConfig);
+  .config(routeConfig);
 
   /** @ngInject */
   function routeConfig($urlRouterProvider, baSidebarServiceProvider) {
-    $urlRouterProvider.otherwise('/charts');
+    $urlRouterProvider.otherwise('/government');
 
     baSidebarServiceProvider.addStaticItem({
       title: 'Pages',
