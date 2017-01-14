@@ -10,9 +10,7 @@ angular.module('BlurAdmin', [
   'smart-table',
   "xeditable",
   'ui.slimscroll',
-  'ngJsTree',
   'angular-progress-button-styles',
   'BlurAdmin.theme',
-  'BlurAdmin.pages',
-    'angular-plupload'
+  'BlurAdmin.pages'
 ]);

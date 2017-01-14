@@ -75,6 +75,7 @@ class SimpleHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         length = f.tell()
         f.seek(0)
         self.send_response(200)
+        self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Content-type", "text/html")
         self.send_header("Content-Length", str(length))
         self.end_headers()
@@ -162,6 +163,7 @@ class SimpleHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
             self.send_error(404, "File not found")
             return None
         self.send_response(200)
+        self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Content-type", ctype)
         fs = os.fstat(f.fileno())
         self.send_header("Content-Length", str(fs[6]))
@@ -209,6 +211,7 @@ class SimpleHTTPRequestHandler(http.server.BaseHTTPRequestHandler):
         length = f.tell()
         f.seek(0)
         self.send_response(200)
+        self.send_header("Access-Control-Allow-Origin", "*")
         self.send_header("Content-type", "text/html")
         self.send_header("Content-Length", str(length))
         self.end_headers()
