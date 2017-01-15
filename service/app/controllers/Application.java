@@ -14,8 +14,7 @@ public class Application extends API {
             redirectToStatic("/public/index.html");
 
         }
-        //play.modules.jongo.JongoPlugin.getJongo().getDatabase();
-        renderJSON("hello world");
+
     }
 
 }
