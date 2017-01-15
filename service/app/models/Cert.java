@@ -51,9 +51,14 @@ public class Cert extends BaseModel implements Jsonable {
     @Required
     public Integer status = 0;
     /**
-     * 法人证书服务器保存地址
+     * 交易用私钥证书
      */
-    public String certPath;
+    public String tradeSK;
+    /**
+     * 产品二维码用私钥证书
+     */
+    public String productSK;
+
 
     public String certRemark;
 
@@ -137,13 +142,7 @@ public class Cert extends BaseModel implements Jsonable {
         this.status = status;
     }
 
-    public String getCertPath() {
-        return certPath;
-    }
 
-    public void setCertPath(String certPath) {
-        this.certPath = certPath;
-    }
 
     public String getCertRemark() {
         return certRemark;
@@ -151,5 +150,21 @@ public class Cert extends BaseModel implements Jsonable {
 
     public void setCertRemark(String certRemark) {
         this.certRemark = certRemark;
+    }
+
+    public String getTradeSK() {
+        return tradeSK;
+    }
+
+    public void setTradeSK(String tradeSK) {
+        this.tradeSK = tradeSK;
+    }
+
+    public String getProductSK() {
+        return productSK;
+    }
+
+    public void setProductSK(String productSK) {
+        this.productSK = productSK;
     }
 }

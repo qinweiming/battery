@@ -28,7 +28,7 @@ package models;
 import models.api.Jsonable;
 import play.data.validation.Required;
 
-import java.sql.Timestamp;
+
 import java.util.Objects;
 
 /**

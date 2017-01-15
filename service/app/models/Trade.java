@@ -29,7 +29,7 @@ import models.api.Jsonable;
 import play.data.validation.Required;
 import play.modules.jongo.BaseModel;
 
-import java.sql.Timestamp;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -57,7 +57,7 @@ public class Trade extends BaseModel implements Jsonable {
   private List<String> productIds = new ArrayList<String>();
 
   @Required
-  private Timestamp timestamp = null;
+  private Timestamp timestamp = new Timestamp();
 
   @Required
   private Block block = null;

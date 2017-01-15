@@ -28,7 +28,7 @@ package models;
 import models.api.Jsonable;
 import play.data.validation.Required;
 
-import java.sql.Timestamp;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -47,7 +47,7 @@ public class Block implements Jsonable{
   private List<Transcation> transactions = new ArrayList<Transcation>();
 
   @Required
-  private Timestamp timestamp = null;
+  private Timestamp timestamp = Timestamp.now();
 
   @Required
   private String transactionsHash = null;
