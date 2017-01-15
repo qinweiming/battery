@@ -1,9 +1,14 @@
 package controllers.v1;
 
+import com.google.common.base.Strings;
 import controllers.api.API;
 import models.*;
 import models.Package;
+import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
+import org.jongo.MongoCursor;
+import play.data.binding.As;
+import play.data.validation.Range;
 import play.data.validation.Required;
 import utils.SafeGuard;
 
@@ -12,6 +17,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
+import static controllers.v1.Certs.formatDate;
 import static play.modules.jongo.BaseModel.getCollection;
 
 /**
@@ -24,46 +30,35 @@ public class Trades extends API {
     public static void save() {
         Trade trade = readBody(Trade.class);
         trade.save();
+        created(trade);
     }
 
     /**
      * 2.获取交易信息
      */
-    public static void list(String filters,Integer limit,Integer offset) {
 
-        filters= SafeGuard.safeFilters(filters);
-        limit = SafeGuard.safeLimit(limit);
-        offset= SafeGuard.safeOffset(offset);
+    public static void list(String filters, @As(value = ",") List<String> params, @Range(min = 0,max = 100) Integer limit, @Range(min = 0) Integer offset) {
 
-//        Search search = readFilters(Search.class);//获取列表页的查询条件
-//        /**
-//         * sql查询语句
-//         * fromId、toId、startDate、endDate、startProductId、endProductId为查询条件
-//         */
-//        String sql = "";
-//        if(StringUtils.isNotNullOrEmpty(search.fromId)) {
-//            sql += "{fromId: " + search.fromId;
-//        }if(StringUtils.isNotNullOrEmpty(search.toId)) {
-//            sql += ",toId: " + search.toId;
-//        }else if(search.startDate != null && search.endDate != null) {
-//            sql += ",createTime: {\"$gte\": " + search.startDate + ", \"$lte\": " + search.endDate + "}";
-//        }else if(search.startDate != null) {
-//            sql += ",createTime: {\"$gte\": " + search.startDate + "}";
-//        }else if(search.endDate != null) {
-//            sql += ",createTime: {\"$lte\": " + search.endDate + "}";
-//        }else if(search.startProductId != null && search.endProductId != null) {
-//            sql += ",productIds: {\"$gte\": " + search.startProductId + ", \"$lte\": " + search.endProductId + "}";
-//        }else if(search.startProductId != null) {
-//            sql += ",productIds: {\"$gte\": " + search.startProductId + "}";
-//        }else if(search.endProductId != null) {
-//            sql += ",productIds: {\"$lte\": " + search.endProductId + "}";
-//        }
-//        sql += "}";
-//        Logger.info("sql: " + sql);
-        List<Trades> trades = StreamSupport.stream(getCollection(Trades.class).find().limit(limit).skip(offset).as(Trades.class).spliterator(),false).collect(Collectors.toList());
-        Long totalCount = getCollection(Trade.class).count(filters);
-        response.setHeader("X-Total-Count",String.valueOf(totalCount));
-        //Logger.info("X-Total-Count: " + response.getHeader("X-Total-Count"));
+        if(Strings.isNullOrEmpty(filters)){
+            filters="{from: {$regex: #},to: {$regex: #},_created:{$gte:#},_created:{$lte:#},id:{$gte:#},id:{$lte:#}}";
+        }else {
+            filters = SafeGuard.safeFilters(filters);
+        }
+        if(StringUtils.countMatches(filters,"#") != params.size()){
+            badRequest("filters args size should equals params size!");
+        }
+        //todo: 处理 params中的数据类型
+        String from = params.get(0);
+        String to = params.get(1);
+        Date startDate = formatDate(params.get(2));
+        Date endDate = formatDate(params.get(3));
+        String startModuleId = params.get(4);
+        String endModuleId = params.get(5);
+
+        MongoCursor<Trade> mongoCursor = getCollection(Trade.class).find(filters,from,to,startDate,endDate,startModuleId,endModuleId).limit(limit).skip(offset).as(Trade.class);
+        response.setHeader("X-Total-Count",String.valueOf(mongoCursor.count()));
+
+        List<Trade> trades = StreamSupport.stream(mongoCursor.spliterator(),false).collect(Collectors.toList());
         renderJSON(trades);
     }
 
@@ -106,6 +101,7 @@ public class Trades extends API {
     public static void packageAndModule() {
         Package packages = readBody(Package.class);
         packages.save();
+        created(packages);
     }
     /**
      * 7.汽车制造商上传汽车与电池包的对应关系
@@ -113,6 +109,7 @@ public class Trades extends API {
     public static void carAndPackage() {
         Car cars = readBody(Car.class);
         cars.save();
+        created(cars);
     }
 
     /**
@@ -147,6 +144,7 @@ public class Trades extends API {
     public static void addRecord(){
         Scan scan = readBody(Scan.class);
         scan.save();
+        created(scan);
     }
 
     /**
