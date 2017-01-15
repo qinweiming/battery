@@ -28,7 +28,7 @@ package models;
 import models.api.Jsonable;
 import play.data.validation.Required;
 
-import java.sql.Timestamp;
+
 import java.util.Objects;
 
 /**
@@ -45,7 +45,7 @@ public class Module  implements Jsonable {
   private String manufacturer = null;
 
   @Required
-  private Timestamp timestamp = null;
+  private Timestamp timestamp = Timestamp.now();
 
   public Module moduleId(String moduleId) {
     this.moduleId = moduleId;

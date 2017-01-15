@@ -29,7 +29,6 @@ import models.api.Jsonable;
 import play.data.validation.Required;
 import play.modules.jongo.BaseModel;
 
-import java.sql.Timestamp;
 import java.util.Objects;
 
 /**
@@ -52,7 +51,7 @@ public class Car extends BaseModel implements Jsonable {
   private String manufacturer = null;
 
   @Required
-  private Timestamp timestamp = null;
+  private Timestamp timestamp = Timestamp.now();
 
   public Car carId(String carId) {
     this.carId = carId;
