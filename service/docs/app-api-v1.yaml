@@ -1,7 +1,7 @@
 swagger: '2.0'
 info:
   title: 服务端API
-  description: 对接H5或者APP
+  description: Service for PC Web ,H5 and APP
   version: v1
 host: localhost:9000
 schemes:
@@ -17,21 +17,6 @@ produces:
 #    description: 基于JWT规范的API 访问token，
 #security:
 #  - bearer: []
-tags:
-  - name: 授权
-    description: 授权
-  - name: 用户
-    description: 用户
-  - name: 证书
-    description: 证书申请/审批/查
-  - name: 交易
-    description: 交易信息
-  - name: 组件
-    description: 对应关系数据
-  - name: 二维码
-    description: 二维码
-  - name: 统计分析
-    description: 统计分析
 paths:
   '/trades':
     post:
@@ -51,6 +36,10 @@ paths:
       responses:
         201:
           description: '成功,其URI 已经随Location 头信息返回'
+          headers:
+            Location:
+              description: 新创建的此交易记录对应的资源URI
+              type: string
         400:
           description: '错误的资源请求'
           schema:
@@ -187,7 +176,8 @@ paths:
           schema:
             $ref: '#/definitions/Scan'
       tags:
-        - Trade
+        - 交易
+        - 二维码
       responses:
         201:
           description: '成功,其URI 已经随Location 头信息返回'
@@ -220,6 +210,7 @@ paths:
       - 交易
       - 认证中心
       - 厂商
+      - 二维码
       summary: '查询二维码扫描记录数据'
       description: '查询二维码扫描记录数据'
       consumes:
@@ -282,7 +273,9 @@ paths:
           type: string
           required: true
       tags:
-        - Component
+        - 基础信息
+        - 认证中心
+        - 厂商
       responses:
         200:
           description: 成功
@@ -311,7 +304,7 @@ paths:
   /packages:
     post:
       tags:
-      - 'Component'
+      - '基础信息'
       summary: '上传电池包（与模组对应关系）数据'
       description: '电池生产商上传电池包与模组的对应关系'
       consumes:
@@ -353,7 +346,7 @@ paths:
   /cars:
     post:
       tags:
-      - 'Component'
+      - '基础信息'
       summary: '上传汽车（与电池包对应关系）数据'
       description: '汽车制造商上传汽车与电池包的对应关系'
       consumes:
@@ -400,7 +393,7 @@ paths:
           type: string
           required: true
       tags:
-        - Component
+        - 基础信息
       responses:
         200:
           description: 成功
@@ -444,6 +437,26 @@ paths:
         responses:
           201:
             description: 提交成功，等待审核
+          400:
+            description: '错误的资源请求'
+            schema:
+              $ref: '#/definitions/Error'
+          401:
+            description: '资源授权错误'
+            schema:
+              $ref: '#/definitions/Error'
+          403:
+            description: '禁止访问资源'
+            schema:
+              $ref: '#/definitions/Error'
+          404:
+            description: '未找到对应的资源'
+            schema:
+              $ref: '#/definitions/Error'
+          500:
+            description: '服务内部错误'
+            schema:
+              $ref: '#/definitions/Error'
       get:
         summary: 证书申请查询
         description: 证书申请查询
@@ -479,7 +492,7 @@ paths:
         tags:
           - Certs
         responses:
-          201:
+          200:
             description: 成功
             schema:
               type: array
@@ -527,10 +540,14 @@ paths:
           description: 证书申请状态；0:未审核(默认) 1：审核通过 2：审核不通过
           required: true
           type: integer
+          enum:
+          - 0
+          - 1
+          - 2
       tags:
         - Certs
       responses:
-        201:
+        200:
           description: 成功
         400:
           description: '错误的资源请求'
@@ -566,7 +583,7 @@ paths:
       tags:
          - Certs
       responses:
-        201:
+        200:
           description: 成功
         400:
           description: '错误的资源请求'
@@ -606,13 +623,8 @@ paths:
         200:
           description: 成功
           schema:
-            type: array
-            items:
-              $ref: '#/definitions/Cert'
-          headers:
-            X-Total-Count:
-              type: integer
-              description: 总行数
+            $ref: '#/definitions/Cert'
+
         400:
           description: '错误的资源请求'
           schema:
@@ -681,15 +693,16 @@ paths:
   '/attachments':
     post:
       summary:  附件上传
-      description: 企业法人证书等附件上传
+      description: 私钥证书压缩包等附件上传
       parameters:
          - name: attachment
            in: formData
-           description: 法人证书
+           description: 私钥证书压缩包等附件文件
            required: true
            type: file
       tags:
          - Certs
+         - 证书
       responses:
         201:
           description: 成功
@@ -775,7 +788,7 @@ paths:
 
   '/flows':
     get:
-      summary:  获取流量分析图
+      summary:  统计某年度某些企业流出的电池模组数量情况
       description: 获取流量分析图
       consumes:
         - application/json
@@ -784,27 +797,37 @@ paths:
           name: filters
           type: string
           description: "查询条件模板,mongodb的查询语法格式,当为空时,后台使用默认值."
-          default: "{todo:}"
+          default: "{year:#,companyName:#}"
           allowEmptyValue: true
         - in: query
           name: params
           type: array
           collectionFormat: csv
-          description: "查询条件的参数值,与filters中的占位符顺序对应, 例如: '.*电池厂.*','2016-08-01','2016-08-21',0"
+          description: "查询条件的参数值,与filters中的占位符顺序对应, 例如: '2016','.*电池厂.*'"
           items:
             type: string
       tags:
         - Flows
       responses:
-         201:
-          description: 服务器正常返回
+         200:
+          description: 服务器正常返回统计结果数据
           schema:
-            $ref: '#/definitions/Module'
+            properties:
+              from:
+                type: string
+              to:
+                type: string
+              count:
+                type: integer
+          headers:
+            X-Total-Count:
+              type: integer
+              description: 总行数
 
   '/densitys':
     get:
-      summary:  获取密度分析图
-      description: 获取密度分析图
+      summary:  获取电池模组的密度分布图
+      description: 获取各电池厂生产的电池模组在全国的密度分布图
       consumes:
          - application/json
       parameters:
@@ -812,22 +835,30 @@ paths:
           name: filters
           type: string
           description: "查询条件模板,mongodb的查询语法格式,当为空时,后台使用默认值."
-          default: "{year:#}"
+          default: "{year:#,companyName:#}"
           required: true
         - in: query
           name: params
           type: array
           collectionFormat: csv
-          description: "查询条件的参数值,与filters中的占位符顺序对应, 例如: 2016"
+          description: "查询条件的参数值,与filters中的占位符顺序对应, 例如: '2016','.*电池厂.*'"
           items:
             type: string
       tags:
-         - Densitys
+         - 统计分析
       responses:
-         201:
-          description: 服务器正常返回
+         200:
+          description: 服务器正常返回d
           schema:
-            $ref: '#/definitions/Module'
+            properties:
+              companyName:
+                type: string
+              count:
+                type: string
+          headers:
+            X-Total-Count:
+              type: integer
+              description: 总行数
 
   '/auth':
     post:
@@ -920,15 +951,17 @@ definitions:
         description: base64后的营业执照图片
       status:
         type: integer
-        description: 申请证书的状态
-      certPath:
+        description: '申请证书的状态: 0:未审核(默认) 1：审核通过 2：审核不通过'
+        enum:
+          - 0
+          - 1
+          - 2
+      tradeSK:
         type: string
-        description: 证书的文件路径
-
-      modifyTime:
+        description: 交易用私钥内容
+      productSK:
         type: string
-        description: 修改时间
-
+        description: 产品(电池包和模组)二维码生成用的私钥内容
 
     required:
       - companyType
@@ -938,6 +971,7 @@ definitions:
       - vendorCode
       - phone
       - email
+
     example:
       companyType: 1
       companyId: 21424
