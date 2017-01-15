@@ -1248,11 +1248,11 @@ definitions:
       seconds:
         type: integer
         format: int64
-        description: 'seconds from epoch'
+        description: 'Represents seconds of UTC time since Unix epoch 1970-01-01T00:00:00Z'
       nanos:
         type: integer
-        format: int64
-        description: 'nanos from epoch'
+        format: int32
+        description: ' Non-negative fractions of a second at nanosecond resolution,Must be from 0 to 999,999,999 '
     example:
       nanos: 2067167
   Module:

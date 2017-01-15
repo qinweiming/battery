@@ -131,7 +131,7 @@ public class Certs extends API {
     public static void download(@Required String id) {
         Cert cert =  getCollection(Cert.class).findOne(new ObjectId(id)).as(Cert.class);
         notFoundIfNull(cert);
-        renderBinary(new ByteArrayInputStream(VirtualFile.fromRelativePath(certFilesPath+File.separator+cert.getCertPath()).content()),cert.getCompanyName()+".zip");
+//        renderBinary(new ByteArrayInputStream(VirtualFile.fromRelativePath(certFilesPath+File.separator+cert.getCertPath()).content()),cert.getCompanyName()+".zip");
 
     }
 

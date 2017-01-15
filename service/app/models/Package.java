@@ -29,7 +29,7 @@ import models.api.Jsonable;
 import play.data.validation.Required;
 import play.modules.jongo.BaseModel;
 
-import java.sql.Timestamp;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -51,7 +51,7 @@ public class Package extends BaseModel implements Jsonable {
   private String manufacturer = null;
 
   @Required()
-  private Timestamp timestamp = null;
+  private Timestamp timestamp = Timestamp.now();
 
   public Package packageId(String packageId) {
     this.packageId = packageId;
