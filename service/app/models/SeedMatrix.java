@@ -12,9 +12,10 @@ public class SeedMatrix extends BaseModel {
     @Required
     public String matrix; //种子矩阵
     @Required
-    public Date enableTime; //启动时间
+    public Date enableTime; //启用时间
     @Required
     public Date expireTime; //到期时间
+    public static String version = "1.0.0";
 
     public String getMatrix() {
         return matrix;

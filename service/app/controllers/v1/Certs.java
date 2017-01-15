@@ -2,37 +2,29 @@ package controllers.v1;
 
 import com.google.common.base.Strings;
 import controllers.api.API;
-import javafx.util.Pair;
 import models.Cert;
 import models.Module;
-import models.SeedMatrix;
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 import org.jongo.MongoCursor;
-import play.Logger;
 import play.Play;
 import play.data.binding.As;
 import play.data.validation.Range;
 import play.data.validation.Required;
 import play.libs.Files;
-import play.libs.IO;
-import play.libs.Images;
 import play.vfs.VirtualFile;
-import utils.FileUtilException;
 import utils.SafeGuard;
 
 import java.io.*;
-import java.math.BigInteger;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static play.modules.jongo.BaseModel.getCollection;
-import static utils.FileUtils.fileToByte;
-import static utils.FileUtils.writeFile;
 
 /**
  * 证书管理
@@ -42,6 +34,7 @@ public class Certs extends API {
 
     public static String certFilesPath = Play.configuration.getProperty("attachments.path") + File.separator + "certs";
     public static String QRPath = Play.configuration.getProperty("attachments.path") + File.separator + "QRs";//二维码地址
+    public static String pattern = "yyyy-MM-dd";
 
     /**
      * 1.政府内部用户-离线信息录入（申请证书）
@@ -56,8 +49,8 @@ public class Certs extends API {
      * 2.政府内部用户-申请状态查询（status=0待审批；status=1审批通过；status=2审批不通过）
      * 通过 status 的取值进入到待审批列表、已审批列表
      */
-    public static void list(String filters, @As(value = ",") List<String> params, @Range(min = 0,max = 100) Integer limit, @Range(min = 0) Integer offset) {
-
+    public static void list(String filters, @As(value = ",") List<String> params, @Range(min = 0,max = 100) Integer limit, @Range(min = 0) Integer offset) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
         if(Strings.isNullOrEmpty(filters)) {
             filters="{companyName: {$regex: #},_created:{$gte:#},_created:{$lte:#},status:#}";
         }else {
@@ -68,8 +61,8 @@ public class Certs extends API {
         }
         //todo: 处理 params中的数据类型
         String companyName = params.get(0);
-        Date startDate = formatDate(params.get(1));
-        Date endDate = formatDate(params.get(2));
+        Date startDate = sdf.parse(params.get(1));
+        Date endDate =  sdf.parse(params.get(2));
         Long status = Long.valueOf(params.get(3));
 
         MongoCursor<Cert> mongoCursor = getCollection(Cert.class).find(filters,companyName,startDate,endDate,status).limit(limit).skip(offset).as(Cert.class);
@@ -83,7 +76,7 @@ public class Certs extends API {
      * 2.1 政府内部用户-证书审批
      * @param ids
      */
-    public static void approve(@Required String ids) throws FileUtilException, IOException {
+    public static void approve(@Required String ids) throws IOException {
 
         Integer status = Integer.valueOf(request.params.get("status"));
         String[] idArr = ids.split(",");
@@ -92,18 +85,6 @@ public class Certs extends API {
         //todo: 证书审批后,需要生成证书(zip压缩包格式)文件并保存
         for(String id : idArr) {
             getCollection(Cert.class).update(new ObjectId(id)).multi().with("{$set:{status:#,modifyTime:#}}",status,modifyTime).isUpdateOfExisting();
-            //byte[] cc = gc(vendorCode,creditCode);传入厂商代码、企业信用码
-            /**
-             * 将文件转化为 byte[] , 将 byte[] 写到文件
-             */
-/*            byte[] cc = fileToByte("F:/新建文本文档.txt");
-            Logger.info("cc: " + cc);
-            File dir = new File(certFilesPath + "/" + id);
-            Logger.info("dir: " + dir);
-            if(!dir.exists() && dir.isDirectory()){//判断文件目录是否存在
-                dir.mkdirs();
-            }
-            IO.write(cc,dir);//将byte[]写入到文件*/
             /**
              * @Description
              *  1.调用接口生成 tradeSk,productSK,Matrix
@@ -118,6 +99,7 @@ public class Certs extends API {
             String filePath = certFilesPath + File.separator + id;
             String fileName = id + "_tradeSk";
             writeFile(filePath, fileName,sk);*/
+            //compress();
             /**
              * 实现文件压缩，并将源文件删除
              */
@@ -142,14 +124,17 @@ public class Certs extends API {
      * @param attachment 导入的Zip包
      * @param companyId 企业Id
      */
-    public static void certsImport(@Required Integer companyId,@Required File attachment){
+    public static void certsImport(@Required Integer companyId,@Required File attachment) throws IOException {
         String remark = request.params.get("remark");
-        //attachment(companyId,attachment);
-
-        String fileName = attachment.getName();
-        File storeFile = new File(certFilesPath + "/" + companyId + "/" + fileName);
-        //对storeFile进行解压
+        Cert cert =  getCollection(Cert.class).findOne("{companyId:#}",companyId).as(Cert.class);
+        cert.certRemark = remark;
+        cert.save();
+        String storePath = certFilesPath + File.separator + companyId + File.separator + UUID.randomUUID();
+        File storeFile = new File(storePath);
         Files.copy(attachment, storeFile);
+        //对storeFile进行解压
+        //Files.delete(storeFile);
+        renderJSON("{\"success\":\"ok\"}");
     }
 
     /**
@@ -161,8 +146,7 @@ public class Certs extends API {
 //        new FileInputStream(attachment),
 //                MimeTypes.getContentType(attachment.getName());
 
-        String fileName = attachment.getName();
-        File storeFile = new File(certFilesPath + "/"  + fileName);
+        File storeFile = new File(certFilesPath + File.separator + UUID.randomUUID());
         Files.copy(attachment, storeFile);
         renderJSON("{\"success\":\"ok\"}");
     }
@@ -172,9 +156,9 @@ public class Certs extends API {
      * @param id
      */
     public static void download(@Required String id) {
-        Cert cert =  getCollection(Cert.class).findOne(new ObjectId(id)).as(Cert.class);
+        Cert cert = getCollection(Cert.class).findOne(new ObjectId(id)).as(Cert.class);
         notFoundIfNull(cert);
-        renderBinary(new ByteArrayInputStream(VirtualFile.fromRelativePath(certFilesPath+File.separator+cert.getCertPath()).content()),cert.getCompanyName()+".zip");
+        renderBinary(new ByteArrayInputStream(VirtualFile.fromRelativePath(certFilesPath+File.separator+cert.getCompanyName()).content()),cert.getCompanyName()+".zip");
     }
 
     /**
@@ -187,7 +171,6 @@ public class Certs extends API {
          */
      /*   String str = "22223444444444444444";
         BigInteger sk = new BigInteger(str);//BigInteger类型的私钥
-        Logger.info("私钥： " + sk);
         Pair pair = sign(sk,moduleId);//根据私钥、电池编号(流水号)生成签名信息
 
         *//**
@@ -216,19 +199,4 @@ public class Certs extends API {
         }
     }
 
-    /**
-     * 字符串转时间
-     * @param time 表示时间的字符串
-     * @return Date 格式化的时间
-     */
-
-    public static Date formatDate(String time){
-        SimpleDateFormat sdf =   new SimpleDateFormat("yyyy-MM-dd");
-        try {
-            return sdf.parse(time);
-        } catch (ParseException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
 }

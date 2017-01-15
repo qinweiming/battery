@@ -12,18 +12,19 @@ import play.data.validation.Range;
 import play.data.validation.Required;
 import utils.SafeGuard;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
-
-import static controllers.v1.Certs.formatDate;
 import static play.modules.jongo.BaseModel.getCollection;
 
 /**
  * Created by xudongmei on 2016/12/13.
  */
 public class Trades extends API {
+    public static String pattern = "yyyy-MM-dd";
     /**
      * 1.新增交易信息
      */
@@ -37,8 +38,8 @@ public class Trades extends API {
      * 2.获取交易信息
      */
 
-    public static void list(String filters, @As(value = ",") List<String> params, @Range(min = 0,max = 100) Integer limit, @Range(min = 0) Integer offset) {
-
+    public static void list(String filters, @As(value = ",") List<String> params, @Range(min = 0,max = 100) Integer limit, @Range(min = 0) Integer offset) throws ParseException {
+        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
         if(Strings.isNullOrEmpty(filters)){
             filters="{from: {$regex: #},to: {$regex: #},_created:{$gte:#},_created:{$lte:#},id:{$gte:#},id:{$lte:#}}";
         }else {
@@ -50,8 +51,8 @@ public class Trades extends API {
         //todo: 处理 params中的数据类型
         String from = params.get(0);
         String to = params.get(1);
-        Date startDate = formatDate(params.get(2));
-        Date endDate = formatDate(params.get(3));
+        Date startDate = sdf.parse(params.get(2));
+        Date endDate = sdf.parse(params.get(3));
         String startModuleId = params.get(4);
         String endModuleId = params.get(5);
 
@@ -101,7 +102,7 @@ public class Trades extends API {
     public static void packageAndModule() {
         Package packages = readBody(Package.class);
         packages.save();
-        created(packages);
+        renderJSON("{\"success\":\"ok\"}");
     }
     /**
      * 7.汽车制造商上传汽车与电池包的对应关系
@@ -109,14 +110,14 @@ public class Trades extends API {
     public static void carAndPackage() {
         Car cars = readBody(Car.class);
         cars.save();
-        created(cars);
+        renderJSON("{\"success\":\"ok\"}");
     }
 
     /**
      * 8.获取电池包信息
      * @param id packageId
      */
-    public static void getPackage(@Required String id){
+    public static void getPackage(@Required String id) {
         Package Package =  getCollection(Package.class).findOne("{packageId:#}",id).as(Package.class);
         if (Package == null) {
             notFound(id);
@@ -129,7 +130,7 @@ public class Trades extends API {
      * 9.获取汽车信息
      * @param id carId
      */
-    public static void getCar(@Required String id){
+    public static void getCar(@Required String id) {
         Car car =  getCollection(Car.class).findOne("{carId:#}",id).as(Car.class);
         if (car == null) {
             notFound(id);
@@ -141,7 +142,7 @@ public class Trades extends API {
     /**
      * 10.新增二维码扫描记录
      */
-    public static void addRecord(){
+    public static void addRecord() {
         Scan scan = readBody(Scan.class);
         scan.save();
         created(scan);
@@ -150,13 +151,15 @@ public class Trades extends API {
     /**
      * 11.查询二维码扫描记录
      */
- /*   public static void getRecord(String filters,Integer limit,Integer offset){
+    public static void getRecord(String filters,Integer limit,Integer offset) {
         filters= SafeGuard.safeFilters(filters);
         limit = SafeGuard.safeLimit(limit);
         offset= SafeGuard.safeOffset(offset);
-        List<Scan> scans = StreamSupport.stream(getCollection(Scan.class).find(filters).limit(limit).skip(offset).as(Scan.class).spliterator(),false).collect(Collectors.toList());
-        Long totalCount = getCollection(Scan.class).count(filters);
-        response.setHeader("X-Total-Count",String.valueOf(totalCount));
+
+        MongoCursor<Scan> mongoCursor = getCollection(Scan.class).find(filters).limit(limit).skip(offset).as(Scan.class);
+        response.setHeader("X-Total-Count",String.valueOf(mongoCursor.count()));
+
+        List<Scan> scans = StreamSupport.stream(mongoCursor.spliterator(),false).collect(Collectors.toList());
         renderJSON(scans);
-    }*/
+    }
 }
