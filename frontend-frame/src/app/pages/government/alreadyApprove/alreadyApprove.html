@@ -1,6 +1,6 @@
-<div class="row">
-    <div class="col-md-12">
-      <div ba-panel ba-panel-title="已审批证书查看" ba-panel-class="with-scroll" class="panel-primary">
+
+   
+      <div  title="已审批证书查看" class="panel-primary">
 <div class="horizontal-scroll">
   <div class="panel panel-success">
     <div class="panel-body panel-success">
@@ -9,7 +9,7 @@
         <div class="col-md-5">
           <form class="form-inline" role="form">
             <div class="form-group">
-              <input class="form-control" style="width: 180px" type="text" style="border-radius: 4px;" placeholder="申请日期：起止时间" name="" ng-model="filters.startDate">
+              <input class="form-control" style="width: 180px" type="text" style="border-radius: 4px;" placeholder="起止时间" name="" ng-model="filters.startDate">
               <span>&nbsp--&nbsp</span>
               <input class="form-control" style="width: 180px" style="border-radius: 4px;" type="text" placeholder="截止时间" name="" ng-model="filters.endDate">
             </div>
@@ -24,12 +24,12 @@
           <button type="button" class="btn btn-primary" data-toggle="button" ng-click="search()">查询</button>
         </div>
       </div>
-      <div class="row">
-        <div class="col-md-1"><button type="button" class="btn btn-success" ng-click="approveSuccess()">审核通过</button></div>
-        <div class="col-md-2 "><button type="button" class="btn btn-danger" ng-click="approveFail()">审核不通过</button></div>
-      </div>
+      
     </div>
   </div>
+  </div>
+
+
 
   <table class="table table-hover table-striped table-bordered " st-table="smartTableData">
     <thead>
@@ -70,7 +70,7 @@
             </div> -->
             <!-- <div class="col-md-4 col-md-offset-2" st-pagination="" st-items-by-page="smartTablePageSize" st-displayed-pages="5"></div> -->
             <div   class="col-md-4 col-md-offset-2">
-              <ul class="pagination">
+              <ul class="pagination" style="margin:auto;">
                 <!-- <li><a href="#">上一页</a></li>
                 <li><a href="#">下一页</a></li> -->
 
@@ -96,7 +96,4 @@
       </tr>
     </tfoot>
   </table>
-</div>
-</div>
-</div>
 </div>
