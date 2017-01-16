@@ -1,118 +1,129 @@
-
-      <div title="追溯查询"  class="panel-primary">
+<div class="widgets">
+<div class="row">
+    <div class="col-md-12">
+      <div ba-panel ba-panel-title="追溯查询" ba-panel-class="with-scroll" class="panel-primary">
 <div class="horizontal-scroll">
-  <div class="panel panel-success">
-    <div class="panel-body panel-success">
+<div class="panel panel-default">
+   <div class="panel-body">
       <div class="row">
       <div class="col-md-2" style="width: 14%;">
      
        <div class="form-group">
       <input type="text" class="form-control" style="width: 130px" id="" name="" 
-         placeholder="源厂商" ng-model="filters.startComp">
+         placeholder="源厂商">
    </div></div> <div class="col-md-2" style="width: 14%;">  <div class="form-group">
       <input type="text" class="form-control" style="width: 130px;margin-left: 3.33333333%;"  id="" name="" 
-         placeholder="目的厂商" ng-model="filters.endComp">
+         placeholder="目的厂商">
    </div></div><div class="col-md-3" style="width: 28%;" margin-left: 10px;>
    <form class="form-inline" role="form">
 <div class="form-group">
       <input type="date" value="2017-01-01" class="form-control" style="width: 110px;"  id="" name="" 
-         placeholder="生产日期起始" ng-model="filters.startDate">
+         placeholder="生产日期起始">
    </div>&nbsp--&nbsp<div class="form-group">
       <input type="date" value="2017-01-01" class="form-control" style="width: 110px;"  id="" name="" 
-         placeholder="生产日期截至" ng-model="filters.endDate">
+         placeholder="生产日期截至">
    </div></form></div><div class="col-md-3" style="margin-left: 0.33333333%;width: 26%">
    <form class="form-inline" role="form">
    <div class="form-group">
       <input type="text" class="form-control" style="width: 100px;"  id="" name="" 
-         placeholder="产品流水号" ng-model="filters.startNum">
+         placeholder="产品流水号">
    </div>&nbsp--&nbsp<div class="form-group">
       <input type="text" class="form-control" style="width: 100px;"  id="" name="" 
-         placeholder="产品流水号" ng-model="filters.endNum">
+         placeholder="产品流水号">
    </div></form></div><div class="col-md-1">
-   <button type="button" class="btn btn-primary" ng-click="search()">查询</button></div><div class="col-md-1" style="margin-left: 0.1%">
+   <button type="button" class="btn btn-primary" >查询</button></div><div class="col-md-1" style="margin-left: 0.1%">
    <button type="button" class="btn btn-success" data-toggle="modal" 
    data-target="#myModal" >查看明细</button></div>
          
       </div>
-      
-    </div>
-  </div>
-  </div>
+     
+   </div>
+</div>
 
-
-  <table class="table table-hover table-striped table-bordered " st-table="smartTableData">
+  <table class="table table-bordered table-striped table-hover" st-table="smartTableData">
     <thead>
-      <tr class="sortable ">
-        <th st-sort="firstName">生产日期</th>
-        <th st-sort="lastName">产品ID</th>
-        <th st-sort="username">源厂商</th>
-        <th st-sort="email">目的厂商</th>
-        <th st-sort="age">模组号</th>
-        <th st-sort="lastName">包号</th>
-        <th st-sort="username">车架号</th>
-        
-      </tr>
+    <tr class=" ">
+      <th ></th>
+      <th st-sort="firstName">生产日期</th>
+      <th st-sort="lastName">产品ID</th>
+      <th st-sort="username">源厂商</th>
+       <th st-sort="age">目的厂商</th>
+      <th align="center" st-sort="email">模组号</th>
+      <th st-sort="email">包号</th>
+      <th st-sort="email">车架号</th>
+    </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="item in tracePageData">
-        <td>{{item.applyDate}}</td>
-        <td>{{item.applyOrder}}</td>
-        <td>{{item.companyName}}</td>
-        <td>{{item.creditCode}}</td>
-        <td><a class="factory-link" ng-href="mailto:{{item.factoryCode}}">{{item.factoryCode}}</td>
-        <td>{{item.contact}}</td>
-        <td>{{item.phone}}</td>
-        
-      </tr>
+    <tr ng-repeat="item in smartTableData">
+      <td ><input type="checkbox" name=""></td>
+      <td>{{item.firstName}}</td>
+      <td>{{item.lastName}}</td>
+      <td>{{item.username}}</td>
+     <td>{{item.age}}</td>
+       <td><a class="email-link" ng-href="mailto:{{item.email}}">{{item.email}}</a></td>
+        <td><a class="email-link" ng-href="mailto:{{item.email}}">{{item.email}}</a></td>
+         <td><a class="email-link" ng-href="mailto:{{item.email}}">{{item.email}}</a></td>
+    </tr>
     </tbody>
     <tfoot>
-      <tr>
-        <td colspan="10" class="text-center">
-         
-            <!-- <div class="form-group select-page-size-wrap col-md-4">
-              <label>
-                <select class="form-control selectpicker show-tick" title="显示页数" selectpicker
-            ng-model="newLimit" ng-options="i for i in [5,10,15,20,25]"></select>
-              </label>
-            </div> -->
-            <!-- <div class="col-md-4 col-md-offset-2" st-pagination="" st-items-by-page="smartTablePageSize" st-displayed-pages="5"></div> -->
-
-<style>
-
-#footer ul{
+    <tr>
+      <td colspan="8" class="text-center">
+      <div class="row">
+      <div class="form-group select-page-size-wrap col-md-4">
+    <label>
+      <select class="form-control selectpicker show-tick" title="显示页数" selectpicker
+              ng-model="smartTablePageSize" ng-options="i for i in [5,10,15,20,25]">
+      </select>
+    </label>
+  </div>
+        <div class="col-md-4 col-md-offset-2" st-pagination="" st-items-by-page="smartTablePageSize" st-displayed-pages="5"></div>
+        <div class="col-md-2 col-md-pull-1 ">
+          <ul class="pagination">
+  <li><a href="#">上一页</a></li>
+  <li><a href="#">下一页</a></li>
+</ul>
+        </div>
+        </div>
         
-display:block;        
-margin:0 auto;  }
-#footer ul li{
-        float:left;
-}
-</style>
-
-            <div  id="footer" class="col-md-4 col-md-offset-2">
-              <ul class="pagination">
-                <!-- <li><a href="#">上一页</a></li>
-                <li><a href="#">下一页</a></li> -->
-
-                <li>
-                  <a ng-click="Previous()">
-                  <span>上一页</span>
-                  </a>
-                  </li>
-                  <li ng-repeat="page in pageList" ng-class="{active: isActivePage(page)}" >
-                  <a ng-click="selectPage(page)" >{{ page }}</a>
-                  </li>
-                  <li>
-                  <a ng-click="Next()">
-                  <span>下一页</span>
-                  </a>
-                  </li>
-
-
-              </ul>
-            </div>
-          
-        </td>
-      </tr>
+      </td>
+    </tr>
     </tfoot>
   </table>
+
+</div>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" 
+   aria-labelledby="myModalLabel" aria-hidden="true">
+   <div class="modal-dialog">
+      <div class="modal-content">
+         <div class="modal-header">
+            <button type="button" class="close" 
+               data-dismiss="modal" aria-hidden="true">
+                  &times;
+            </button>
+            <h4 class="modal-title" id="myModalLabel">
+               模态框（Modal）标题
+            </h4>
+         </div>
+         <div class="modal-body">
+            在这里添加一些文本
+         </div>
+         <div class="modal-footer">
+            <button type="button" class="btn btn-default" 
+               data-dismiss="modal">关闭
+            </button>
+            <button type="button" class="btn btn-primary">
+               提交更改
+            </button>
+         </div>
+      </div><!-- /.modal-content -->
+</div><!-- /.modal -->
+</div>
+    </div>
+  </div>
+
+</div>
+ </div>
+    </div>
+  </div>
+
 </div>
