@@ -42,6 +42,7 @@ public class CpkCoresImplTest {
     public void setUp() throws Exception {
         //生成种子矩阵
         Matrixs matrixs = CpkMatrixsFactory.generateCpkMatrix();
+//        Matrixs matrixs1 = Matrixs.fromJson(matrixs.toJson());
         //实例化cpkCores核心类
         cpkCores = new CpkCoresImpl(matrixs);
 
@@ -71,8 +72,4 @@ public class CpkCoresImplTest {
 
     }
 
-    @Test
-    public void CGenerateQR() {
-
-    }
 }

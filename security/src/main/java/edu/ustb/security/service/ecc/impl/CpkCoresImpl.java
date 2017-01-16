@@ -99,7 +99,8 @@ public class CpkCoresImpl implements CpkCores {
     public Pair sign(BigInteger sk, String src) {
         byte[] hashBytes = null;
         try {
-            hashBytes = src.getBytes(Constants.CHARSET);
+            byte[] srcBytes = src.getBytes(Constants.CHARSET);
+            hashBytes = TypeTransUtils.Digest(srcBytes);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
@@ -126,7 +127,8 @@ public class CpkCoresImpl implements CpkCores {
     public boolean verify(ECPoint pk, String src, Pair sig) {
         byte[] hashBytes = null;
         try {
-            hashBytes = src.getBytes(Constants.CHARSET);
+            byte[] srcBytes = src.getBytes(Constants.CHARSET);
+            hashBytes = TypeTransUtils.Digest(srcBytes);
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
